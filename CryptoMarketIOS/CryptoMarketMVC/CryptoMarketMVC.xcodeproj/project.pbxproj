@@ -99,12 +99,11 @@
 		ED7636752131F63D000592F4 /* CryptoMarketMVC */ = {
 			isa = PBXGroup;
 			children = (
-				ED7636762131F63D000592F4 /* AppDelegate.swift */,
-				ED7636782131F63D000592F4 /* FirstViewController.swift */,
-				ED76367A2131F63D000592F4 /* SecondViewController.swift */,
-				ED76367C2131F63D000592F4 /* Main.storyboard */,
-				ED76367F2131F63F000592F4 /* Assets.xcassets */,
-				ED7636812131F63F000592F4 /* LaunchScreen.storyboard */,
+				ED7636A62131F86B000592F4 /* App */,
+				ED7636A82131F883000592F4 /* Models */,
+				ED7636A72131F879000592F4 /* Views */,
+				ED7636A92131F88F000592F4 /* Controllers */,
+				ED7636AA2131F8CE000592F4 /* Resources */,
 				ED7636842131F63F000592F4 /* Info.plist */,
 			);
 			path = CryptoMarketMVC;
@@ -126,6 +125,47 @@
 				ED76369A2131F640000592F4 /* Info.plist */,
 			);
 			path = CryptoMarketMVCUITests;
+			sourceTree = "<group>";
+		};
+		ED7636A62131F86B000592F4 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				ED7636762131F63D000592F4 /* AppDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		ED7636A72131F879000592F4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				ED76367C2131F63D000592F4 /* Main.storyboard */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		ED7636A82131F883000592F4 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		ED7636A92131F88F000592F4 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				ED7636782131F63D000592F4 /* FirstViewController.swift */,
+				ED76367A2131F63D000592F4 /* SecondViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		ED7636AA2131F8CE000592F4 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				ED76367F2131F63F000592F4 /* Assets.xcassets */,
+				ED7636812131F63F000592F4 /* LaunchScreen.storyboard */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
