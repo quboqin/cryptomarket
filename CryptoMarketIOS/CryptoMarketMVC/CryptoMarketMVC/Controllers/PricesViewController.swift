@@ -253,18 +253,18 @@ extension PricesViewController: UISearchBarDelegate {
 
 extension PricesViewController: SettingsViewControllerDelegate {
     func settingsViewControllerDidCancel(_ viewController: SettingsViewController) {
-        print("Click Cancel button @Prices")
+        Log.v("Click Cancel button")
     }
     
     func settingsViewController(_ viewController: SettingsViewController, didSelectTokenOnly isOnlyToken: Bool) {
-        print("Select ShowTokenOnly switch \(isOnlyToken) @Prices")
+        Log.v("Select ShowTokenOnly switch \(isOnlyToken)")
     }
     
     func settingsViewController(_ viewController: SettingsViewController, didSaveMyFavorites isSaveMyFavorites: Bool) {
-        print("Select SaveMyFavorites switch \(isSaveMyFavorites) @Prices")
+        Log.v("Select SaveMyFavorites switch \(isSaveMyFavorites)")
     }
     
     func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource) {
-        print("Select kLine Datasource \(dataSource) @Prices")
+        Log.v("Select kLine Datasource \(dataSource)")
     }
 }

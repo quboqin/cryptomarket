@@ -55,17 +55,17 @@ class CurrencyCell: UITableViewCell {
     }
     
     override func updateConstraints() {
-        print("CurrencyCell:In:updateConstraints")
+        Log.v("Begin")
         super.updateConstraints()
-        print("CurrencyCell:Out:updateConstraints")
+        Log.v("End")
         
 //        self.expandViewHeightConstraint.priority = UILayoutPriority(rawValue: self.expandViewHeightConstraintPriority)
     }
     
     override func layoutSubviews() {
-        print("CurrencyCell:In:layout subviews")
+        Log.v("Begin")
         super.layoutSubviews()
-        print("CurrencyCell:Out:layout subviews")
+        Log.v("End")
     }
 
 }

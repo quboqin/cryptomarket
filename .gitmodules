@@ -1,0 +1,3 @@
+[submodule "swiftlogger"]
+	path = swiftlogger
+	url = git@github.com:sauvikdolui/swiftlogger.git

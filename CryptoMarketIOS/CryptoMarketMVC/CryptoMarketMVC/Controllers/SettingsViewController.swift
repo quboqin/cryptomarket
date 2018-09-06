@@ -37,7 +37,7 @@ class SettingsViewController: UITableViewController {
     }
     
     @IBAction func clearMyFavorites(_ sender: UIButton) {
-        print("Clean my favorites @Settings")
+        Log.v("Clean my favorites")
     }
     
     @IBAction func saveMyFavorites(_ sender: UISwitch) {

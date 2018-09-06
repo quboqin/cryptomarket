@@ -26,6 +26,7 @@
 		ED7636B4213300B2000592F4 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED7636B3213300B2000592F4 /* DetailViewController.swift */; };
 		ED7636B62133012C000592F4 /* ExpandViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED7636B52133012C000592F4 /* ExpandViewController.swift */; };
 		ED7636B82134CE95000592F4 /* PricesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED7636B72134CE95000592F4 /* PricesViewController.swift */; };
+		EDD89F512141DA890031EA10 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F502141DA890031EA10 /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		ED7636B3213300B2000592F4 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		ED7636B52133012C000592F4 /* ExpandViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandViewController.swift; sourceTree = "<group>"; };
 		ED7636B72134CE95000592F4 /* PricesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PricesViewController.swift; sourceTree = "<group>"; };
+		EDD89F502141DA890031EA10 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../../../../swiftlogger/SwiftLogger/Debug/Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 				ED7636A82131F883000592F4 /* Models */,
 				ED7636A72131F879000592F4 /* Views */,
 				ED7636A92131F88F000592F4 /* Controllers */,
+				EDD89F492141D6770031EA10 /* Helpers */,
 				ED7636AA2131F8CE000592F4 /* Resources */,
 				ED7636842131F63F000592F4 /* Info.plist */,
 			);
@@ -207,6 +210,22 @@
 				ED7636812131F63F000592F4 /* LaunchScreen.storyboard */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		EDD89F492141D6770031EA10 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				EDD89F4D2141DA470031EA10 /* Loggers */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		EDD89F4D2141DA470031EA10 /* Loggers */ = {
+			isa = PBXGroup;
+			children = (
+				EDD89F502141DA890031EA10 /* Logger.swift */,
+			);
+			path = Loggers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -352,6 +371,7 @@
 				ED52DC9A2134FED6001198E7 /* PresentTransitionController.swift in Sources */,
 				ED7636B62133012C000592F4 /* ExpandViewController.swift in Sources */,
 				ED7636AE213203A2000592F4 /* SettingsViewController.swift in Sources */,
+				EDD89F512141DA890031EA10 /* Logger.swift in Sources */,
 				ED7636792131F63D000592F4 /* CryptoCurrencyListViewController.swift in Sources */,
 				ED7636B4213300B2000592F4 /* DetailViewController.swift in Sources */,
 			);

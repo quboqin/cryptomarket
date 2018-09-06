@@ -140,7 +140,7 @@ extension CryptoCurrencyListViewController: UITableViewDelegate {
 
 extension CryptoCurrencyListViewController: SectionHeaderViewDelegate {
     func sectionHeaderView(_ sectionHeaderView: SectionHeaderView, tap sortBy: SortBy) {
-        print("Tap \(sortBy)@CryptoCurrencyListViewController")
+        Log.d("Tap \(sortBy)")
     }
 }
 
