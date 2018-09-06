@@ -8,6 +8,9 @@
 
 import UIKit
 
+/*
+ The @UIApplicationMain attribute in Swift replaces the trivial main.m file found in Objective-C projects (whose purpose is to implement the main function that's the entry point for all C programs and call UIApplicationMain to kick off the Cocoa Touch run loop and app infrastructure).
+*/ 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

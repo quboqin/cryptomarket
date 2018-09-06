@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="zGf-5i-WNc" customClass="SectionHeaderView" customModule="CryptoMarketMVC" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="BDD-sa-cFG">
+                    <rect key="frame" x="8" y="10" width="61.5" height="24.5"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aSA-2z-hid">
+                            <rect key="frame" x="0.0" y="1.5" width="37.5" height="21.5"/>
+                            <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="15"/>
+                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort_down" translatesAutoresizingMaskIntoConstraints="NO" id="fN5-za-yNt">
+                            <rect key="frame" x="37.5" y="0.0" width="24" height="24.5"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="24" id="OrT-Yx-eAd"/>
+                                <constraint firstAttribute="height" constant="24" id="YuZ-Er-Smo"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                </stackView>
+                <stackView opaque="NO" tag="1" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="qOb-EN-YuO">
+                    <rect key="frame" x="227" y="10" width="58" height="24.5"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Price" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ym-qv-QTR">
+                            <rect key="frame" x="0.0" y="1.5" width="34" height="21.5"/>
+                            <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="15"/>
+                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort_down" translatesAutoresizingMaskIntoConstraints="NO" id="WJo-gK-xhz">
+                            <rect key="frame" x="34" y="0.0" width="24" height="24.5"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="24" id="WgG-nr-tJz"/>
+                                <constraint firstAttribute="height" constant="24" id="p0f-CJ-Q4O"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                </stackView>
+                <stackView opaque="NO" tag="2" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Vxy-4f-QTO">
+                    <rect key="frame" x="303.5" y="10" width="63.5" height="24.5"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ8-nJ-JpX">
+                            <rect key="frame" x="0.0" y="4" width="39.5" height="17"/>
+                            <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="12"/>
+                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort_down" translatesAutoresizingMaskIntoConstraints="NO" id="H7M-k6-bjl">
+                            <rect key="frame" x="39.5" y="0.0" width="24" height="24.5"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="24" id="Mjf-94-Vig"/>
+                                <constraint firstAttribute="width" constant="24" id="wWf-cp-XB4"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="BDD-sa-cFG" firstAttribute="leading" secondItem="YiQ-C4-CR4" secondAttribute="leading" constant="8" id="2GL-uT-h3I"/>
+                <constraint firstItem="YiQ-C4-CR4" firstAttribute="trailing" secondItem="Vxy-4f-QTO" secondAttribute="trailing" constant="8" id="4Ri-6D-Ajw"/>
+                <constraint firstItem="Vxy-4f-QTO" firstAttribute="centerY" secondItem="zGf-5i-WNc" secondAttribute="centerY" id="8z7-kB-UaK"/>
+                <constraint firstItem="qOb-EN-YuO" firstAttribute="centerY" secondItem="zGf-5i-WNc" secondAttribute="centerY" id="HTk-GD-079"/>
+                <constraint firstAttribute="trailing" secondItem="qOb-EN-YuO" secondAttribute="trailing" constant="90" id="IKG-U8-04z"/>
+                <constraint firstItem="BDD-sa-cFG" firstAttribute="centerY" secondItem="zGf-5i-WNc" secondAttribute="centerY" id="YXF-bZ-w9V"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="YiQ-C4-CR4"/>
+            <connections>
+                <outlet property="changeContainView" destination="Vxy-4f-QTO" id="Gg4-VK-ZEX"/>
+                <outlet property="nameContainView" destination="BDD-sa-cFG" id="igT-ou-il9"/>
+                <outlet property="priceContainView" destination="qOb-EN-YuO" id="pjB-wC-ECh"/>
+            </connections>
+            <point key="canvasLocation" x="-304.5" y="-566"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="sort_down" width="24" height="24"/>
+    </resources>
+</document>
