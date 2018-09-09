@@ -16,8 +16,10 @@ class PricesViewController: CryptoCurrencyListViewController {
     
     var favoritesViewController: FavoritesViewController!
     @IBOutlet weak var searchBar: UISearchBar!
-    var filteredTickers = [String]()
+    var filteredTickers = [Ticker]()
     var searchActive: Bool = false
+    
+    var showCoinOnly = false
     
     let refreshControl = UIRefreshControl()
     
@@ -42,26 +44,83 @@ class PricesViewController: CryptoCurrencyListViewController {
         
         CATransaction.commit()
     }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
 
     @objc
     fileprivate func reloadData() {
         refreshControl.beginRefreshing()
         
-        tickers = ["Bitcoin", "Ether", "XRP", "EOS", "Litecoin", "IOTA"]
-        tableView.reloadData()
+        let cryptoCompareNetworkManager = CryptoCompareNetworkManager.shared
+        let coinMarketNetworkManager = CoinMarketNetworkManager.shared
         
-        refreshControl.endRefreshing()
+        _ = cryptoCompareNetworkManager.getDataFromEndPoint(.coinlist, type: CoinListResponse.self) { [weak self]
+            (data, error) in
+            if error != nil {
+                self?.refreshControl.endRefreshing()
+                return
+            }
+    
+            if let coinListResponse = data as? CoinListResponse {
+                self?.baseImageUrl = coinListResponse.baseImageUrl
+                let coins = [Coin](coinListResponse.data.values)
+                
+                _ = coinMarketNetworkManager.getDataFromEndPoint(.ticker(start: 1, limit: 60, sort: "id", structure: "array", convert: "BTC"), type: TickersResponse.self, networkManagerCompletion: { [weak self]
+                    (data, error) in
+                    if error != nil {
+                        self?.refreshControl.endRefreshing()
+                        return
+                    }
+                    
+                    if let tickersResponse = data as? TickersResponse {
+                        self?.tickers = tickersResponse.data
+                        
+                        for (index, ticker) in (self?.tickers)!.enumerated() {
+                            if let coin = coins.first(where: {$0.symbol == ticker.symbol}) {
+                                self?.tickers[index].fullName = coin.fullName
+                                self?.tickers[index].imageUrl = coin.imageUrl
+                                self?.tickers[index].url = coin.url
+                                if coin.builtOn != "N/A" {
+                                    self?.tickers[index].isToken = true
+                                } else {
+                                    self?.tickers[index].isToken = false
+                                }
+                            } else {
+                                self?.tickers[index].fullName = (self?.tickers[index].symbol)!
+                            }
+                        }
+                        self?.tableView.reloadData()
+                    }
+                    self?.refreshControl.endRefreshing()
+                })
+            }
+            self?.refreshControl.endRefreshing()
+        }
+        
+        _ = coinMarketNetworkManager.getDataFromEndPoint(.globalData(convert: "USD"), type: GlobalResponse.self) { [weak self]
+            (data, error) in
+            if error != nil {
+                return
+            }
+            
+            if let globalResponse = data as? GlobalResponse {
+                let totalVolume24H = globalResponse.data.quotes["USD"]?.totalVolume24H
+                self?.globalLabel.text = "$" + String(format: "%.1f", totalVolume24H!)
+                self?.flipGlobalData()
+            }
+        }
     }
     
     private func setupUI() {
         tableView.tableFooterView = UIView()
-        tableView.insertSubview(refreshControl, at: 0)
         
+        tableView.insertSubview(refreshControl, at: 0)
         refreshControl.addTarget(self, action: #selector(PricesViewController.reloadData), for: .valueChanged)
         
         cellIdentifier = "CurrencyCell1"
-
-        flipGlobalData()
     }
 
     override func viewDidLoad() {
@@ -69,8 +128,9 @@ class PricesViewController: CryptoCurrencyListViewController {
 
         // Do any additional setup after loading the view.
         setupUI()
+        // FIXME: You need to call [self.view layoutIfNeeded] to fix it in iOS 10.
+        self.view.layoutIfNeeded()
         reloadData()
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -79,20 +139,30 @@ class PricesViewController: CryptoCurrencyListViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        let _tickers = searchActive && filteredTickers.count > 0 ? filteredTickers : tickers
+        
+        if _tickers.count == 0 {
+            return 0
+        }
+        return showCoinOnly ? 1 : 2
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let _tickers = searchActive && filteredTickers.count > 0 ? filteredTickers : tickers
         
-        return _tickers.count
-        
+        return showCoinOnly ? _tickers.filter({ !$0.isToken }).count
+            : (section == 0 ? _tickers.filter({ !$0.isToken }).count
+                : _tickers.filter({ $0.isToken }).count)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let _tickers = searchActive && filteredTickers.count > 0 ? filteredTickers : tickers
         
-        return _tableView(tableView, cellForRowAt: indexPath, with: _tickers[indexPath.row])
+        let ticker = showCoinOnly ? _tickers.filter({ !$0.isToken })[indexPath.row]
+            : (indexPath.section == 0 ? _tickers.filter({ !$0.isToken })[indexPath.row]
+                : _tickers.filter({ $0.isToken })[indexPath.row])
+        
+        return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -101,7 +171,8 @@ class PricesViewController: CryptoCurrencyListViewController {
         
         if let navigationController = segue.destination as? SettingsNavigationController,
             let settingsViewController = navigationController.viewControllers.first as? SettingsViewController {
-
+            
+            settingsViewController.showCoinOnly = showCoinOnly
             settingsViewController.delegate = self
         }
     }
@@ -124,13 +195,36 @@ extension PricesViewController {
         let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Favorite", handler:{ [weak self] action, indexpath in
             let _tickers = (self?.searchActive)! && (self?.filteredTickers.count)! > 0 ? self?.filteredTickers : self?.tickers
             
+            let ticker = (self?.showCoinOnly)! ? _tickers?.filter({ !$0.isToken })[indexPath.row]
+                : (indexPath.section == 0 ? _tickers?.filter({ !$0.isToken })[indexPath.row]
+                    : _tickers?.filter({ $0.isToken })[indexPath.row])
+            
             let navigationViewController = self?.tabBarController?.viewControllers![1] as! UINavigationController
             self?.favoritesViewController = navigationViewController.topViewController as! FavoritesViewController
             
-            self?.favoritesViewController.addTicker(_tickers![indexPath.row])
+            self?.favoritesViewController.baseImageUrl = self?.baseImageUrl
+            self?.favoritesViewController.addTicker(ticker!)
         })
         
         return [favoriteRowAction]
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
+            headerView.setName(section == 0 ?  "Coin" : "Token")
+            return headerView
+        }
+        return UIView()
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let _tickers = self.searchActive && self.filteredTickers.count > 0 ? self.filteredTickers : self.tickers
+        
+        if showCoinOnly && _tickers.filter({ !$0.isToken }).count == 0 {
+            return 0
+        }
+        
+        return super.tableView(tableView, heightForHeaderInSection: section)
     }
 }
 
@@ -237,7 +331,7 @@ extension PricesViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let lowercasedSearchText = searchText.lowercased()
         filteredTickers = tickers.filter({
-            return $0.lowercased().range(of: lowercasedSearchText) != nil
+            return $0.fullName.lowercased().range(of: lowercasedSearchText) != nil
         })
         
         if(filteredTickers.count == 0){
@@ -256,8 +350,10 @@ extension PricesViewController: SettingsViewControllerDelegate {
         Log.v("Click Cancel button")
     }
     
-    func settingsViewController(_ viewController: SettingsViewController, didSelectTokenOnly isOnlyToken: Bool) {
-        Log.v("Select ShowTokenOnly switch \(isOnlyToken)")
+    func settingsViewController(_ viewController: SettingsViewController, didSelectTokenOnly isOnlyCoin: Bool) {
+        showCoinOnly = isOnlyCoin
+        self.tableView.reloadData()
+        Log.v("Select ShowTokenOnly switch \(isOnlyCoin)")
     }
     
     func settingsViewController(_ viewController: SettingsViewController, didSaveMyFavorites isSaveMyFavorites: Bool) {

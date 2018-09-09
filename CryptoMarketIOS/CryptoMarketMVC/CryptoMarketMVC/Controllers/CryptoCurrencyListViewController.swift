@@ -15,7 +15,8 @@ class CryptoCurrencyListViewController: UIViewController, SFSafariViewController
     var expandedIndexPaths: Set<IndexPath> = []
     var expandViewController: ExpandViewController?
     
-    var tickers = [String]()
+    var tickers = [Ticker]()
+    var baseImageUrl: String!
     
     var cellIdentifier = "CurrencyCell2"
     
@@ -55,11 +56,16 @@ extension CryptoCurrencyListViewController: UITableViewDataSource {
         return tickers.count
     }
     
-    func _tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath, with ticker: String) -> UITableViewCell {
+    func _tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath, with ticker: Ticker) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! CurrencyCell
         
+        cell.selectionStyle = .none
+        cell.setCoinImage(ticker.imageUrl, with: baseImageUrl)
+        cell.setName(ticker.fullName)
+        cell.setPrice((ticker.quotes["USD"]?.price)!)
+        cell.setChange((ticker.quotes["USD"]?.percentChange24h)!)
+        
         cell.setWithExpand(self.expandedIndexPaths.contains(indexPath))
-        cell.setName(ticker)
         
         if self.expandedIndexPaths.contains(indexPath) {
             self.expandViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ExpandViewController") as? ExpandViewController
@@ -102,12 +108,12 @@ extension CryptoCurrencyListViewController: UITableViewDelegate {
         return UIView()
     }
     
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
-    }
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 44
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

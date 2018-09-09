@@ -22,6 +22,9 @@ class SettingsViewController: UITableViewController {
     }
     
     weak var delegate: SettingsViewControllerDelegate!
+    
+    @IBOutlet weak var showCoinOnlySwitch: UISwitch!
+    var showCoinOnly: Bool!
 
     @IBAction func selectDatasource(_ sender: UISegmentedControl) {
         let selectedSegmentIndex = sender.selectedSegmentIndex
@@ -50,11 +53,7 @@ class SettingsViewController: UITableViewController {
         let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeButtonPressed(_:)))
         self.navigationItem.leftBarButtonItem = closeButton
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        showCoinOnlySwitch.isOn = showCoinOnly
     }
 
     override func didReceiveMemoryWarning() {

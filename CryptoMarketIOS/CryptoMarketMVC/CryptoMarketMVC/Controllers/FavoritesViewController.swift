@@ -9,8 +9,8 @@
 import UIKit
 
 class FavoritesViewController: CryptoCurrencyListViewController {
-    func addTicker(_ ticker: String) {
-        if self.tickers.contains(where: { $0 == ticker }) {
+    func addTicker(_ ticker: Ticker) {
+        if self.tickers.contains(where: { $0.id == ticker.id }) {
             return
         }
         

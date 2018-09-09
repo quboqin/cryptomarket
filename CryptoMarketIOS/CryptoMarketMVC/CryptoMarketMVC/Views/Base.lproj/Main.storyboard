@@ -125,9 +125,12 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="changeLabel" destination="4GE-ac-z3z" id="293-0c-Q4o"/>
+                                            <outlet property="coinImageView" destination="9hK-eq-RgZ" id="baA-L5-X6m"/>
                                             <outlet property="embeddedView" destination="bWI-W6-Uxp" id="w2N-tS-LhK"/>
                                             <outlet property="expandViewHeightConstraint" destination="SVX-Gu-b6V" id="hFs-ov-3hV"/>
                                             <outlet property="nameLabel" destination="wPC-HD-Ioa" id="a6a-dz-auW"/>
+                                            <outlet property="priceLabel" destination="ctS-v8-Iff" id="DLE-IH-3iZ"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -270,8 +273,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show Token Only" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k89-js-Lz5">
-                                                    <rect key="frame" x="16" y="12" width="132" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show Coin Only" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k89-js-Lz5">
+                                                    <rect key="frame" x="16" y="12" width="121" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -342,6 +345,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Settings" id="l0d-I2-gqZ"/>
+                    <connections>
+                        <outlet property="showCoinOnlySwitch" destination="Of3-aW-w5T" id="74B-OC-8SC"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="m4k-de-Dvw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -461,9 +467,12 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="changeLabel" destination="dXj-Az-6qt" id="cKw-Sf-E48"/>
+                                            <outlet property="coinImageView" destination="rdp-BM-5Mk" id="kIB-0c-iYh"/>
                                             <outlet property="embeddedView" destination="hl0-oB-lMn" id="wYL-sA-QnW"/>
                                             <outlet property="expandViewHeightConstraint" destination="Tee-VU-h2n" id="4Kr-Lc-xvB"/>
                                             <outlet property="nameLabel" destination="Gc4-ci-peH" id="vuU-e5-Ew9"/>
+                                            <outlet property="priceLabel" destination="kL4-Lw-7ju" id="TtL-5d-hmH"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

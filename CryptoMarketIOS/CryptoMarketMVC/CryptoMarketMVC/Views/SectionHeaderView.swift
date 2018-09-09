@@ -31,6 +31,12 @@ class SectionHeaderView: UIView {
     
     weak var delegate: SectionHeaderViewDelegate?
     
+    @IBOutlet weak var nameLableInSectionHeader: UILabel!
+    
+    func setName(_ name: String) {
+        nameLableInSectionHeader.text = name
+    }
+    
     @objc private func tapLabel(sender: UITapGestureRecognizer) {
         let whichOne = sender.view?.tag
         delegate?.sectionHeaderView(self, tap: SortBy(index: whichOne!)!)

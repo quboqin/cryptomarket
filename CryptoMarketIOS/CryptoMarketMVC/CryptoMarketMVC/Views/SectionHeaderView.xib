@@ -85,6 +85,7 @@
             <connections>
                 <outlet property="changeContainView" destination="Vxy-4f-QTO" id="Gg4-VK-ZEX"/>
                 <outlet property="nameContainView" destination="BDD-sa-cFG" id="igT-ou-il9"/>
+                <outlet property="nameLableInSectionHeader" destination="aSA-2z-hid" id="o6N-so-6FZ"/>
                 <outlet property="priceContainView" destination="qOb-EN-YuO" id="pjB-wC-ECh"/>
             </connections>
             <point key="canvasLocation" x="-304.5" y="-566"/>
