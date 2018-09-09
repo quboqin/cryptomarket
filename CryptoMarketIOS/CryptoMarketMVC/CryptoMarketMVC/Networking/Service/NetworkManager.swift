@@ -106,8 +106,8 @@ class NetworkManager<EndPoint: EndPointType> {
     }
 }
 
-class CoinMartetNetworkManager: NetworkManager<CoinMarketAPI> {
-    static let shared = CoinMartetNetworkManager()
+class CoinMarketNetworkManager: NetworkManager<CoinMarketAPI> {
+    static let shared = CoinMarketNetworkManager()
     
     private init() {
         super.init(Router<CoinMarketAPI>())
