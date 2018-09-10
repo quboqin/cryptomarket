@@ -10,18 +10,30 @@ import UIKit
 
 enum SortBy {
     case name
+    case nameDesc
     case price
+    case priceDesc
     case change
+    case changeDesc
     
     init?(index: Int) {
         switch index {
         case 0: self = .name
-        case 1: self = .price
-        case 2: self = .change
+        case 1: self = .nameDesc
+        case 2: self = .price
+        case 3: self = .priceDesc
+        case 4: self = .change
+        case 5: self = .changeDesc
         default:
             self = .name
         }
     }
+}
+
+enum WhichHeader {
+    case coin
+    case token
+    case favorite
 }
 
 class SectionHeaderView: UIView {
@@ -39,7 +51,7 @@ class SectionHeaderView: UIView {
     
     @objc private func tapLabel(sender: UITapGestureRecognizer) {
         let whichOne = sender.view?.tag
-        delegate?.sectionHeaderView(self, tap: SortBy(index: whichOne!)!)
+        delegate?.sectionHeaderView(self, tap: whichOne!)
     }
     
     override func awakeFromNib() {
@@ -57,5 +69,5 @@ class SectionHeaderView: UIView {
 }
 
 protocol SectionHeaderViewDelegate: class {
-    func sectionHeaderView(_ sectionHeaderView: SectionHeaderView, tap sortBy: SortBy)
+    func sectionHeaderView(_ sectionHeaderView: SectionHeaderView, tap sortBy: Int)
 }

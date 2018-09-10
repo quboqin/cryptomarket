@@ -18,6 +18,9 @@ class CryptoCurrencyListViewController: UIViewController, SFSafariViewController
     var tickers = [Ticker]()
     var baseImageUrl: String!
     
+    var sortedBy = SortBy.name
+    var whichHeader = WhichHeader.coin
+    
     var cellIdentifier = "CurrencyCell2"
     
     @IBAction func presentSafariViewController(_ sender: Any) {
@@ -48,6 +51,23 @@ class CryptoCurrencyListViewController: UIViewController, SFSafariViewController
 }
 
 extension CryptoCurrencyListViewController: UITableViewDataSource {
+    func sortTickers(_ tickers: [Ticker]) -> [Ticker] {
+        switch sortedBy {
+        case .name:
+            return tickers.sorted { $0.fullName < $1.fullName }
+        case .nameDesc:
+            return tickers.sorted { $0.fullName > $1.fullName }
+        case .change:
+            return tickers.sorted { $0.quotes["USD"]!.percentChange24h < $1.quotes["USD"]!.percentChange24h }
+        case .changeDesc:
+            return tickers.sorted { $0.quotes["USD"]!.percentChange24h > $1.quotes["USD"]!.percentChange24h }
+        case .price:
+            return tickers.sorted { $0.quotes["USD"]!.price < $1.quotes["USD"]!.price }
+        case .priceDesc:
+            return tickers.sorted { $0.quotes["USD"]!.price > $1.quotes["USD"]!.price }
+        }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -90,7 +110,10 @@ extension CryptoCurrencyListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let ticker = tickers[indexPath.row]
+        var ticker = tickers[indexPath.row]
+        if whichHeader == .favorite {
+            ticker = sortTickers(tickers)[indexPath.row]
+        }
         
         return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
     }
@@ -101,6 +124,10 @@ extension CryptoCurrencyListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let sectionHeaderView = UINib(nibName: "SectionHeaderView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? SectionHeaderView
         if let headerView = sectionHeaderView {
+            headerView.nameContainView.tag = 20
+            headerView.priceContainView.tag = 21
+            headerView.changeContainView.tag = 22
+            
             headerView.delegate = self
             headerView.backgroundColor = .groupTableViewBackground
             return headerView
@@ -145,7 +172,41 @@ extension CryptoCurrencyListViewController: UITableViewDelegate {
 }
 
 extension CryptoCurrencyListViewController: SectionHeaderViewDelegate {
-    func sectionHeaderView(_ sectionHeaderView: SectionHeaderView, tap sortBy: SortBy) {
+    func sectionHeaderView(_ sectionHeaderView: SectionHeaderView, tap sortBy: Int) {
+        var _sortBy = sortBy
+        if sortBy >= 20 {
+            self.whichHeader = .favorite
+            _sortBy -= 20
+        } else if sortBy >= 10 {
+            self.whichHeader = .token
+            _sortBy -= 10
+        } else {
+            self.whichHeader = .coin
+        }
+        
+        switch _sortBy {
+        case 0:
+            if self.sortedBy == .nameDesc {
+                self.sortedBy = .name
+            } else {
+                self.sortedBy = .nameDesc
+            }
+        case 1:
+            if self.sortedBy == .priceDesc {
+                self.sortedBy = .price
+            } else {
+                self.sortedBy = .priceDesc
+            }
+        case 2:
+            if self.sortedBy == .changeDesc {
+                self.sortedBy = .change
+            } else {
+                self.sortedBy = .changeDesc
+            }
+        default:
+            self.sortedBy = .name
+        }
+        self.tableView.reloadData()
         Log.d("Tap \(sortBy)")
     }
 }

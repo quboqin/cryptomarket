@@ -158,9 +158,9 @@ class PricesViewController: CryptoCurrencyListViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let _tickers = searchActive && filteredTickers.count > 0 ? filteredTickers : tickers
         
-        let ticker = showCoinOnly ? _tickers.filter({ !$0.isToken })[indexPath.row]
-            : (indexPath.section == 0 ? _tickers.filter({ !$0.isToken })[indexPath.row]
-                : _tickers.filter({ $0.isToken })[indexPath.row])
+        let ticker = showCoinOnly ? (whichHeader == .coin ? sortTickers(_tickers.filter({ !$0.isToken }))[indexPath.row] : _tickers.filter({ !$0.isToken })[indexPath.row])
+            : (indexPath.section == 0 ? (whichHeader == .coin ? sortTickers(_tickers.filter({ !$0.isToken }))[indexPath.row] : _tickers.filter({ !$0.isToken })[indexPath.row])
+                : (whichHeader == .token ? sortTickers(_tickers.filter({ $0.isToken }))[indexPath.row] : _tickers.filter({ $0.isToken })[indexPath.row]))
         
         return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
     }
@@ -212,6 +212,15 @@ extension PricesViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
             headerView.setName(section == 0 ?  "Coin" : "Token")
+            if section == 0 {
+                headerView.nameContainView.tag = 0
+                headerView.priceContainView.tag = 1
+                headerView.changeContainView.tag = 2
+            } else {
+                headerView.nameContainView.tag = 10
+                headerView.priceContainView.tag = 11
+                headerView.changeContainView.tag = 12
+            }
             return headerView
         }
         return UIView()
