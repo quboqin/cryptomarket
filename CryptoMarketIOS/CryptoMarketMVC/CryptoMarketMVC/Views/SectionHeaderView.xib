@@ -25,7 +25,7 @@
                             <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort_down" translatesAutoresizingMaskIntoConstraints="NO" id="fN5-za-yNt">
+                        <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort_down" translatesAutoresizingMaskIntoConstraints="NO" id="fN5-za-yNt">
                             <rect key="frame" x="37.5" y="0.0" width="24" height="24.5"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="24" id="OrT-Yx-eAd"/>
@@ -37,13 +37,13 @@
                 <stackView opaque="NO" tag="1" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="qOb-EN-YuO">
                     <rect key="frame" x="227" y="10" width="58" height="24.5"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Price" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ym-qv-QTR">
+                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Price" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ym-qv-QTR">
                             <rect key="frame" x="0.0" y="1.5" width="34" height="21.5"/>
                             <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="15"/>
                             <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort_down" translatesAutoresizingMaskIntoConstraints="NO" id="WJo-gK-xhz">
+                        <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort_down" translatesAutoresizingMaskIntoConstraints="NO" id="WJo-gK-xhz">
                             <rect key="frame" x="34" y="0.0" width="24" height="24.5"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="24" id="WgG-nr-tJz"/>
@@ -55,13 +55,13 @@
                 <stackView opaque="NO" tag="2" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Vxy-4f-QTO">
                     <rect key="frame" x="303.5" y="10" width="63.5" height="24.5"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ8-nJ-JpX">
+                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ8-nJ-JpX">
                             <rect key="frame" x="0.0" y="4" width="39.5" height="17"/>
                             <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="12"/>
                             <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort_down" translatesAutoresizingMaskIntoConstraints="NO" id="H7M-k6-bjl">
+                        <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort_down" translatesAutoresizingMaskIntoConstraints="NO" id="H7M-k6-bjl">
                             <rect key="frame" x="39.5" y="0.0" width="24" height="24.5"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="24" id="Mjf-94-Vig"/>
@@ -84,9 +84,12 @@
             <viewLayoutGuide key="safeArea" id="YiQ-C4-CR4"/>
             <connections>
                 <outlet property="changeContainView" destination="Vxy-4f-QTO" id="Gg4-VK-ZEX"/>
+                <outlet property="changeSortingImage" destination="H7M-k6-bjl" id="RaM-fU-5R6"/>
                 <outlet property="nameContainView" destination="BDD-sa-cFG" id="igT-ou-il9"/>
                 <outlet property="nameLableInSectionHeader" destination="aSA-2z-hid" id="o6N-so-6FZ"/>
+                <outlet property="nameSortingImage" destination="fN5-za-yNt" id="HuI-3s-Hbd"/>
                 <outlet property="priceContainView" destination="qOb-EN-YuO" id="pjB-wC-ECh"/>
+                <outlet property="priceSortingImage" destination="WJo-gK-xhz" id="FLI-Ec-GYZ"/>
             </connections>
             <point key="canvasLocation" x="-304.5" y="-566"/>
         </view>

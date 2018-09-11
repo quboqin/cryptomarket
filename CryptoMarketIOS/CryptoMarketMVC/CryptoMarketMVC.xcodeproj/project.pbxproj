@@ -231,8 +231,8 @@
 			children = (
 				ED7636782131F63D000592F4 /* CryptoCurrencyListViewController.swift */,
 				ED7636B72134CE95000592F4 /* PricesViewController.swift */,
-				ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */,
 				ED76367A2131F63D000592F4 /* FavoritesViewController.swift */,
+				ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */,
 				ED7636AD213203A2000592F4 /* SettingsViewController.swift */,
 				ED7636B3213300B2000592F4 /* DetailViewController.swift */,
 				ED7636B52133012C000592F4 /* ExpandViewController.swift */,

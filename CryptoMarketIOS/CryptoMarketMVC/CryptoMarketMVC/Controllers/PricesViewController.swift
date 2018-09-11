@@ -15,11 +15,15 @@ class PricesViewController: CryptoCurrencyListViewController {
     @IBOutlet weak var headerHeightConstraint: NSLayoutConstraint!
     
     var favoritesViewController: FavoritesViewController!
+    
     @IBOutlet weak var searchBar: UISearchBar!
-    var filteredTickers = [Ticker]()
+    var lowercasedSearchText: String!
     var searchActive: Bool = false
     
     var showCoinOnly = false
+
+    var coinSectionHeaderView: SectionHeaderView?
+    var tokenSectionHeaderView: SectionHeaderView?
     
     let refreshControl = UIRefreshControl()
     
@@ -43,11 +47,6 @@ class PricesViewController: CryptoCurrencyListViewController {
         self.globalLabel.layer.add(transformAnimation, forKey: #keyPath(CALayer.transform))
         
         CATransaction.commit()
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
     }
 
     @objc
@@ -128,41 +127,9 @@ class PricesViewController: CryptoCurrencyListViewController {
 
         // Do any additional setup after loading the view.
         setupUI()
-        // FIXME: You need to call [self.view layoutIfNeeded] to fix it in iOS 10.
+        // FIXME: You need to call [self.view layoutIfNeeded] to fix it in iOS 10 to make refreshControl refresh when the view controller is loading.
         self.view.layoutIfNeeded()
         reloadData()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        let _tickers = searchActive && filteredTickers.count > 0 ? filteredTickers : tickers
-        
-        if _tickers.count == 0 {
-            return 0
-        }
-        return showCoinOnly ? 1 : 2
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let _tickers = searchActive && filteredTickers.count > 0 ? filteredTickers : tickers
-        
-        return showCoinOnly ? _tickers.filter({ !$0.isToken }).count
-            : (section == 0 ? _tickers.filter({ !$0.isToken }).count
-                : _tickers.filter({ $0.isToken }).count)
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let _tickers = searchActive && filteredTickers.count > 0 ? filteredTickers : tickers
-        
-        let ticker = showCoinOnly ? (whichHeader == .coin ? sortTickers(_tickers.filter({ !$0.isToken }))[indexPath.row] : _tickers.filter({ !$0.isToken })[indexPath.row])
-            : (indexPath.section == 0 ? (whichHeader == .coin ? sortTickers(_tickers.filter({ !$0.isToken }))[indexPath.row] : _tickers.filter({ !$0.isToken })[indexPath.row])
-                : (whichHeader == .token ? sortTickers(_tickers.filter({ $0.isToken }))[indexPath.row] : _tickers.filter({ $0.isToken })[indexPath.row]))
-        
-        return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -176,28 +143,47 @@ class PricesViewController: CryptoCurrencyListViewController {
             settingsViewController.delegate = self
         }
     }
-}
 
-extension PricesViewController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController,
-                             presenting: UIViewController,
-                             source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PresentTransitionController()
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
     }
     
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return DismissTransitionController()
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        let _tickers = tickers.filter(BySearch: self.lowercasedSearchText)
+
+        if _tickers.count == 0 {
+            return 0
+        }
+        return showCoinOnly ? 1 : 2
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let _sorted = self.sectionSortedArray[section]
+        let _tickers = tickers.milter(filterBy: self.lowercasedSearchText,
+                                      separatedBy: Section(section: section),
+                                      sortedBy: _sorted)
+        return _tickers.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let _sorted = self.sectionSortedArray[indexPath.section]
+        let _tickers = tickers.milter(filterBy: self.lowercasedSearchText,
+                                      separatedBy: Section(section: indexPath.section),
+                                      sortedBy: _sorted)
+        let ticker = _tickers[indexPath.row]
+    
+        return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
     }
 }
 
-extension PricesViewController {
+extension PricesViewController {    
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Favorite", handler:{ [weak self] action, indexpath in
-            let _tickers = (self?.searchActive)! && (self?.filteredTickers.count)! > 0 ? self?.filteredTickers : self?.tickers
-            
-            let ticker = (self?.showCoinOnly)! ? _tickers?.filter({ !$0.isToken })[indexPath.row]
-                : (indexPath.section == 0 ? _tickers?.filter({ !$0.isToken })[indexPath.row]
-                    : _tickers?.filter({ $0.isToken })[indexPath.row])
+            let _sorted = self?.sectionSortedArray[indexPath.section]
+            let ticker = self?.tickers.milter(filterBy: self?.lowercasedSearchText,
+                                              separatedBy: Section(section: indexPath.section),
+                                              sortedBy: _sorted!)[indexPath.row]
             
             let navigationViewController = self?.tabBarController?.viewControllers![1] as! UINavigationController
             self?.favoritesViewController = navigationViewController.topViewController as! FavoritesViewController
@@ -210,30 +196,46 @@ extension PricesViewController {
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
-            headerView.setName(section == 0 ?  "Coin" : "Token")
-            if section == 0 {
-                headerView.nameContainView.tag = 0
-                headerView.priceContainView.tag = 1
-                headerView.changeContainView.tag = 2
-            } else {
-                headerView.nameContainView.tag = 10
-                headerView.priceContainView.tag = 11
-                headerView.changeContainView.tag = 12
+        if section == 0 && self.coinSectionHeaderView == nil || section == 1 && self.tokenSectionHeaderView == nil {
+            if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
+                headerView.setName(section == 0 ?  "Coin" : "Token")
+                if section == 0 {
+                    headerView.tag = Section.coin.hashValue
+                    self.coinSectionHeaderView = headerView
+                } else {
+                    headerView.tag = Section.token.hashValue
+                    self.tokenSectionHeaderView = headerView
+                }
+                return headerView
             }
-            return headerView
+            return self.coinSectionHeaderView
+        } else if section == 0 {
+            return self.coinSectionHeaderView
+        } else {
+            return self.tokenSectionHeaderView
         }
-        return UIView()
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let _tickers = self.searchActive && self.filteredTickers.count > 0 ? self.filteredTickers : self.tickers
-        
-        if showCoinOnly && _tickers.filter({ !$0.isToken }).count == 0 {
+        if tickers.milter(filterBy: self.lowercasedSearchText,
+                          separatedBy: Section(section: section),
+                          sortedBy: self.sectionSortedArray[section]).count == 0 {
             return 0
         }
         
         return super.tableView(tableView, heightForHeaderInSection: section)
+    }
+}
+
+extension PricesViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController,
+                             presenting: UIViewController,
+                             source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return PresentTransitionController()
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return DismissTransitionController()
     }
 }
 
@@ -338,20 +340,18 @@ extension PricesViewController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        let lowercasedSearchText = searchText.lowercased()
-        filteredTickers = tickers.filter({
-            return $0.fullName.lowercased().range(of: lowercasedSearchText) != nil
+        self.lowercasedSearchText = searchText.lowercased()
+        let filteredTickers = tickers.filter({
+            return $0.fullName.lowercased().range(of: self.lowercasedSearchText) != nil
         })
         
         if(filteredTickers.count == 0){
-            searchActive = false;
+            searchActive = false
         } else {
-            searchActive = true;
+            searchActive = true
         }
-        
         self.tableView.reloadData()
     }
-    
 }
 
 extension PricesViewController: SettingsViewControllerDelegate {

@@ -9,7 +9,7 @@
 import UIKit
 import SafariServices
 
-class CryptoCurrencyListViewController: UIViewController, SFSafariViewControllerDelegate {
+class CryptoCurrencyListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var expandedIndexPaths: Set<IndexPath> = []
@@ -18,9 +18,9 @@ class CryptoCurrencyListViewController: UIViewController, SFSafariViewController
     var tickers = [Ticker]()
     var baseImageUrl: String!
     
-    var sortedBy = SortBy.name
-    var whichHeader = WhichHeader.coin
+    var sectionSortedArray = [Sorting.none, Sorting.none, Sorting.none]
     
+    var sectionHeaderView: SectionHeaderView?
     var cellIdentifier = "CurrencyCell2"
     
     @IBAction func presentSafariViewController(_ sender: Any) {
@@ -30,10 +30,6 @@ class CryptoCurrencyListViewController: UIViewController, SFSafariViewController
             
             present(vc, animated: true)
         }
-    }
-    
-    private func safariViewControllerDidFinish(_ controller: DetailViewController) {
-        dismiss(animated: true)
     }
     
     override func viewDidLoad() {
@@ -47,33 +43,20 @@ class CryptoCurrencyListViewController: UIViewController, SFSafariViewController
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 }
 
 extension CryptoCurrencyListViewController: UITableViewDataSource {
-    func sortTickers(_ tickers: [Ticker]) -> [Ticker] {
-        switch sortedBy {
-        case .name:
-            return tickers.sorted { $0.fullName < $1.fullName }
-        case .nameDesc:
-            return tickers.sorted { $0.fullName > $1.fullName }
-        case .change:
-            return tickers.sorted { $0.quotes["USD"]!.percentChange24h < $1.quotes["USD"]!.percentChange24h }
-        case .changeDesc:
-            return tickers.sorted { $0.quotes["USD"]!.percentChange24h > $1.quotes["USD"]!.percentChange24h }
-        case .price:
-            return tickers.sorted { $0.quotes["USD"]!.price < $1.quotes["USD"]!.price }
-        case .priceDesc:
-            return tickers.sorted { $0.quotes["USD"]!.price > $1.quotes["USD"]!.price }
-        }
-    }
-    
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return 0
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tickers.count
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! CurrencyCell
+        return cell
     }
     
     func _tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath, with ticker: Ticker) -> UITableViewCell {
@@ -109,27 +92,20 @@ extension CryptoCurrencyListViewController: UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var ticker = tickers[indexPath.row]
-        if whichHeader == .favorite {
-            ticker = sortTickers(tickers)[indexPath.row]
-        }
-        
-        return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return !self.expandedIndexPaths.contains(indexPath as IndexPath)
     }
-
 }
 
 extension CryptoCurrencyListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionHeaderView = UINib(nibName: "SectionHeaderView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? SectionHeaderView
-        if let headerView = sectionHeaderView {
-            headerView.nameContainView.tag = 20
-            headerView.priceContainView.tag = 21
-            headerView.changeContainView.tag = 22
-            
+        if self.sectionHeaderView == nil {
+            self.sectionHeaderView = UINib(nibName: "SectionHeaderView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? SectionHeaderView
+        }
+        if let headerView = self.sectionHeaderView {
             headerView.delegate = self
             headerView.backgroundColor = .groupTableViewBackground
+            self.sectionHeaderView = nil
             return headerView
         }
         return UIView()
@@ -171,43 +147,102 @@ extension CryptoCurrencyListViewController: UITableViewDelegate {
     }
 }
 
+extension CryptoCurrencyListViewController: SFSafariViewControllerDelegate {
+    private func safariViewControllerDidFinish(_ controller: DetailViewController) {
+        dismiss(animated: true)
+    }
+}
+
 extension CryptoCurrencyListViewController: SectionHeaderViewDelegate {
-    func sectionHeaderView(_ sectionHeaderView: SectionHeaderView, tap sortBy: Int) {
-        var _sortBy = sortBy
-        if sortBy >= 20 {
-            self.whichHeader = .favorite
-            _sortBy -= 20
-        } else if sortBy >= 10 {
-            self.whichHeader = .token
-            _sortBy -= 10
-        } else {
-            self.whichHeader = .coin
-        }
-        
-        switch _sortBy {
+    func sectionHeaderView(_ sectionHeaderView: SectionHeaderView, tap whichCol: Int) {
+        var _sorted = sectionSortedArray[sectionHeaderView.tag]
+
+        switch whichCol {
         case 0:
-            if self.sortedBy == .nameDesc {
-                self.sortedBy = .name
+            if _sorted == .nameDesc || _sorted == .none {
+                _sorted = .name
             } else {
-                self.sortedBy = .nameDesc
+                _sorted = .nameDesc
             }
         case 1:
-            if self.sortedBy == .priceDesc {
-                self.sortedBy = .price
+            if _sorted == .priceDesc {
+                _sorted = .price
             } else {
-                self.sortedBy = .priceDesc
+                _sorted = .priceDesc
             }
         case 2:
-            if self.sortedBy == .changeDesc {
-                self.sortedBy = .change
+            if _sorted == .changeDesc {
+                _sorted = .change
             } else {
-                self.sortedBy = .changeDesc
+                _sorted = .changeDesc
             }
         default:
-            self.sortedBy = .name
+            return
         }
-        self.tableView.reloadData()
-        Log.d("Tap \(sortBy)")
+        
+        sectionSortedArray[sectionHeaderView.tag] = _sorted
+    
+        var sectionToReload = sectionHeaderView.tag
+        if sectionToReload == Section.favorite.hashValue {
+            sectionToReload = 0
+        }
+        let indexSet: IndexSet = [sectionToReload]
+        self.tableView.reloadSections(indexSet, with: .automatic)
+
+        Log.d("Tap \(whichCol)")
+    }
+}
+
+extension Array where Element == Ticker {
+    func filter(BySearch searchText: String?) -> [Ticker] {
+        var filterTickers = [Ticker]()
+        if let lowcasedSearchText = searchText?.lowercased() {
+            filterTickers = self.filter { $0.fullName.lowercased().range(of: lowcasedSearchText) != nil }
+        }
+        if filterTickers.count == 0 {
+            filterTickers = self
+        }
+        return filterTickers
+    }
+    
+    func milter(filterBy searchText: String?, separatedBy section: Section, sortedBy condition: Sorting) -> [Ticker] {
+        var filterTickers = [Ticker]()
+        filterTickers = filter(BySearch: searchText)
+        
+        filterTickers = filterTickers.filter {
+            switch section {
+            case .coin:
+                return !$0.isToken
+            case .token:
+                return $0.isToken
+            default:
+                return true
+            }
+        }
+        
+        if condition == .none {
+            return filterTickers
+        }
+        filterTickers = filterTickers.sorted {
+            switch condition {
+            case .name:
+                return $0.fullName < $1.fullName
+            case .nameDesc:
+                return $0.fullName > $1.fullName
+            case .change:
+                return $0.quotes["USD"]!.percentChange24h < $1.quotes["USD"]!.percentChange24h
+            case .changeDesc:
+                return $0.quotes["USD"]!.percentChange24h > $1.quotes["USD"]!.percentChange24h
+            case .price:
+                return $0.quotes["USD"]!.price < $1.quotes["USD"]!.price
+            case .priceDesc:
+                return $0.quotes["USD"]!.price > $1.quotes["USD"]!.price
+            default:
+                return $0.fullName < $1.fullName
+            }
+        }
+        
+        return filterTickers
     }
 }
 

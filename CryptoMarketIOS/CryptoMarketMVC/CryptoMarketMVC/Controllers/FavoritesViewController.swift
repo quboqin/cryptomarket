@@ -9,6 +9,8 @@
 import UIKit
 
 class FavoritesViewController: CryptoCurrencyListViewController {
+    var favoriteSectionHeaderView: SectionHeaderView?
+    
     func addTicker(_ ticker: Ticker) {
         if self.tickers.contains(where: { $0.id == ticker.id }) {
             return
@@ -25,12 +27,36 @@ class FavoritesViewController: CryptoCurrencyListViewController {
 }
 
 extension FavoritesViewController {
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {        
         let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Remove", handler:{ [weak self] action, indexpath in
             self?.tickers.remove(at: indexPath.row)
             self?.tableView.reloadData()
         })
 
         return [favoriteRowAction]
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if self.favoriteSectionHeaderView == nil {
+            if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
+                headerView.tag = Section.favorite.hashValue
+                self.favoriteSectionHeaderView = headerView
+                return headerView
+            }
+        }
+        return self.favoriteSectionHeaderView
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tickers.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let ticker = tickers.milter(filterBy: nil, separatedBy: Section.favorite, sortedBy: self.sectionSortedArray[2])[indexPath.row]
+        return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
     }
 }
