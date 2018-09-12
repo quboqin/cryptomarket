@@ -94,6 +94,8 @@
 		EDD4B479214882B800D8E297 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = Carthage/Build/iOS/Charts.framework; sourceTree = "<group>"; };
 		EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentModel.swift; sourceTree = "<group>"; };
 		EDD4B47E2148CA4300D8E297 /* kLineSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kLineSource.swift; sourceTree = "<group>"; };
+		EDD4B4802148D50A00D8E297 /* coin.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = coin.css; path = ../../../../../../../Desktop/coin.css; sourceTree = "<group>"; };
+		EDD4B4812148D50A00D8E297 /* coin.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = coin.html; path = ../../../../../../../Desktop/coin.html; sourceTree = "<group>"; };
 		EDD89F502141DA890031EA10 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../../../../swiftlogger/SwiftLogger/Debug/Logger.swift; sourceTree = "<group>"; };
 		EDD89F5421421BE80031EA10 /* ParameterEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterEncoder.swift; sourceTree = "<group>"; };
 		EDD89F5521421BE80031EA10 /* Signature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
@@ -253,6 +255,8 @@
 		ED7636AA2131F8CE000592F4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				EDD4B4802148D50A00D8E297 /* coin.css */,
+				EDD4B4812148D50A00D8E297 /* coin.html */,
 				ED76367F2131F63F000592F4 /* Assets.xcassets */,
 				ED7636812131F63F000592F4 /* LaunchScreen.storyboard */,
 			);
