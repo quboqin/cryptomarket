@@ -11,8 +11,11 @@ import UIKit
 protocol SettingsViewControllerDelegate: class {
     func settingsViewController(_ viewController: SettingsViewController, didSelectTokenOnly isOnlyToken: Bool)
     func settingsViewController(_ viewController: SettingsViewController, didSaveMyFavorites isSaveMyFavorites: Bool)
-    func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource)
     func settingsViewControllerDidCancel(_ viewController: SettingsViewController)
+}
+
+protocol SettingsViewControllerKLineDelegate: class {
+    func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource)
 }
 
 class SettingsViewController: UITableViewController {
@@ -22,6 +25,10 @@ class SettingsViewController: UITableViewController {
     }
     
     weak var delegate: SettingsViewControllerDelegate!
+    weak var kLineDelegate: SettingsViewControllerKLineDelegate?
+    
+    @IBOutlet weak var dataSourceSegment: UISegmentedControl!
+    var dataSource: DataSource!
     
     @IBOutlet weak var showCoinOnlySwitch: UISwitch!
     var showCoinOnly: Bool!
@@ -29,9 +36,9 @@ class SettingsViewController: UITableViewController {
     @IBAction func selectDatasource(_ sender: UISegmentedControl) {
         let selectedSegmentIndex = sender.selectedSegmentIndex
         if selectedSegmentIndex == DataSource.cryptoCompare.hashValue {
-            delegate.settingsViewController(self, didSelectDataSource: DataSource.cryptoCompare)
+            kLineDelegate?.settingsViewController(self, didSelectDataSource: DataSource.cryptoCompare)
         } else {
-            delegate.settingsViewController(self, didSelectDataSource: DataSource.houbi)
+            kLineDelegate?.settingsViewController(self, didSelectDataSource: DataSource.houbi)
         }
     }
     
@@ -53,6 +60,7 @@ class SettingsViewController: UITableViewController {
         let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeButtonPressed(_:)))
         self.navigationItem.leftBarButtonItem = closeButton
 
+        dataSourceSegment.selectedSegmentIndex = dataSource.hashValue
         showCoinOnlySwitch.isOn = showCoinOnly
     }
 
@@ -60,6 +68,4 @@ class SettingsViewController: UITableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
 }

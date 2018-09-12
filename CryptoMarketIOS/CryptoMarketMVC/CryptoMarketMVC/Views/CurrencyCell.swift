@@ -18,6 +18,8 @@ class CurrencyCell: UITableViewCell {
     @IBOutlet weak var priceLabel: UILabel!
     @IBOutlet weak var changeLabel: UILabel!
     
+    @IBOutlet weak var volume24hLabel: UILabel!
+    
 //    var expandViewHeightConstraintPriority: Float = 999
     
     override func awakeFromNib() {
@@ -61,6 +63,10 @@ class CurrencyCell: UITableViewCell {
     
     func setName(_ name: String) {
         nameLabel.text = name
+    }
+    
+    func setVolume24h(_ volume24h: Double) {
+        volume24hLabel.text = String(format: "%.2f", volume24h)
     }
     
     func setPrice(_ price: Double) {

@@ -138,9 +138,11 @@ class PricesViewController: CryptoCurrencyListViewController {
         
         if let navigationController = segue.destination as? SettingsNavigationController,
             let settingsViewController = navigationController.viewControllers.first as? SettingsViewController {
-            
+    
             settingsViewController.showCoinOnly = showCoinOnly
             settingsViewController.delegate = self
+            settingsViewController.kLineDelegate = self.expandViewController
+            settingsViewController.dataSource = self.expandViewController?.dataSource
         }
     }
 
@@ -367,9 +369,5 @@ extension PricesViewController: SettingsViewControllerDelegate {
     
     func settingsViewController(_ viewController: SettingsViewController, didSaveMyFavorites isSaveMyFavorites: Bool) {
         Log.v("Select SaveMyFavorites switch \(isSaveMyFavorites)")
-    }
-    
-    func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource) {
-        Log.v("Select kLine Datasource \(dataSource)")
     }
 }

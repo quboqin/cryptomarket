@@ -23,13 +23,17 @@ class CryptoCurrencyListViewController: UIViewController {
     var sectionHeaderView: SectionHeaderView?
     var cellIdentifier = "CurrencyCell2"
     
+    var currentUrlString: String?
+    
     @IBAction func presentSafariViewController(_ sender: Any) {
-        if let url = URL(string: "http://google.com") {
-            let vc = DetailViewController(url: url)
-            vc.delegate = self
-            
-            present(vc, animated: true)
+        guard let urlString = currentUrlString,
+              let url = URL(string: urlString) else {
+            return
         }
+        
+        let vc = DetailViewController(url: url)
+        vc.delegate = self
+        present(vc, animated: true)
     }
     
     override func viewDidLoad() {
@@ -67,6 +71,9 @@ extension CryptoCurrencyListViewController: UITableViewDataSource {
         cell.setName(ticker.fullName)
         cell.setPrice((ticker.quotes["USD"]?.price)!)
         cell.setChange((ticker.quotes["USD"]?.percentChange24h)!)
+        cell.setVolume24h((ticker.quotes["USD"]?.volume24h)!)
+        
+        self.currentUrlString = baseImageUrl + ticker.url
         
         cell.setWithExpand(self.expandedIndexPaths.contains(indexPath))
         
@@ -86,6 +93,8 @@ extension CryptoCurrencyListViewController: UITableViewDataSource {
                     ])
 
                 expandViewController.didMove(toParentViewController: self)
+                
+                expandViewController.symbol = ticker.symbol
             }
         }
         
