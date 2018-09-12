@@ -147,7 +147,6 @@ class PricesViewController: CryptoCurrencyListViewController {
             
             if let expandViewController = self.expandViewController {
                 settingsViewController.kLineDelegate = expandViewController
-                settingsViewController.dataSource = expandViewController.dataSource
             }
         }
     }
@@ -357,6 +356,7 @@ extension PricesViewController: UISearchBarDelegate {
             searchActive = false
         } else {
             searchActive = true
+            self.expandedIndexPaths.removeAll()
         }
         self.tableView.reloadData()
     }

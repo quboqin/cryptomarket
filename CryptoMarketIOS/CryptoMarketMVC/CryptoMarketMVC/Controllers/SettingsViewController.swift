@@ -32,18 +32,14 @@ class SettingsViewController: UITableViewController {
     weak var favoriteDelegate: SettingsViewControllerFavoriteDelegate?
     
     @IBOutlet weak var dataSourceSegment: UISegmentedControl!
-    var dataSource: DataSource = .cryptoCompare
     
     @IBOutlet weak var showCoinOnlySwitch: UISwitch!
     var showCoinOnly: Bool!
 
     @IBAction func selectDatasource(_ sender: UISegmentedControl) {
         let selectedSegmentIndex = sender.selectedSegmentIndex
-        if selectedSegmentIndex == DataSource.cryptoCompare.hashValue {
-            kLineDelegate?.settingsViewController(self, didSelectDataSource: DataSource.cryptoCompare)
-        } else {
-            kLineDelegate?.settingsViewController(self, didSelectDataSource: DataSource.houbi)
-        }
+        KLineSource.shared.dataSource = DataSource(source: selectedSegmentIndex)
+        kLineDelegate?.settingsViewController(self, didSelectDataSource: KLineSource.shared.dataSource)
     }
     
     @IBAction func showTokenOnly(_ sender: UISwitch) {
@@ -52,7 +48,6 @@ class SettingsViewController: UITableViewController {
     
     @IBAction func clearMyFavorites(_ sender: UIButton) {
         favoriteDelegate?.settingsViewController(self, didRemoveMyFavorites: true)
-     
     }
     
     override func viewDidLoad() {
@@ -61,7 +56,7 @@ class SettingsViewController: UITableViewController {
         let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeButtonPressed(_:)))
         self.navigationItem.leftBarButtonItem = closeButton
 
-        dataSourceSegment.selectedSegmentIndex = dataSource.hashValue
+        dataSourceSegment.selectedSegmentIndex = KLineSource.shared.dataSource.hashValue
         showCoinOnlySwitch.isOn = showCoinOnly
     }
 

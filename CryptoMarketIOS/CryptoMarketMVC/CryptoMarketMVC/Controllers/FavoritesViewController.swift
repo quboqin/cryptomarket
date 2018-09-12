@@ -116,6 +116,10 @@ extension FavoritesViewController {
             self.baseImageUrl = savedTickers.baseImageUrl
             let _savedTickers = savedTickers.data
             _savedTickers.forEach {
+                let _ticker = $0
+                if self.tickers.contains(where: { $0.id == _ticker.id }) {
+                    return
+                }
                 self.tickers.append(Ticker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, isToken: false, fullName: $0.fullName, url: "", imageUrl: $0.imageUrl))
             }
         } catch {
