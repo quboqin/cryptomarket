@@ -90,18 +90,21 @@ enum Option {
 enum DataSource {
     case cryptoCompare
     case houbi
+    
+    init(source: Int) {
+        switch source {
+        case 0: self = .cryptoCompare
+        case 1: self = .houbi
+        default:
+            self = .cryptoCompare
+        }
+    }
 }
 
 class ExpandViewController: UIViewController, ChartViewDelegate {
     @IBOutlet weak var chartView: CandleStickChartView!
     
     fileprivate var histoHourVolumes = [OHLCV]()
-
-    var dataSource: DataSource  = .cryptoCompare {
-        didSet {
-            reloadData()
-        }
-    }
     
     var symbol: String = "BTC" {
         didSet {
@@ -146,7 +149,7 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
     }
     
     func reloadData() {
-        if dataSource == DataSource.cryptoCompare {
+        if KLineSource.shared.dataSource == DataSource.cryptoCompare {
             let cryptoCompareNetworkManager = CryptoCompareNetworkManager.shared
             _ = cryptoCompareNetworkManager.getDataFromEndPoint(.histohour(fsym: symbol, tsym: "USD", limit: 11), type: HistoHourResponse.self) { [weak self]
                 (data, error) in
@@ -240,6 +243,6 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
 extension ExpandViewController: SettingsViewControllerKLineDelegate {
     func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource) {
         Log.v("Select kLine Datasource \(dataSource)")
-        self.dataSource = dataSource
+        self.reloadData()
     }
 }

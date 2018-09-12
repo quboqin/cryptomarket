@@ -51,17 +51,15 @@ extension ListingsResponse: Decodable {
 }
 
 //MARK: Ticker
-struct Quote {
+struct Quote: Codable {
     var price: Double
     var volume24h: Double
     var marketCap: Double
     var percentChange1h: Double
     var percentChange24h: Double
     var percentChange7d: Double
-}
-
-extension Quote: Decodable {
-    private enum QUOTECodingKeys: String, CodingKey {
+    
+    enum CodingKeys: String, CodingKey {
         case price
         case volume24h = "volume_24h"
         case marketCap = "market_cap"
@@ -69,9 +67,11 @@ extension Quote: Decodable {
         case percentChange24h = "percent_change_24h"
         case percentChange7d = "percent_change_7d"
     }
-    
+}
+
+extension Quote {
     init(from decoder: Decoder) throws {
-        let QUOTEContainer = try decoder.container(keyedBy: QUOTECodingKeys.self)
+        let QUOTEContainer = try decoder.container(keyedBy: CodingKeys.self)
         
         price = try QUOTEContainer.decode(Double.self, forKey: .price)
         volume24h = (try? QUOTEContainer.decode(Double.self, forKey: .volume24h)) ?? 0
@@ -82,7 +82,7 @@ extension Quote: Decodable {
     }
 }
 
-struct Ticker {
+struct Ticker: Codable {
     var id: UInt
     var name: String
     var symbol: String
@@ -98,10 +98,8 @@ struct Ticker {
     var fullName: String
     var url: String
     var imageUrl: String
-}
-
-extension Ticker: Decodable {
-    private enum TicketCodingKeys: String, CodingKey {
+    
+    enum CodingKeys: String, CodingKey {
         case id
         case name
         case symbol
@@ -112,10 +110,14 @@ extension Ticker: Decodable {
         case maxSupply = "max_supply"
         case quotes
         case lastUpdated = "last_updated"
+        case fullName
+        case imageUrl
     }
-    
+}
+
+extension Ticker {
     init(from decoder: Decoder) throws {
-        let ticketContainer = try decoder.container(keyedBy: TicketCodingKeys.self)
+        let ticketContainer = try decoder.container(keyedBy: CodingKeys.self)
         
         id = try ticketContainer.decode(UInt.self, forKey: .id)
         name = try ticketContainer.decode(String.self, forKey: .name)
