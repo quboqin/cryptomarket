@@ -10,12 +10,12 @@ import XCTest
 @testable import CryptoMarketMVC
 
 class CoinMarketEndPointsTests: XCTestCase {
-    var coinMarketNetworkManager: CoinMartetNetworkManager!
+    var coinMarketNetworkManager: CoinMarketNetworkManager!
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        coinMarketNetworkManager = CoinMartetNetworkManager.shared
+        coinMarketNetworkManager = CoinMarketNetworkManager.shared
     }
     
     override func tearDown() {

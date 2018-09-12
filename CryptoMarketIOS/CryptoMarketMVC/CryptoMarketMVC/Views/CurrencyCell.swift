@@ -14,6 +14,11 @@ class CurrencyCell: UITableViewCell {
     @IBOutlet weak var embeddedView: UIView!
     
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var coinImageView: UIImageView!
+    @IBOutlet weak var priceLabel: UILabel!
+    @IBOutlet weak var changeLabel: UILabel!
+    
+    @IBOutlet weak var volume24hLabel: UILabel!
     
 //    var expandViewHeightConstraintPriority: Float = 999
     
@@ -30,8 +35,46 @@ class CurrencyCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    fileprivate func getDataFromUrl(url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            completion(data, response, error)
+            }.resume()
+    }
+    
+    fileprivate func downloadImage(url: URL) {
+        getDataFromUrl(url: url) { data, response, error in
+            guard let data = data, error == nil else { return }
+            DispatchQueue.main.async() {
+                self.coinImageView.image = UIImage(data: data)
+            }
+        }
+    }
+    
+    func  setCoinImage(_ name: String, with baseImageUrl: String) {
+        if name.isEmpty {
+            coinImageView.image = UIImage(named: "btc.png")
+            return
+        }
+        if let url = URL(string: baseImageUrl + name) {
+            coinImageView.image = nil
+            downloadImage(url: url)
+        }
+    }
+    
     func setName(_ name: String) {
         nameLabel.text = name
+    }
+    
+    func setVolume24h(_ volume24h: Double) {
+        volume24hLabel.text = String(format: "%.2f", volume24h)
+    }
+    
+    func setPrice(_ price: Double) {
+        priceLabel.text = "$" + String(format: "%.2f", price)
+    }
+    
+    func setChange(_ change: Double) {
+        changeLabel.text = String(format: "%0.2f", change) + "%"
     }
     
     func setWithExpand(_ withExpand: Bool) {
@@ -55,17 +98,12 @@ class CurrencyCell: UITableViewCell {
     }
     
     override func updateConstraints() {
-        Log.v("Begin")
         super.updateConstraints()
-        Log.v("End")
         
 //        self.expandViewHeightConstraint.priority = UILayoutPriority(rawValue: self.expandViewHeightConstraintPriority)
     }
     
     override func layoutSubviews() {
-        Log.v("Begin")
         super.layoutSubviews()
-        Log.v("End")
     }
-
 }

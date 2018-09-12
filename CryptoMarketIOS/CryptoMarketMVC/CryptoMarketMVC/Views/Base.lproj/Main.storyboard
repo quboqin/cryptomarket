@@ -85,9 +85,9 @@
                                                             </connections>
                                                         </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XCS-EY-EdS">
-                                                            <rect key="frame" x="8" y="8" width="77" height="12"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <nil key="textColor"/>
+                                                            <rect key="frame" x="8" y="8" width="69.5" height="12"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bWI-W6-Uxp" userLabel="EmbeddedView">
@@ -125,9 +125,13 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="changeLabel" destination="4GE-ac-z3z" id="293-0c-Q4o"/>
+                                            <outlet property="coinImageView" destination="9hK-eq-RgZ" id="baA-L5-X6m"/>
                                             <outlet property="embeddedView" destination="bWI-W6-Uxp" id="w2N-tS-LhK"/>
                                             <outlet property="expandViewHeightConstraint" destination="SVX-Gu-b6V" id="hFs-ov-3hV"/>
                                             <outlet property="nameLabel" destination="wPC-HD-Ioa" id="a6a-dz-auW"/>
+                                            <outlet property="priceLabel" destination="ctS-v8-Iff" id="DLE-IH-3iZ"/>
+                                            <outlet property="volume24hLabel" destination="XCS-EY-EdS" id="6ad-Zl-rqc"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -270,8 +274,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show Token Only" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k89-js-Lz5">
-                                                    <rect key="frame" x="16" y="12" width="132" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show Coin Only" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k89-js-Lz5">
+                                                    <rect key="frame" x="16" y="12" width="121" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -342,6 +346,10 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Settings" id="l0d-I2-gqZ"/>
+                    <connections>
+                        <outlet property="dataSourceSegment" destination="yGd-Fa-W0V" id="nIT-nY-hSZ"/>
+                        <outlet property="showCoinOnlySwitch" destination="Of3-aW-w5T" id="74B-OC-8SC"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="m4k-de-Dvw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -421,9 +429,9 @@
                                                             </connections>
                                                         </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ivO-NF-DKg">
-                                                            <rect key="frame" x="8" y="8" width="77" height="12"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <nil key="textColor"/>
+                                                            <rect key="frame" x="8" y="8" width="69.5" height="12"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hl0-oB-lMn" userLabel="EmbeddedView">
@@ -461,9 +469,13 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="changeLabel" destination="dXj-Az-6qt" id="cKw-Sf-E48"/>
+                                            <outlet property="coinImageView" destination="rdp-BM-5Mk" id="kIB-0c-iYh"/>
                                             <outlet property="embeddedView" destination="hl0-oB-lMn" id="wYL-sA-QnW"/>
                                             <outlet property="expandViewHeightConstraint" destination="Tee-VU-h2n" id="4Kr-Lc-xvB"/>
                                             <outlet property="nameLabel" destination="Gc4-ci-peH" id="vuU-e5-Ew9"/>
+                                            <outlet property="priceLabel" destination="kL4-Lw-7ju" id="TtL-5d-hmH"/>
+                                            <outlet property="volume24hLabel" destination="ivO-NF-DKg" id="DG6-bb-jg4"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -498,9 +510,24 @@
                     <view key="view" contentMode="scaleToFill" id="TGl-yN-OH7">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qa4-hr-VeW" customClass="CandleStickChartView" customModule="Charts">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Qa4-hr-VeW" firstAttribute="leading" secondItem="Ih9-T4-7rt" secondAttribute="leading" id="1M2-kM-cTY"/>
+                            <constraint firstItem="Ih9-T4-7rt" firstAttribute="bottom" secondItem="Qa4-hr-VeW" secondAttribute="bottom" id="WFc-cx-eBO"/>
+                            <constraint firstItem="Qa4-hr-VeW" firstAttribute="top" secondItem="Ih9-T4-7rt" secondAttribute="top" id="ket-aw-hhn"/>
+                            <constraint firstItem="Ih9-T4-7rt" firstAttribute="trailing" secondItem="Qa4-hr-VeW" secondAttribute="trailing" id="qj7-YR-srZ"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="Ih9-T4-7rt"/>
                     </view>
+                    <connections>
+                        <outlet property="chartView" destination="Qa4-hr-VeW" id="7dM-iR-VC3"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YGb-Lo-epx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
