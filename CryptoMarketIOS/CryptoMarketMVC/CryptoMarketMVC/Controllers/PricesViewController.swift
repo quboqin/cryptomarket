@@ -141,8 +141,14 @@ class PricesViewController: CryptoCurrencyListViewController {
     
             settingsViewController.showCoinOnly = showCoinOnly
             settingsViewController.delegate = self
-            settingsViewController.kLineDelegate = self.expandViewController
-            settingsViewController.dataSource = self.expandViewController?.dataSource
+            if let favoriteViewController = self.favoritesViewController {
+                settingsViewController.favoriteDelegate = favoriteViewController
+            }
+            
+            if let expandViewController = self.expandViewController {
+                settingsViewController.kLineDelegate = expandViewController
+                settingsViewController.dataSource = expandViewController.dataSource
+            }
         }
     }
 
@@ -365,9 +371,5 @@ extension PricesViewController: SettingsViewControllerDelegate {
         showCoinOnly = isOnlyCoin
         self.tableView.reloadData()
         Log.v("Select ShowTokenOnly switch \(isOnlyCoin)")
-    }
-    
-    func settingsViewController(_ viewController: SettingsViewController, didSaveMyFavorites isSaveMyFavorites: Bool) {
-        Log.v("Select SaveMyFavorites switch \(isSaveMyFavorites)")
     }
 }

@@ -10,12 +10,15 @@ import UIKit
 
 protocol SettingsViewControllerDelegate: class {
     func settingsViewController(_ viewController: SettingsViewController, didSelectTokenOnly isOnlyToken: Bool)
-    func settingsViewController(_ viewController: SettingsViewController, didSaveMyFavorites isSaveMyFavorites: Bool)
     func settingsViewControllerDidCancel(_ viewController: SettingsViewController)
 }
 
 protocol SettingsViewControllerKLineDelegate: class {
     func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource)
+}
+
+protocol SettingsViewControllerFavoriteDelegate: class {
+    func settingsViewController(_ viewController: SettingsViewController, didRemoveMyFavorites isRemoveMyFavorites: Bool)
 }
 
 class SettingsViewController: UITableViewController {
@@ -26,9 +29,10 @@ class SettingsViewController: UITableViewController {
     
     weak var delegate: SettingsViewControllerDelegate!
     weak var kLineDelegate: SettingsViewControllerKLineDelegate?
+    weak var favoriteDelegate: SettingsViewControllerFavoriteDelegate?
     
     @IBOutlet weak var dataSourceSegment: UISegmentedControl!
-    var dataSource: DataSource!
+    var dataSource: DataSource = .cryptoCompare
     
     @IBOutlet weak var showCoinOnlySwitch: UISwitch!
     var showCoinOnly: Bool!
@@ -47,11 +51,8 @@ class SettingsViewController: UITableViewController {
     }
     
     @IBAction func clearMyFavorites(_ sender: UIButton) {
-        Log.v("Clean my favorites")
-    }
-    
-    @IBAction func saveMyFavorites(_ sender: UISwitch) {
-        delegate.settingsViewController(self, didSaveMyFavorites: sender.isOn)
+        favoriteDelegate?.settingsViewController(self, didRemoveMyFavorites: true)
+     
     }
     
     override func viewDidLoad() {
