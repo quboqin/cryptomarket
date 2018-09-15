@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RxSwift
 
 // MARK: NetworkEnvironment
 struct NetworkEnvironment {
@@ -59,6 +60,27 @@ class NetworkManager<EndPoint: EndPointType> {
         default:
             return .failed
         }
+    }
+    
+    func getDataFromEndPointRx<T: Decodable>(_ endPoint: EndPoint,
+                             type: T.Type) -> Observable<T> {
+        return Observable<T>.create({ observer in
+            let taskKey = self.getDataFromEndPoint(endPoint, type: type) {
+                (data, error) in
+                if error != nil {
+                    observer.onError(error!)
+                    return
+                }
+                
+                if let _data = data as? T {
+                    observer.onNext(_data)
+                }
+            }
+            
+            return Disposables.create {
+                self.cancelRequestWithUniqueKey(taskKey)
+            }
+        })
     }
     
     func getDataFromEndPoint<T: Decodable>(_ endPoint: EndPoint,

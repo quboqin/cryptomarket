@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class PricesViewController: CryptoCurrencyListViewController {
     let maxHeaderHeight: CGFloat = 88;
@@ -26,6 +28,8 @@ class PricesViewController: CryptoCurrencyListViewController {
     var tokenSectionHeaderView: SectionHeaderView?
     
     let refreshControl = UIRefreshControl()
+
+    let disposeBag = DisposeBag()
     
     @IBOutlet weak var globalLabel: UILabel!
     
@@ -67,7 +71,7 @@ class PricesViewController: CryptoCurrencyListViewController {
                 self?.baseImageUrl = coinListResponse.baseImageUrl
                 let coins = [Coin](coinListResponse.data.values)
                 
-                _ = coinMarketNetworkManager.getDataFromEndPoint(.ticker(start: 1, limit: 60, sort: "id", structure: "array", convert: "BTC"), type: TickersResponse.self, networkManagerCompletion: { [weak self]
+                _ = coinMarketNetworkManager.getDataFromEndPoint(.ticker(start: 1, limit: 60, sort: "id", structure: "array", convert: "BTC"), type: TickersResponse.self) { [weak self]
                     (data, error) in
                     if error != nil {
                         self?.refreshControl.endRefreshing()
@@ -94,7 +98,7 @@ class PricesViewController: CryptoCurrencyListViewController {
                         self?.tableView.reloadData()
                     }
                     self?.refreshControl.endRefreshing()
-                })
+                }
             }
             self?.refreshControl.endRefreshing()
         }
@@ -113,11 +117,85 @@ class PricesViewController: CryptoCurrencyListViewController {
         }
     }
     
+    func bindingTableView(_ tickers: Observable<[Ticker]>) {
+        tickers.bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: CurrencyCell.self)) { [weak self] (row, ticker, cell) in
+            cell.selectionStyle = .none
+            cell.setCoinImage(ticker.imageUrl, with: (self?.baseImageUrl)!)
+            cell.setName(ticker.fullName)
+            cell.setPrice((ticker.quotes["USD"]?.price)!)
+            cell.setChange((ticker.quotes["USD"]?.percentChange24h)!)
+            cell.setVolume24h((ticker.quotes["USD"]?.volume24h)!)
+            
+            self?.currentUrlString = (self?.baseImageUrl)! + ticker.url
+        }.disposed(by: disposeBag)
+        
+        tableView.rx
+            .setDelegate(self)
+            .disposed(by: disposeBag)
+    }
+    
+    override func setupBinding() {
+        let reload = refreshControl.rx.controlEvent(.allEvents).asObservable()
+
+        let coinsRx = PublishSubject<[Coin]>()
+        // FIXME: the Variable type has a initial value, if one of the http request return, the combine will be emitted!
+//        let coins Rx = Variable<Coin>([])
+        
+        let tickersRx = PublishSubject<[Ticker]>()
+
+        reload
+            .flatMap { () -> Observable<CoinListResponse> in
+                return CryptoCompareNetworkManager.shared.getDataFromEndPointRx(.coinlist, type: CoinListResponse.self)
+            }
+            .map({ [weak self] (coinListResponse) -> [String : Coin] in
+                self?.baseImageUrl = coinListResponse.baseImageUrl
+                return coinListResponse.data
+            })
+            .map({
+                return [Coin]($0.values)
+            })
+            .bind(to: coinsRx)
+            .disposed(by: disposeBag)
+        
+        reload
+            .flatMap { () -> Observable<TickersResponse> in
+                return CoinMarketNetworkManager.shared.getDataFromEndPointRx(.ticker(start: 1, limit: 60, sort: "id", structure: "array", convert: "BTC"), type: TickersResponse.self)
+            }
+            .map({ (tickersResponse) -> [Ticker] in
+                return tickersResponse.data
+            })
+            .bind(to: tickersRx)
+            .disposed(by: disposeBag)
+
+        let _tickers = Observable.combineLatest(tickersRx.asObservable(), coinsRx.asObservable()) { tickers, coins in
+            return tickers.map({ (ticker) -> Ticker in
+                var _ticker = ticker
+                if let coin = coins.first(where: {$0.symbol == ticker.symbol}) {
+                    _ticker.fullName = coin.fullName
+                    _ticker.imageUrl = coin.imageUrl
+                    _ticker.url = coin.url
+                    if coin.builtOn != "N/A" {
+                        _ticker.isToken = true
+                    } else {
+                        _ticker.isToken = false
+                    }
+                } else {
+                    _ticker.fullName = ticker.symbol
+                }
+                return _ticker
+            })
+        }
+        .do(onNext: { [weak self] _ in self?.refreshControl.endRefreshing() })
+
+        bindingTableView(_tickers)
+        
+        refreshControl.beginRefreshing()
+        refreshControl.sendActions(for: .valueChanged)
+    }
+    
     private func setupUI() {
         tableView.tableFooterView = UIView()
-        
         tableView.insertSubview(refreshControl, at: 0)
-        refreshControl.addTarget(self, action: #selector(PricesViewController.reloadData), for: .valueChanged)
         
         cellIdentifier = "CurrencyCell1"
     }
@@ -129,7 +207,8 @@ class PricesViewController: CryptoCurrencyListViewController {
         setupUI()
         // FIXME: You need to call [self.view layoutIfNeeded] to fix it in iOS 10 to make refreshControl refresh when the view controller is loading.
         self.view.layoutIfNeeded()
-        reloadData()
+//        reloadData()
+        setupBinding()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

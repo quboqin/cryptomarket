@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import RxSwift
 
 class CryptoCurrencyListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
@@ -24,6 +25,9 @@ class CryptoCurrencyListViewController: UIViewController {
     var cellIdentifier = "CurrencyCell2"
     
     var currentUrlString: String?
+    
+    func setupBinding() {
+    }
     
     @IBAction func presentSafariViewController(_ sender: Any) {
         guard let urlString = currentUrlString,
