@@ -186,8 +186,27 @@ class PricesViewController: CryptoCurrencyListViewController {
             })
         }
         .do(onNext: { [weak self] _ in self?.refreshControl.endRefreshing() })
+        
+        let searchBehaviorSubject = BehaviorSubject<String>(value: "")
+        
+        searchBar.rx.text
+            .orEmpty
+            .debounce(0.5, scheduler: MainScheduler.instance)
+            .bind(to: searchBehaviorSubject)
+            .disposed(by: disposeBag)
+        
+        let __tickers = Observable.combineLatest(_tickers.asObservable(), searchBehaviorSubject.asObserver()) {
+            (tickers, search) -> [Ticker] in
+            let lowcasedSearch = search.lowercased()
+            return tickers.filter {
+                if lowcasedSearch == "" {
+                    return true
+                }
+                return $0.fullName.lowercased().range(of: lowcasedSearch) != nil
+            }
+        }
 
-        bindingTableView(_tickers)
+        bindingTableView(__tickers)
         
         refreshControl.beginRefreshing()
         refreshControl.sendActions(for: .valueChanged)
