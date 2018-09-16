@@ -16,8 +16,7 @@ class CryptoCurrencyListViewController: UIViewController {
     
     var expandedIndexPaths: Set<IndexPath> = []
     var expandViewController: ExpandViewController?
-    
-    var tickers = [Ticker]()
+
     var baseImageUrl: String!
     
     var sectionHeaderView: SectionHeaderView?
@@ -87,16 +86,64 @@ class CryptoCurrencyListViewController: UIViewController {
                 cell.setVolume24h((item.quotes["USD"]?.volume24h)!)
                 
                 self.currentUrlString = (self.baseImageUrl)! + item.url
+                
+                cell.setWithExpand(self.expandedIndexPaths.contains(indexPath))
+                
+                if self.expandedIndexPaths.contains(indexPath) {
+                    self.expandViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ExpandViewController") as? ExpandViewController
+                    if let expandViewController = self.expandViewController {
+                        self.addChildViewController(expandViewController)
+                        cell.embeddedView.addSubview(expandViewController.view)
+                        
+                        expandViewController.view.translatesAutoresizingMaskIntoConstraints = false
+                        
+                        NSLayoutConstraint.activate([
+                            expandViewController.view.leadingAnchor.constraint(equalTo: cell.embeddedView.leadingAnchor),
+                            expandViewController.view.trailingAnchor.constraint(equalTo: cell.embeddedView.trailingAnchor),
+                            expandViewController.view.topAnchor.constraint(equalTo: cell.embeddedView.topAnchor),
+                            expandViewController.view.bottomAnchor.constraint(equalTo: cell.embeddedView.bottomAnchor)
+                            ])
+                        
+                        expandViewController.didMove(toParentViewController: self)
+                        
+                        expandViewController.symbol = item.symbol
+                    }
+                }
+                
                 return cell
         })
         
         dataSource?.canEditRowAtIndexPath = { dataSource, indexPath in
-            return true
+            return !self.expandedIndexPaths.contains(indexPath as IndexPath)
         }
         
         tableView.rx
             .setDelegate(self)
             .disposed(by: disposeBag)
+        
+        tableView.rx.itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                var indexPaths = [IndexPath]()
+                
+                if(self?.expandedIndexPaths.contains(indexPath))! {
+                    self?.expandedIndexPaths.remove(indexPath)
+                    
+                    self?.expandViewController?.willMove(toParentViewController: self)
+                    self?.expandViewController?.view.removeFromSuperview()
+                    self?.expandViewController?.removeFromParentViewController()
+                    self?.expandViewController = nil
+                    
+                } else {
+                    if (self?.expandedIndexPaths.count)! > 0 {
+                        indexPaths.append((self?.expandedIndexPaths.removeFirst())!)
+                    }
+                    self?.expandedIndexPaths.insert(indexPath)
+                }
+                indexPaths.append(indexPath)
+                
+                self?.tableView.reloadRows(at: indexPaths, with: .automatic)
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }).disposed(by: disposeBag)
     }
     
     func setupUI() {
@@ -128,48 +175,6 @@ extension CryptoCurrencyListViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! CurrencyCell
         return cell
     }
-    
-    func _tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath, with ticker: Ticker) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! CurrencyCell
-        
-        cell.selectionStyle = .none
-        cell.setCoinImage(ticker.imageUrl, with: baseImageUrl)
-        cell.setName(ticker.fullName)
-        cell.setPrice((ticker.quotes["USD"]?.price)!)
-        cell.setChange((ticker.quotes["USD"]?.percentChange24h)!)
-        cell.setVolume24h((ticker.quotes["USD"]?.volume24h)!)
-        
-        self.currentUrlString = baseImageUrl + ticker.url
-        
-        cell.setWithExpand(self.expandedIndexPaths.contains(indexPath))
-        
-        if self.expandedIndexPaths.contains(indexPath) {
-            self.expandViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ExpandViewController") as? ExpandViewController
-            if let expandViewController = self.expandViewController {
-                self.addChildViewController(expandViewController)
-                cell.embeddedView.addSubview(expandViewController.view)
-
-                expandViewController.view.translatesAutoresizingMaskIntoConstraints = false
-
-                NSLayoutConstraint.activate([
-                    expandViewController.view.leadingAnchor.constraint(equalTo: cell.embeddedView.leadingAnchor),
-                    expandViewController.view.trailingAnchor.constraint(equalTo: cell.embeddedView.trailingAnchor),
-                    expandViewController.view.topAnchor.constraint(equalTo: cell.embeddedView.topAnchor),
-                    expandViewController.view.bottomAnchor.constraint(equalTo: cell.embeddedView.bottomAnchor)
-                    ])
-
-                expandViewController.didMove(toParentViewController: self)
-                
-                expandViewController.symbol = ticker.symbol
-            }
-        }
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return !self.expandedIndexPaths.contains(indexPath as IndexPath)
-    }
 }
 
 extension CryptoCurrencyListViewController: UITableViewDelegate {
@@ -183,33 +188,6 @@ extension CryptoCurrencyListViewController: UITableViewDelegate {
             return headerView
         }
         return UIView()
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 44
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var indexPaths = [IndexPath]()
-        
-        if(self.expandedIndexPaths.contains(indexPath)) {
-            self.expandedIndexPaths.remove(indexPath)
-            
-            expandViewController?.willMove(toParentViewController: self)
-            expandViewController?.view.removeFromSuperview()
-            expandViewController?.removeFromParentViewController()
-            self.expandViewController = nil
-            
-        } else {
-            if self.expandedIndexPaths.count > 0 {
-                indexPaths.append(self.expandedIndexPaths.removeFirst())
-            }
-            self.expandedIndexPaths.insert(indexPath)
-        }
-        indexPaths.append(indexPath)
-        
-        tableView.reloadRows(at: indexPaths, with: .automatic)
-        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
 }
 

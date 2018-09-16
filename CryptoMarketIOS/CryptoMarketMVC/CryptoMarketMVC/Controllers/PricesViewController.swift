@@ -195,6 +195,9 @@ class PricesViewController: CryptoCurrencyListViewController {
         self.coinSectionHeaderView?.section = .coin
         self.tokenSectionHeaderView = UINib(nibName: "SectionHeaderView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? SectionHeaderView
         self.tokenSectionHeaderView?.section = .token
+        
+        let navigationViewController = self.tabBarController?.viewControllers![1] as! UINavigationController
+        self.favoritesViewController = navigationViewController.topViewController as! FavoritesViewController
     }
 
     override func viewDidLoad() {
@@ -243,9 +246,6 @@ extension PricesViewController {
                 return
             }
             
-            let navigationViewController = self?.tabBarController?.viewControllers![1] as! UINavigationController
-            self?.favoritesViewController = navigationViewController.topViewController as! FavoritesViewController
-            
             self?.favoritesViewController.baseImageUrl = self?.baseImageUrl
             self?.favoritesViewController.addTicker(ticker)
         })
@@ -272,10 +272,6 @@ extension PricesViewController {
         } else {
             return self.tokenSectionHeaderView
         }
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return super.tableView(tableView, heightForHeaderInSection: section)
     }
 }
 
@@ -368,42 +364,6 @@ extension PricesViewController {
     
     func updateHeader() {
         
-    }
-}
-
-extension PricesViewController: UISearchBarDelegate {
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchActive = true;
-    }
-    
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        searchActive = false;
-        searchBar.endEditing(true)
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchActive = false;
-        searchBar.endEditing(true)
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchActive = false;
-        searchBar.endEditing(true)
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        self.lowercasedSearchText = searchText.lowercased()
-        let filteredTickers = tickers.filter({
-            return $0.fullName.lowercased().range(of: self.lowercasedSearchText) != nil
-        })
-        
-        if(filteredTickers.count == 0){
-            searchActive = false
-        } else {
-            searchActive = true
-            self.expandedIndexPaths.removeAll()
-        }
-        self.tableView.reloadData()
     }
 }
 

@@ -120,9 +120,10 @@ extension FavoritesViewController {
         let encoder = JSONEncoder()
         do {
             var _savedTickers = [SavedTicker]()
-            tickers.forEach {
-                _savedTickers.append(SavedTicker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, fullName: $0.fullName, imageUrl: $0.imageUrl))
+            self.favorietsRx.value.forEach {
+                 _savedTickers.append(SavedTicker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, fullName: $0.fullName, imageUrl: $0.imageUrl))
             }
+
             if _savedTickers.count == 0 {
                 return
             }
@@ -137,16 +138,17 @@ extension FavoritesViewController {
     func getTickersFromDisk() {
         let decoder = JSONDecoder()
         do {
+            self.favorietsRx.value.removeAll()
             let data = try Data(contentsOf: getDocumentsURL(), options: [])
             let savedTickers = try decoder.decode(SavedTickers.self, from: data)
             self.baseImageUrl = savedTickers.baseImageUrl
             let _savedTickers = savedTickers.data
             _savedTickers.forEach {
                 let _ticker = $0
-                if self.tickers.contains(where: { $0.id == _ticker.id }) {
+                if self.favorietsRx.value.contains(where: { $0.id == _ticker.id }) {
                     return
                 }
-                self.tickers.append(Ticker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, isToken: false, fullName: $0.fullName, url: "", imageUrl: $0.imageUrl))
+                self.favorietsRx.value.append(Ticker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, isToken: false, fullName: $0.fullName, url: "", imageUrl: $0.imageUrl))
             }
         } catch {
             Log.e("An error took place: \(error.localizedDescription)")
@@ -158,7 +160,7 @@ extension FavoritesViewController {
         do {
             if fileManager.fileExists(atPath: getDocumentsURL().path) {
                 try fileManager.removeItem(at: getDocumentsURL())
-                self.tickers = [Ticker]()
+                self.favorietsRx.value.removeAll()
             } else {
                 Log.v("File does not exist")
             }
