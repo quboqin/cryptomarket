@@ -48,6 +48,8 @@
 		EDD89F6E21421C190031EA10 /* CoinMarketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F6B21421C190031EA10 /* CoinMarketModel.swift */; };
 		EDD89F6F21421C190031EA10 /* CryptoCompareModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F6C21421C190031EA10 /* CryptoCompareModel.swift */; };
 		EDD89F7021421C190031EA10 /* HuobiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F6D21421C190031EA10 /* HuobiModel.swift */; };
+		EDDA22DF214D76CB00088F48 /* RxDataSources.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDDA22DE214D76CB00088F48 /* RxDataSources.framework */; };
+		EDDA22E1214D7A3600088F48 /* Differentiator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDDA22E0214D7A3600088F48 /* Differentiator.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +120,8 @@
 		EDD89F6C21421C190031EA10 /* CryptoCompareModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CryptoCompareModel.swift; sourceTree = "<group>"; };
 		EDD89F6D21421C190031EA10 /* HuobiModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuobiModel.swift; sourceTree = "<group>"; };
 		EDD89F7121421C4B0031EA10 /* CommonCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommonCrypto.h; sourceTree = "<group>"; };
+		EDDA22DE214D76CB00088F48 /* RxDataSources.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxDataSources.framework; path = Carthage/Build/iOS/RxDataSources.framework; sourceTree = "<group>"; };
+		EDDA22E0214D7A3600088F48 /* Differentiator.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Differentiator.framework; path = Carthage/Build/iOS/Differentiator.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,10 +129,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDDA22E1214D7A3600088F48 /* Differentiator.framework in Frameworks */,
 				EDD4B47A214882B800D8E297 /* Charts.framework in Frameworks */,
 				ED0D4C4D214B13A2009F48BC /* RxSwift.framework in Frameworks */,
 				ED0D4C4F214B13A7009F48BC /* RxCocoa.framework in Frameworks */,
 				ED0D4C51214B13AC009F48BC /* RxBlocking.framework in Frameworks */,
+				EDDA22DF214D76CB00088F48 /* RxDataSources.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,6 +292,8 @@
 		EDD4B478214882B700D8E297 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EDDA22E0214D7A3600088F48 /* Differentiator.framework */,
+				EDDA22DE214D76CB00088F48 /* RxDataSources.framework */,
 				ED0D4C50214B13AC009F48BC /* RxBlocking.framework */,
 				ED0D4C4E214B13A6009F48BC /* RxCocoa.framework */,
 				ED0D4C4C214B13A2009F48BC /* RxSwift.framework */,
@@ -496,12 +504,16 @@
 				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxDataSources.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Differentiator.framework",
 			);
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Charts.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxCocoa.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxBlocking.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxDataSources.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Differentiator.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

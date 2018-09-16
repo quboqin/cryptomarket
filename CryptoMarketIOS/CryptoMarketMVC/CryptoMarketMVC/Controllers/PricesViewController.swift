@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RxDataSources
 
 class PricesViewController: CryptoCurrencyListViewController {
     let maxHeaderHeight: CGFloat = 88;
@@ -118,16 +119,31 @@ class PricesViewController: CryptoCurrencyListViewController {
     }
     
     func bindingTableView(_ tickers: Observable<[Ticker]>) {
-        tickers.bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: CurrencyCell.self)) { [weak self] (row, ticker, cell) in
-            cell.selectionStyle = .none
-            cell.setCoinImage(ticker.imageUrl, with: (self?.baseImageUrl)!)
-            cell.setName(ticker.fullName)
-            cell.setPrice((ticker.quotes["USD"]?.price)!)
-            cell.setChange((ticker.quotes["USD"]?.percentChange24h)!)
-            cell.setVolume24h((ticker.quotes["USD"]?.volume24h)!)
-            
-            self?.currentUrlString = (self?.baseImageUrl)! + ticker.url
-        }.disposed(by: disposeBag)
+        let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>(
+            configureCell: { dataSource, tableView, indexPath, item in
+                let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! CurrencyCell
+                cell.selectionStyle = .none
+                cell.setCoinImage(item.imageUrl, with: (self.baseImageUrl)!)
+                cell.setName(item.fullName)
+                cell.setPrice((item.quotes["USD"]?.price)!)
+                cell.setChange((item.quotes["USD"]?.percentChange24h)!)
+                cell.setVolume24h((item.quotes["USD"]?.volume24h)!)
+    
+                self.currentUrlString = (self.baseImageUrl)! + item.url
+                return cell
+        })
+        
+        tickers
+        .map {
+            return [SectionModel(model: "Coin", items: $0.filter({ return !$0.isToken })),
+                    SectionModel(model: "Token", items: $0.filter({ return $0.isToken }))]
+        }
+        .bind(to: tableView.rx.items(dataSource: dataSource))
+        .disposed(by: disposeBag)
+        
+//        dataSource.titleForHeaderInSection = { dataSource, index in
+//            return dataSource.sectionModels[index].model
+//        }
         
         tableView.rx
             .setDelegate(self)
@@ -321,15 +337,15 @@ extension PricesViewController {
         }
     }
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if tickers.milter(filterBy: self.lowercasedSearchText,
-                          separatedBy: Section(section: section),
-                          sortedBy: self.sectionSortedArray[section]).count == 0 {
-            return 0
-        }
-        
-        return super.tableView(tableView, heightForHeaderInSection: section)
-    }
+//    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        if tickers.milter(filterBy: self.lowercasedSearchText,
+//                          separatedBy: Section(section: section),
+//                          sortedBy: self.sectionSortedArray[section]).count == 0 {
+//            return 0
+//        }
+//
+//        return super.tableView(tableView, heightForHeaderInSection: section)
+//    }
 }
 
 extension PricesViewController: UIViewControllerTransitioningDelegate {
