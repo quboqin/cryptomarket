@@ -1,3 +1,4 @@
 github "ReactiveX/RxSwift" "4.2.0"
 github "RxSwiftCommunity/RxDataSources" "3.0.2"
+github "RxSwiftCommunity/RxGesture" "1.2.1"
 github "danielgindi/Charts" "v3.1.1"

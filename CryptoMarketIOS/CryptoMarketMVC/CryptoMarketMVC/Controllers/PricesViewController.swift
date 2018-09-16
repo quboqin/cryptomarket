@@ -56,53 +56,7 @@ class PricesViewController: CryptoCurrencyListViewController {
 
     @objc
     fileprivate func reloadData() {
-        refreshControl.beginRefreshing()
-        
-        let cryptoCompareNetworkManager = CryptoCompareNetworkManager.shared
         let coinMarketNetworkManager = CoinMarketNetworkManager.shared
-        
-        _ = cryptoCompareNetworkManager.getDataFromEndPoint(.coinlist, type: CoinListResponse.self) { [weak self]
-            (data, error) in
-            if error != nil {
-                self?.refreshControl.endRefreshing()
-                return
-            }
-    
-            if let coinListResponse = data as? CoinListResponse {
-                self?.baseImageUrl = coinListResponse.baseImageUrl
-                let coins = [Coin](coinListResponse.data.values)
-                
-                _ = coinMarketNetworkManager.getDataFromEndPoint(.ticker(start: 1, limit: 60, sort: "id", structure: "array", convert: "BTC"), type: TickersResponse.self) { [weak self]
-                    (data, error) in
-                    if error != nil {
-                        self?.refreshControl.endRefreshing()
-                        return
-                    }
-                    
-                    if let tickersResponse = data as? TickersResponse {
-                        self?.tickers = tickersResponse.data
-                        
-                        for (index, ticker) in (self?.tickers)!.enumerated() {
-                            if let coin = coins.first(where: {$0.symbol == ticker.symbol}) {
-                                self?.tickers[index].fullName = coin.fullName
-                                self?.tickers[index].imageUrl = coin.imageUrl
-                                self?.tickers[index].url = coin.url
-                                if coin.builtOn != "N/A" {
-                                    self?.tickers[index].isToken = true
-                                } else {
-                                    self?.tickers[index].isToken = false
-                                }
-                            } else {
-                                self?.tickers[index].fullName = (self?.tickers[index].symbol)!
-                            }
-                        }
-                        self?.tableView.reloadData()
-                    }
-                    self?.refreshControl.endRefreshing()
-                }
-            }
-            self?.refreshControl.endRefreshing()
-        }
         
         _ = coinMarketNetworkManager.getDataFromEndPoint(.globalData(convert: "USD"), type: GlobalResponse.self) { [weak self]
             (data, error) in
@@ -133,10 +87,70 @@ class PricesViewController: CryptoCurrencyListViewController {
                 return cell
         })
         
-        tickers
+        let coins = tickers.map { (tickers_) -> [Ticker] in
+            return tickers_.filter({ (ticker) -> Bool in
+                return !ticker.isToken
+            })
+        }
+        
+        func sortedBykey(tickers: [Ticker], key: SortOrder) -> [Ticker] {
+            if case SortOrder.ascend(_, let _key) = key {
+                switch _key {
+                case .name:
+                    return tickers.sorted(by: {
+                        $0.fullName < $1.fullName
+                    })
+                case .price:
+                    return tickers.sorted(by: {
+                        $0.quotes["USD"]!.price < $1.quotes["USD"]!.price
+                    })
+                case .change:
+                    return tickers.sorted(by: {
+                        $0.quotes["USD"]!.percentChange24h < $1.quotes["USD"]!.percentChange24h
+                    })
+                }
+            }
+            if case SortOrder.descend(_, let _key) = key {
+                switch _key {
+                case .name:
+                    return tickers.sorted(by: {
+                        $0.fullName > $1.fullName
+                    })
+                case .price:
+                    return tickers.sorted(by: {
+                        $0.quotes["USD"]!.price > $1.quotes["USD"]!.price
+                    })
+                case .change:
+                    return tickers.sorted(by: {
+                        $0.quotes["USD"]!.percentChange24h > $1.quotes["USD"]!.percentChange24h
+                    })
+                }
+            }
+            return tickers
+        }
+        
+        let _coins = Observable.combineLatest(coins.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
+            (tickers_, sort) -> [Ticker] in
+            return sortedBykey(tickers: tickers_, key: sort)
+        }
+        
+        let tokens = tickers.map { (tickers_) -> [Ticker] in
+            return tickers_.filter({ (ticker) -> Bool in
+                return ticker.isToken
+            })
+        }
+        
+        let _tokens = Observable.combineLatest(tokens.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
+            (tickers_, sort) -> [Ticker] in
+            return sortedBykey(tickers: tickers_, key: sort)
+        }
+
+        Observable.combineLatest(_coins, _tokens) {
+            return ($0, $1)
+        }
         .map {
-            return [SectionModel(model: "Coin", items: $0.filter({ return !$0.isToken })),
-                    SectionModel(model: "Token", items: $0.filter({ return $0.isToken }))]
+            return [SectionModel(model: "Coin", items: $0),
+                    SectionModel(model: "Token", items: $1)]
         }
         .bind(to: tableView.rx.items(dataSource: dataSource))
         .disposed(by: disposeBag)
@@ -233,6 +247,11 @@ class PricesViewController: CryptoCurrencyListViewController {
         tableView.insertSubview(refreshControl, at: 0)
         
         cellIdentifier = "CurrencyCell1"
+        
+        self.coinSectionHeaderView = UINib(nibName: "SectionHeaderView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? SectionHeaderView
+        self.coinSectionHeaderView?.section = .coin
+        self.tokenSectionHeaderView = UINib(nibName: "SectionHeaderView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? SectionHeaderView
+        self.tokenSectionHeaderView?.section = .token
     }
 
     override func viewDidLoad() {
@@ -242,8 +261,10 @@ class PricesViewController: CryptoCurrencyListViewController {
         setupUI()
         // FIXME: You need to call [self.view layoutIfNeeded] to fix it in iOS 10 to make refreshControl refresh when the view controller is loading.
         self.view.layoutIfNeeded()
-//        reloadData()
+        
         setupBinding()
+        
+        reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -269,42 +290,12 @@ class PricesViewController: CryptoCurrencyListViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        let _tickers = tickers.filter(BySearch: self.lowercasedSearchText)
-
-        if _tickers.count == 0 {
-            return 0
-        }
-        return showCoinOnly ? 1 : 2
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let _sorted = self.sectionSortedArray[section]
-        let _tickers = tickers.milter(filterBy: self.lowercasedSearchText,
-                                      separatedBy: Section(section: section),
-                                      sortedBy: _sorted)
-        return _tickers.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let _sorted = self.sectionSortedArray[indexPath.section]
-        let _tickers = tickers.milter(filterBy: self.lowercasedSearchText,
-                                      separatedBy: Section(section: indexPath.section),
-                                      sortedBy: _sorted)
-        let ticker = _tickers[indexPath.row]
-    
-        return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
-    }
 }
 
 extension PricesViewController {    
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Favorite", handler:{ [weak self] action, indexpath in
-            let _sorted = self?.sectionSortedArray[indexPath.section]
-            let ticker = self?.tickers.milter(filterBy: self?.lowercasedSearchText,
-                                              separatedBy: Section(section: indexPath.section),
-                                              sortedBy: _sorted!)[indexPath.row]
+            let ticker = self?.tickers[indexPath.row]
             
             let navigationViewController = self?.tabBarController?.viewControllers![1] as! UINavigationController
             self?.favoritesViewController = navigationViewController.topViewController as! FavoritesViewController
@@ -321,10 +312,10 @@ extension PricesViewController {
             if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
                 headerView.setName(section == 0 ?  "Coin" : "Token")
                 if section == 0 {
-                    headerView.tag = Section.coin.hashValue
+                    headerView.section = SortSection.coin
                     self.coinSectionHeaderView = headerView
                 } else {
-                    headerView.tag = Section.token.hashValue
+                    headerView.section = SortSection.token
                     self.tokenSectionHeaderView = headerView
                 }
                 return headerView
@@ -337,15 +328,9 @@ extension PricesViewController {
         }
     }
     
-//    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        if tickers.milter(filterBy: self.lowercasedSearchText,
-//                          separatedBy: Section(section: section),
-//                          sortedBy: self.sectionSortedArray[section]).count == 0 {
-//            return 0
-//        }
-//
-//        return super.tableView(tableView, heightForHeaderInSection: section)
-//    }
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return super.tableView(tableView, heightForHeaderInSection: section)
+    }
 }
 
 extension PricesViewController: UIViewControllerTransitioningDelegate {

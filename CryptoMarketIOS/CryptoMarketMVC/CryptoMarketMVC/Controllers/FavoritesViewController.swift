@@ -51,7 +51,7 @@ extension FavoritesViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if self.favoriteSectionHeaderView == nil {
             if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
-                headerView.tag = Section.favorite.hashValue
+                headerView.section = SortSection.favorite
                 self.favoriteSectionHeaderView = headerView
                 return headerView
             }
@@ -68,7 +68,7 @@ extension FavoritesViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let ticker = tickers.milter(filterBy: nil, separatedBy: Section.favorite, sortedBy: self.sectionSortedArray[2])[indexPath.row]
+        let ticker = tickers[indexPath.row]
         return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
     }
 }
