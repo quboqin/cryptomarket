@@ -30,6 +30,7 @@ class PricesViewController: CryptoCurrencyListViewController {
     
     let refreshControl = UIRefreshControl()
 
+    var dataSource: RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>?
     let disposeBag = DisposeBag()
     
     @IBOutlet weak var globalLabel: UILabel!
@@ -73,7 +74,7 @@ class PricesViewController: CryptoCurrencyListViewController {
     }
     
     func bindingTableView(_ tickers: Observable<[Ticker]>) {
-        let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>(
+        dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>(
             configureCell: { dataSource, tableView, indexPath, item in
                 let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! CurrencyCell
                 cell.selectionStyle = .none
@@ -152,12 +153,15 @@ class PricesViewController: CryptoCurrencyListViewController {
             return [SectionModel(model: "Coin", items: $0),
                     SectionModel(model: "Token", items: $1)]
         }
-        .bind(to: tableView.rx.items(dataSource: dataSource))
+        .bind(to: tableView.rx.items(dataSource: dataSource!))
         .disposed(by: disposeBag)
         
 //        dataSource.titleForHeaderInSection = { dataSource, index in
 //            return dataSource.sectionModels[index].model
 //        }
+        dataSource?.canEditRowAtIndexPath = { dataSource, indexPath in
+            return true
+        }
         
         tableView.rx
             .setDelegate(self)
@@ -295,13 +299,16 @@ class PricesViewController: CryptoCurrencyListViewController {
 extension PricesViewController {    
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Favorite", handler:{ [weak self] action, indexpath in
-            let ticker = self?.tickers[indexPath.row]
+            
+            guard let ticker = self?.dataSource?[indexPath] else {
+                return
+            }
             
             let navigationViewController = self?.tabBarController?.viewControllers![1] as! UINavigationController
             self?.favoritesViewController = navigationViewController.topViewController as! FavoritesViewController
             
             self?.favoritesViewController.baseImageUrl = self?.baseImageUrl
-            self?.favoritesViewController.addTicker(ticker!)
+            self?.favoritesViewController.addTicker(ticker)
         })
         
         return [favoriteRowAction]
