@@ -71,56 +71,6 @@ class PricesViewController: CryptoCurrencyListViewController {
     }
     
     func bindingTableView(_ tickers: Observable<[Ticker]>) {
-        dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>(
-            configureCell: { dataSource, tableView, indexPath, item in
-                let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! CurrencyCell
-                cell.selectionStyle = .none
-                cell.setCoinImage(item.imageUrl, with: (self.baseImageUrl)!)
-                cell.setName(item.fullName)
-                cell.setPrice((item.quotes["USD"]?.price)!)
-                cell.setChange((item.quotes["USD"]?.percentChange24h)!)
-                cell.setVolume24h((item.quotes["USD"]?.volume24h)!)
-    
-                self.currentUrlString = (self.baseImageUrl)! + item.url
-                return cell
-        })
-        
-        func sortedBykey(tickers: [Ticker], key: SortOrder) -> [Ticker] {
-            if case SortOrder.ascend(_, let _key) = key {
-                switch _key {
-                case .name:
-                    return tickers.sorted(by: {
-                        $0.fullName < $1.fullName
-                    })
-                case .price:
-                    return tickers.sorted(by: {
-                        $0.quotes["USD"]!.price < $1.quotes["USD"]!.price
-                    })
-                case .change:
-                    return tickers.sorted(by: {
-                        $0.quotes["USD"]!.percentChange24h < $1.quotes["USD"]!.percentChange24h
-                    })
-                }
-            }
-            if case SortOrder.descend(_, let _key) = key {
-                switch _key {
-                case .name:
-                    return tickers.sorted(by: {
-                        $0.fullName > $1.fullName
-                    })
-                case .price:
-                    return tickers.sorted(by: {
-                        $0.quotes["USD"]!.price > $1.quotes["USD"]!.price
-                    })
-                case .change:
-                    return tickers.sorted(by: {
-                        $0.quotes["USD"]!.percentChange24h > $1.quotes["USD"]!.percentChange24h
-                    })
-                }
-            }
-            return tickers
-        }
-        
         let coins = tickers.map { (tickers_) -> [Ticker] in
             return tickers_.filter({ (ticker) -> Bool in
                 return !ticker.isToken
@@ -129,7 +79,7 @@ class PricesViewController: CryptoCurrencyListViewController {
         
         let _coins = Observable.combineLatest(coins.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
             (tickers_, sort) -> [Ticker] in
-            return sortedBykey(tickers: tickers_, key: sort)
+            return self.sortedBykey(tickers: tickers_, key: sort)
         }
         
         let tokens = tickers.map { (tickers_) -> [Ticker] in
@@ -140,7 +90,7 @@ class PricesViewController: CryptoCurrencyListViewController {
         
         let _tokens = Observable.combineLatest(tokens.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
             (tickers_, sort) -> [Ticker] in
-            return sortedBykey(tickers: tickers_, key: sort)
+            return self.sortedBykey(tickers: tickers_, key: sort)
         }
 
         Observable.combineLatest(_coins, _tokens) {
@@ -152,20 +102,11 @@ class PricesViewController: CryptoCurrencyListViewController {
         }
         .bind(to: tableView.rx.items(dataSource: dataSource!))
         .disposed(by: disposeBag)
-        
-//        dataSource.titleForHeaderInSection = { dataSource, index in
-//            return dataSource.sectionModels[index].model
-//        }
-        dataSource?.canEditRowAtIndexPath = { dataSource, indexPath in
-            return true
-        }
-        
-        tableView.rx
-            .setDelegate(self)
-            .disposed(by: disposeBag)
     }
     
     override func setupBinding() {
+        super.setupBinding()
+        
         let reload = refreshControl.rx.controlEvent(.allEvents).asObservable()
 
         let coinsRx = PublishSubject<[Coin]>()
@@ -243,8 +184,9 @@ class PricesViewController: CryptoCurrencyListViewController {
         refreshControl.sendActions(for: .valueChanged)
     }
     
-    private func setupUI() {
-        tableView.tableFooterView = UIView()
+    override func setupUI() {
+        super.setupUI()
+        
         tableView.insertSubview(refreshControl, at: 0)
         
         cellIdentifier = "CurrencyCell1"

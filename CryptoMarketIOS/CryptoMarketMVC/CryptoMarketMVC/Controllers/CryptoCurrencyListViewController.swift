@@ -28,9 +28,6 @@ class CryptoCurrencyListViewController: UIViewController {
     var dataSource: RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>?
     let disposeBag = DisposeBag()
     
-    func setupBinding() {
-    }
-    
     @IBAction func presentSafariViewController(_ sender: Any) {
         guard let urlString = currentUrlString,
               let url = URL(string: urlString) else {
@@ -42,11 +39,74 @@ class CryptoCurrencyListViewController: UIViewController {
         present(vc, animated: true)
     }
     
+    func sortedBykey(tickers: [Ticker], key: SortOrder) -> [Ticker] {
+        if case SortOrder.ascend(_, let _key) = key {
+            switch _key {
+            case .name:
+                return tickers.sorted(by: {
+                    $0.fullName < $1.fullName
+                })
+            case .price:
+                return tickers.sorted(by: {
+                    $0.quotes["USD"]!.price < $1.quotes["USD"]!.price
+                })
+            case .change:
+                return tickers.sorted(by: {
+                    $0.quotes["USD"]!.percentChange24h < $1.quotes["USD"]!.percentChange24h
+                })
+            }
+        }
+        if case SortOrder.descend(_, let _key) = key {
+            switch _key {
+            case .name:
+                return tickers.sorted(by: {
+                    $0.fullName > $1.fullName
+                })
+            case .price:
+                return tickers.sorted(by: {
+                    $0.quotes["USD"]!.price > $1.quotes["USD"]!.price
+                })
+            case .change:
+                return tickers.sorted(by: {
+                    $0.quotes["USD"]!.percentChange24h > $1.quotes["USD"]!.percentChange24h
+                })
+            }
+        }
+        return tickers
+    }
+    
+    func setupBinding() {
+        dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>(
+            configureCell: { dataSource, tableView, indexPath, item in
+                let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! CurrencyCell
+                cell.selectionStyle = .none
+                cell.setCoinImage(item.imageUrl, with: (self.baseImageUrl)!)
+                cell.setName(item.fullName)
+                cell.setPrice((item.quotes["USD"]?.price)!)
+                cell.setChange((item.quotes["USD"]?.percentChange24h)!)
+                cell.setVolume24h((item.quotes["USD"]?.volume24h)!)
+                
+                self.currentUrlString = (self.baseImageUrl)! + item.url
+                return cell
+        })
+        
+        dataSource?.canEditRowAtIndexPath = { dataSource, indexPath in
+            return true
+        }
+        
+        tableView.rx
+            .setDelegate(self)
+            .disposed(by: disposeBag)
+    }
+    
+    func setupUI() {
+        tableView.tableFooterView = UIView()
+        tableView.rowHeight = UITableViewAutomaticDimension
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        self.tableView.rowHeight = UITableViewAutomaticDimension
     }
 
     override func didReceiveMemoryWarning() {
