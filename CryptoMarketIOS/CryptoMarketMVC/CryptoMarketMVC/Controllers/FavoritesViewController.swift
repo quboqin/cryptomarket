@@ -7,17 +7,101 @@
 //
 
 import UIKit
+import RxSwift
+import RxDataSources
 
 class FavoritesViewController: CryptoCurrencyListViewController {
     var favoriteSectionHeaderView: SectionHeaderView?
     
+    let favorietsRx = Variable<[Ticker]>([])
+    
     func addTicker(_ ticker: Ticker) {
-        if self.tickers.contains(where: { $0.id == ticker.id }) {
+        if self.favorietsRx.value.contains(where: { $0.id == ticker.id }) {
             return
         }
         
-        self.tickers.append(ticker)
-        self.tableView?.reloadData()
+        self.favorietsRx.value.append(ticker)
+    }
+    
+    func bindingTableView(_ tickers: Variable<[Ticker]>) {
+        dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>(
+            configureCell: { dataSource, tableView, indexPath, item in
+                let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! CurrencyCell
+                cell.selectionStyle = .none
+                cell.setCoinImage(item.imageUrl, with: (self.baseImageUrl)!)
+                cell.setName(item.fullName)
+                cell.setPrice((item.quotes["USD"]?.price)!)
+                cell.setChange((item.quotes["USD"]?.percentChange24h)!)
+                cell.setVolume24h((item.quotes["USD"]?.volume24h)!)
+                
+                self.currentUrlString = (self.baseImageUrl)! + item.url
+                return cell
+        })
+        
+        func sortedBykey(tickers: [Ticker], key: SortOrder) -> [Ticker] {
+            if case SortOrder.ascend(_, let _key) = key {
+                switch _key {
+                case .name:
+                    return tickers.sorted(by: {
+                        $0.fullName < $1.fullName
+                    })
+                case .price:
+                    return tickers.sorted(by: {
+                        $0.quotes["USD"]!.price < $1.quotes["USD"]!.price
+                    })
+                case .change:
+                    return tickers.sorted(by: {
+                        $0.quotes["USD"]!.percentChange24h < $1.quotes["USD"]!.percentChange24h
+                    })
+                }
+            }
+            if case SortOrder.descend(_, let _key) = key {
+                switch _key {
+                case .name:
+                    return tickers.sorted(by: {
+                        $0.fullName > $1.fullName
+                    })
+                case .price:
+                    return tickers.sorted(by: {
+                        $0.quotes["USD"]!.price > $1.quotes["USD"]!.price
+                    })
+                case .change:
+                    return tickers.sorted(by: {
+                        $0.quotes["USD"]!.percentChange24h > $1.quotes["USD"]!.percentChange24h
+                    })
+                }
+            }
+            return tickers
+        }
+    
+        
+        let _tickers = Observable.combineLatest(tickers.asObservable(), self.favoriteSectionHeaderView!.sortingOrder) {
+            (tickers_, sort) -> [Ticker] in
+            return sortedBykey(tickers: tickers_, key: sort)
+        }
+        
+        
+        _tickers
+            .map {
+                return [SectionModel(model: "Coin", items: $0)]
+            }
+            .bind(to: tableView.rx.items(dataSource: dataSource!))
+            .disposed(by: disposeBag)
+        
+        //        dataSource.titleForHeaderInSection = { dataSource, index in
+        //            return dataSource.sectionModels[index].model
+        //        }
+        dataSource?.canEditRowAtIndexPath = { dataSource, indexPath in
+            return true
+        }
+        
+        tableView.rx
+            .setDelegate(self)
+            .disposed(by: disposeBag)
+    }
+    
+    override func setupBinding() {
+        bindingTableView(favorietsRx)
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,8 +112,13 @@ class FavoritesViewController: CryptoCurrencyListViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.getTickersFromDisk()
-        self.tableView.reloadData()
+        self.favoriteSectionHeaderView = UINib(nibName: "SectionHeaderView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? SectionHeaderView
+        self.favoriteSectionHeaderView?.section = .favorite
+        
+        setupBinding()
+        
+//        self.getTickersFromDisk()
+//        self.tableView.reloadData()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -41,8 +130,15 @@ class FavoritesViewController: CryptoCurrencyListViewController {
 extension FavoritesViewController {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {        
         let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Remove", handler:{ [weak self] action, indexpath in
-            self?.tickers.remove(at: indexPath.row)
-            self?.tableView.reloadData()
+            CATransaction.begin()
+            CATransaction.setCompletionBlock({
+                self?.tableView.beginUpdates()
+                self?.favorietsRx.value.remove(at: indexPath.row)
+                self?.tableView.deleteRows(at: [indexPath], with: .right)
+                self?.tableView.endUpdates()
+            })
+            CATransaction.commit()
+
         })
 
         return [favoriteRowAction]

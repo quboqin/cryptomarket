@@ -29,9 +29,6 @@ class PricesViewController: CryptoCurrencyListViewController {
     var tokenSectionHeaderView: SectionHeaderView?
     
     let refreshControl = UIRefreshControl()
-
-    var dataSource: RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>?
-    let disposeBag = DisposeBag()
     
     @IBOutlet weak var globalLabel: UILabel!
     
@@ -88,12 +85,6 @@ class PricesViewController: CryptoCurrencyListViewController {
                 return cell
         })
         
-        let coins = tickers.map { (tickers_) -> [Ticker] in
-            return tickers_.filter({ (ticker) -> Bool in
-                return !ticker.isToken
-            })
-        }
-        
         func sortedBykey(tickers: [Ticker], key: SortOrder) -> [Ticker] {
             if case SortOrder.ascend(_, let _key) = key {
                 switch _key {
@@ -128,6 +119,12 @@ class PricesViewController: CryptoCurrencyListViewController {
                 }
             }
             return tickers
+        }
+        
+        let coins = tickers.map { (tickers_) -> [Ticker] in
+            return tickers_.filter({ (ticker) -> Bool in
+                return !ticker.isToken
+            })
         }
         
         let _coins = Observable.combineLatest(coins.asObservable(), self.coinSectionHeaderView!.sortingOrder) {

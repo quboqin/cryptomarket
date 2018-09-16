@@ -9,6 +9,7 @@
 import UIKit
 import SafariServices
 import RxSwift
+import RxDataSources
 
 class CryptoCurrencyListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
@@ -23,6 +24,9 @@ class CryptoCurrencyListViewController: UIViewController {
     var cellIdentifier = "CurrencyCell2"
     
     var currentUrlString: String?
+    
+    var dataSource: RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>?
+    let disposeBag = DisposeBag()
     
     func setupBinding() {
     }
