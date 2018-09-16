@@ -23,7 +23,7 @@ class PricesViewController: CryptoCurrencyListViewController {
     var lowercasedSearchText: String!
     var searchActive: Bool = false
     
-    var showCoinOnly = false
+    var showCoinOnly = Variable<Bool>(false)
 
     var coinSectionHeaderView: SectionHeaderView?
     var tokenSectionHeaderView: SectionHeaderView?
@@ -88,17 +88,31 @@ class PricesViewController: CryptoCurrencyListViewController {
             })
         }
         
-        let _tokens = Observable.combineLatest(tokens.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
+        let _tokens = Observable.combineLatest(tokens.asObservable(), showCoinOnly.asObservable()) {
+            (tickers_, showCoinOnly) -> [Ticker] in
+            return tickers_.filter({ (ticker) -> Bool in
+                return !showCoinOnly && ticker.isToken
+            })
+        }
+        
+        let __tokens = Observable.combineLatest(_tokens.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
             (tickers_, sort) -> [Ticker] in
             return self.sortedBykey(tickers: tickers_, key: sort)
         }
-
-        Observable.combineLatest(_coins, _tokens) {
+        
+        Observable.combineLatest(_coins, __tokens) {
             return ($0, $1)
         }
         .map {
-            return [SectionModel(model: "Coin", items: $0),
-                    SectionModel(model: "Token", items: $1)]
+            var sections = [SectionModel<String, Ticker>]()
+            if $0.count != 0 {
+                sections.append(SectionModel(model: "Coin", items: $0))
+            }
+            if $1.count != 0 {
+                sections.append(SectionModel(model: "Token", items: $1))
+            }
+        
+            return sections
         }
         .bind(to: tableView.rx.items(dataSource: dataSource!))
         .disposed(by: disposeBag)
@@ -220,7 +234,7 @@ class PricesViewController: CryptoCurrencyListViewController {
         if let navigationController = segue.destination as? SettingsNavigationController,
             let settingsViewController = navigationController.viewControllers.first as? SettingsViewController {
     
-            settingsViewController.showCoinOnly = showCoinOnly
+            settingsViewController.showCoinOnly = showCoinOnly.value
             settingsViewController.delegate = self
             if let favoriteViewController = self.favoritesViewController {
                 settingsViewController.favoriteDelegate = favoriteViewController
@@ -256,7 +270,6 @@ extension PricesViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 && self.coinSectionHeaderView == nil || section == 1 && self.tokenSectionHeaderView == nil {
             if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
-                headerView.setName(section == 0 ?  "Coin" : "Token")
                 if section == 0 {
                     headerView.section = SortSection.coin
                     self.coinSectionHeaderView = headerView
@@ -373,7 +386,7 @@ extension PricesViewController: SettingsViewControllerDelegate {
     }
     
     func settingsViewController(_ viewController: SettingsViewController, didSelectTokenOnly isOnlyCoin: Bool) {
-        showCoinOnly = isOnlyCoin
+        showCoinOnly.value = isOnlyCoin
         self.tableView.reloadData()
         Log.v("Select ShowTokenOnly switch \(isOnlyCoin)")
     }

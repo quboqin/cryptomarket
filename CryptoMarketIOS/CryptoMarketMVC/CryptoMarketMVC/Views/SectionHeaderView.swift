@@ -11,10 +11,10 @@ import RxSwift
 import RxCocoa
 import RxGesture
 
-enum SortSection {
-    case coin
-    case token
-    case favorite
+enum SortSection: String {
+    case coin = "Coin"
+    case token = "Token"
+    case favorite = "Favorite"
     case all
     
     init(section: Int) {
@@ -56,13 +56,13 @@ class SectionHeaderView: UIView {
     
     @IBOutlet weak var nameLableInSectionHeader: UILabel!
 
-    var section: SortSection!
+    var section: SortSection! {
+        didSet {
+            nameLableInSectionHeader.text = section.rawValue
+        }
+    }
     var sortingOrder: Observable<SortOrder>!
     let disposeBag = DisposeBag()
-    
-    func setName(_ name: String) {
-        nameLableInSectionHeader.text = name
-    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
