@@ -121,7 +121,7 @@ class PricesViewController: CryptoCurrencyListViewController {
     override func setupBinding() {
         super.setupBinding()
         
-        let reload = refreshControl.rx.controlEvent(.allEvents).asObservable()
+        let reload = refreshControl.rx.controlEvent(.valueChanged).asObservable()
 
         let coinsRx = PublishSubject<[Coin]>()
         // FIXME: the Variable type has a initial value, if one of the http request return, the combine will be emitted!
@@ -234,14 +234,26 @@ class PricesViewController: CryptoCurrencyListViewController {
         if let navigationController = segue.destination as? SettingsNavigationController,
             let settingsViewController = navigationController.viewControllers.first as? SettingsViewController {
     
-            settingsViewController.showCoinOnly = showCoinOnly.value
-            settingsViewController.delegate = self
+            settingsViewController.didSelectShowCoinOnly
+                .bind(to: showCoinOnly)
+                .disposed(by: disposeBag)
+            
+            // FIXED: How to make bidirectional binding between
+//            showCoinOnly.asObservable().bind(to: settingsViewController._selectShowCoinOnly).disposed(by: disposeBag)
+            settingsViewController._selectShowCoinOnly.onNext(showCoinOnly.value)
+
             if let favoriteViewController = self.favoritesViewController {
-                settingsViewController.favoriteDelegate = favoriteViewController
+                settingsViewController.didSelectRemoveMyFavorites
+                    .bind(to: favoriteViewController._selectRemoveMyFavorites)
+                    .disposed(by: disposeBag)
             }
             
             if let expandViewController = self.expandViewController {
-                settingsViewController.kLineDelegate = expandViewController
+                settingsViewController.didSwitchKlineSource
+                    .bind(to: expandViewController._switchKlineSource)
+                    .disposed(by: disposeBag)
+                
+                settingsViewController._switchKlineSource.onNext(KLineSource.shared.dataSource)
             }
         }
     }
@@ -377,17 +389,5 @@ extension PricesViewController {
     
     func updateHeader() {
         
-    }
-}
-
-extension PricesViewController: SettingsViewControllerDelegate {
-    func settingsViewControllerDidCancel(_ viewController: SettingsViewController) {
-        Log.v("Click Cancel button")
-    }
-    
-    func settingsViewController(_ viewController: SettingsViewController, didSelectTokenOnly isOnlyCoin: Bool) {
-        showCoinOnly.value = isOnlyCoin
-        self.tableView.reloadData()
-        Log.v("Select ShowTokenOnly switch \(isOnlyCoin)")
     }
 }

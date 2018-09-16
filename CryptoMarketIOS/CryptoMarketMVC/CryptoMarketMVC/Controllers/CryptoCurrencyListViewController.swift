@@ -90,7 +90,6 @@ class CryptoCurrencyListViewController: UIViewController {
                 cell.setWithExpand(self.expandedIndexPaths.contains(indexPath))
                 
                 if self.expandedIndexPaths.contains(indexPath) {
-                    self.expandViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ExpandViewController") as? ExpandViewController
                     if let expandViewController = self.expandViewController {
                         self.addChildViewController(expandViewController)
                         cell.embeddedView.addSubview(expandViewController.view)
@@ -131,7 +130,6 @@ class CryptoCurrencyListViewController: UIViewController {
                     self?.expandViewController?.willMove(toParentViewController: self)
                     self?.expandViewController?.view.removeFromSuperview()
                     self?.expandViewController?.removeFromParentViewController()
-                    self?.expandViewController = nil
                     
                 } else {
                     if (self?.expandedIndexPaths.count)! > 0 {
@@ -149,6 +147,8 @@ class CryptoCurrencyListViewController: UIViewController {
     func setupUI() {
         tableView.tableFooterView = UIView()
         tableView.rowHeight = UITableViewAutomaticDimension
+        
+        self.expandViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ExpandViewController") as? ExpandViewController
     }
     
     override func viewDidLoad() {

@@ -14,6 +14,7 @@ class FavoritesViewController: CryptoCurrencyListViewController {
     var favoriteSectionHeaderView: SectionHeaderView?
     
     private let favorietsRx = Variable<[Ticker]>([])
+    let _selectRemoveMyFavorites = PublishSubject<Void>()
     
     func addTicker(_ ticker: Ticker) {
         if self.favorietsRx.value.contains(where: { $0.id == ticker.id }) {
@@ -39,6 +40,11 @@ class FavoritesViewController: CryptoCurrencyListViewController {
     
     override func setupBinding() {
         super.setupBinding()
+        
+        _selectRemoveMyFavorites.subscribe(onNext: {
+           self.removeSavedJSONFileFromDisk()
+        }).disposed(by: disposeBag)
+        
         bindingTableView(favorietsRx)
     }
 
@@ -96,14 +102,6 @@ extension FavoritesViewController {
             }
         }
         return self.favoriteSectionHeaderView
-    }
-}
-
-extension FavoritesViewController: SettingsViewControllerFavoriteDelegate {
-    func settingsViewController(_ viewController: SettingsViewController, didRemoveMyFavorites isRemoveMyFavorites: Bool) {
-        Log.v("Remove SaveMyFavorites \(isRemoveMyFavorites)")
-       self.removeSavedJSONFileFromDisk()
-       self.tableView.reloadData()
     }
 }
 

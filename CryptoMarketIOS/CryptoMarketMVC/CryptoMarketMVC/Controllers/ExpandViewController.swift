@@ -8,6 +8,7 @@
 
 import UIKit
 import Charts
+import RxSwift
 
 enum Option {
     case toggleValues
@@ -106,6 +107,9 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
     
     fileprivate var histoHourVolumes = [OHLCV]()
     
+    let disposeBag = DisposeBag()
+    let _switchKlineSource = PublishSubject<DataSource>()
+    
     var symbol: String = "BTC" {
         didSet {
             reloadData()
@@ -156,8 +160,8 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
                 if let histoHourResponse = data as? HistoHourResponse {
                     Log.i(histoHourResponse)
                     self?.histoHourVolumes = histoHourResponse.data
-                    self?.setDataCount()
                 }
+                self?.setDataCount()
             }
         } else {
             let huobiNetworkManager = HuobiNetworkManager.shared
@@ -170,12 +174,26 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
                     kLineItems.forEach({ (kLineItem) in
                         let ohlcv = OHLCV(time: 0, open: kLineItem.open!, close: kLineItem.close!, low: kLineItem.low!, high: kLineItem.high!, volumefrom: 0.0, volumeto: 0.0)
                         self?.histoHourVolumes.append(ohlcv)
-                        self?.setDataCount()
                     })
-
+                    self?.setDataCount()
                 }
             }
         }
+    }
+    
+    func setupBindings() {
+        _switchKlineSource.subscribe(onNext: {
+            (dataSource) in
+            KLineSource.shared.dataSource = dataSource
+            self.reloadData()
+        }).disposed(by: disposeBag)
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // FIXED: How to make bidirectional binding between..., force load view
+        _ = self.view
+        setupBindings()
     }
     
     override func viewDidLoad() {
@@ -184,6 +202,12 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
         setupUI()
         
         chartView.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.reloadData()
     }
     
     fileprivate func setDataCount() -> Void {
@@ -240,9 +264,9 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
 
 }
 
-extension ExpandViewController: SettingsViewControllerKLineDelegate {
-    func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource) {
-        Log.v("Select kLine Datasource \(dataSource)")
-        self.reloadData()
-    }
-}
+//extension ExpandViewController: SettingsViewControllerKLineDelegate {
+//    func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource) {
+//        Log.v("Select kLine Datasource \(dataSource)")
+//        self.reloadData()
+//    }
+//}

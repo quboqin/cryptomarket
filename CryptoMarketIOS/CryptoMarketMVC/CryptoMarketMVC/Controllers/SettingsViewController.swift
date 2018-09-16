@@ -7,57 +7,75 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-protocol SettingsViewControllerDelegate: class {
-    func settingsViewController(_ viewController: SettingsViewController, didSelectTokenOnly isOnlyToken: Bool)
-    func settingsViewControllerDidCancel(_ viewController: SettingsViewController)
-}
-
-protocol SettingsViewControllerKLineDelegate: class {
-    func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource)
-}
-
-protocol SettingsViewControllerFavoriteDelegate: class {
-    func settingsViewController(_ viewController: SettingsViewController, didRemoveMyFavorites isRemoveMyFavorites: Bool)
-}
-
-class SettingsViewController: UITableViewController {
-    @objc
-    func closeButtonPressed(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
-    }
+class SettingsViewController: UITableViewController {    
+    let disposeBag = DisposeBag()
     
-    weak var delegate: SettingsViewControllerDelegate!
-    weak var kLineDelegate: SettingsViewControllerKLineDelegate?
-    weak var favoriteDelegate: SettingsViewControllerFavoriteDelegate?
+    let _switchKlineSource = PublishSubject<DataSource>()
+    var didSwitchKlineSource: Observable<DataSource> { return _switchKlineSource.asObservable() }
+    
+    let _selectShowCoinOnly = PublishSubject<Bool>()
+    var didSelectShowCoinOnly: Observable<Bool> { return _selectShowCoinOnly.asObservable() }
+    
+    let _selectRemoveMyFavorites = PublishSubject<Void>()
+    var didSelectRemoveMyFavorites: Observable<Void> { return _selectRemoveMyFavorites.asObservable() }
     
     @IBOutlet weak var dataSourceSegment: UISegmentedControl!
-    
+    @IBOutlet weak var removeMyFavoriteButton: UIButton!
     @IBOutlet weak var showCoinOnlySwitch: UISwitch!
-    var showCoinOnly: Bool!
-
-    @IBAction func selectDatasource(_ sender: UISegmentedControl) {
-        let selectedSegmentIndex = sender.selectedSegmentIndex
-        KLineSource.shared.dataSource = DataSource(source: selectedSegmentIndex)
-        kLineDelegate?.settingsViewController(self, didSelectDataSource: KLineSource.shared.dataSource)
+    
+    private func setupBindings() {
+        dataSourceSegment.rx.selectedSegmentIndex
+            .map({ (index) -> DataSource in
+                return DataSource(source: index)
+            })
+            .bind(to: _switchKlineSource)
+            .disposed(by: disposeBag)
+        
+        didSwitchKlineSource
+            .map({ (dataSource) -> Int in
+                return dataSource.hashValue
+            })
+            .bind(to: dataSourceSegment.rx.selectedSegmentIndex)
+            .disposed(by: disposeBag)
+        
+        showCoinOnlySwitch.rx.isOn.changed
+            .bind(to: _selectShowCoinOnly)
+            .disposed(by: disposeBag)
+        
+        didSelectShowCoinOnly
+            .bind(to: showCoinOnlySwitch.rx.isOn)
+            .disposed(by: disposeBag)
+        
+        removeMyFavoriteButton
+            .rx.tap
+            .bind(to: _selectRemoveMyFavorites)
+            .disposed(by: disposeBag)
+        
+        self.navigationItem.leftBarButtonItem?
+            .rx.tap
+            .subscribe(onNext: {
+                self.dismiss(animated: true, completion: nil)
+            }).disposed(by: disposeBag)
     }
     
-    @IBAction func showTokenOnly(_ sender: UISwitch) {
-        delegate.settingsViewController(self, didSelectTokenOnly: sender.isOn)
-    }
-    
-    @IBAction func clearMyFavorites(_ sender: UIButton) {
-        favoriteDelegate?.settingsViewController(self, didRemoveMyFavorites: true)
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // FIXED: How to make bidirectional binding between..., force load view
+        _ = self.view
+        
+        let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: nil)
+        self.navigationItem.leftBarButtonItem = closeButton
+        
+        setupBindings()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeButtonPressed(_:)))
-        self.navigationItem.leftBarButtonItem = closeButton
 
-        dataSourceSegment.selectedSegmentIndex = KLineSource.shared.dataSource.hashValue
-        showCoinOnlySwitch.isOn = showCoinOnly
+//        dataSourceSegment.selectedSegmentIndex = KLineSource.shared.dataSource.hashValue
     }
 
     override func didReceiveMemoryWarning() {
