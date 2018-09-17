@@ -441,13 +441,16 @@
 				TargetAttributes = {
 					ED7636722131F63D000592F4 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 					};
 					ED7636882131F640000592F4 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = ED7636722131F63D000592F4;
 					};
 					ED7636932131F640000592F4 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = ED7636722131F63D000592F4;
 					};
 				};
@@ -526,7 +529,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -753,7 +756,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CryptoMarketMVC/CommonCrypto.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -776,7 +779,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CryptoMarketMVC/CommonCrypto.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -796,7 +799,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CryptoMarketMVC.app/CryptoMarketMVC";
 			};
@@ -817,7 +820,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CryptoMarketMVC.app/CryptoMarketMVC";
 			};
@@ -837,7 +840,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = CryptoMarketMVC;
 			};
@@ -857,7 +860,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = CryptoMarketMVC;
 			};

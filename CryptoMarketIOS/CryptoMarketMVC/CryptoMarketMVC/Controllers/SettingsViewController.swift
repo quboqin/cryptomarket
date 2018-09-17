@@ -10,6 +10,21 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+//infix operator <->
+//
+//@discardableResult func <-><T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable {
+//    let variableToProperty = variable.asObservable()
+//        .bind(to: property)
+//
+//    let propertyToVariable = property
+//        .subscribe(
+//            onNext: { variable.value = $0 },
+//            onCompleted: { variableToProperty.dispose() }
+//    )
+//
+//    return Disposables.create(variableToProperty, propertyToVariable)
+//}
+
 class SettingsViewController: UITableViewController {    
     let disposeBag = DisposeBag()
     
@@ -21,6 +36,9 @@ class SettingsViewController: UITableViewController {
     
     let _selectRemoveMyFavorites = PublishSubject<Void>()
     var didSelectRemoveMyFavorites: Observable<Void> { return _selectRemoveMyFavorites.asObservable() }
+    
+    private let _cancel = PublishSubject<Void>()
+    var didCancel: Observable<Void> { return _cancel.asObservable() }
     
     @IBOutlet weak var dataSourceSegment: UISegmentedControl!
     @IBOutlet weak var removeMyFavoriteButton: UIButton!
@@ -44,10 +62,13 @@ class SettingsViewController: UITableViewController {
         showCoinOnlySwitch.rx.isOn.changed
             .bind(to: _selectShowCoinOnly)
             .disposed(by: disposeBag)
-        
+
         didSelectShowCoinOnly
             .bind(to: showCoinOnlySwitch.rx.isOn)
             .disposed(by: disposeBag)
+        
+//        (showCoinOnlySwitch.rx.isOn <-> _selectShowCoinOnly)
+//            .disposed(by: disposeBag)
         
         removeMyFavoriteButton
             .rx.tap
@@ -56,6 +77,10 @@ class SettingsViewController: UITableViewController {
         
         self.navigationItem.leftBarButtonItem?
             .rx.tap
+            .bind(to: _cancel)
+            .disposed(by: disposeBag)
+         
+        didCancel
             .subscribe(onNext: {
                 self.dismiss(animated: true, completion: nil)
             }).disposed(by: disposeBag)
@@ -75,7 +100,6 @@ class SettingsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        dataSourceSegment.selectedSegmentIndex = KLineSource.shared.dataSource.hashValue
     }
 
     override func didReceiveMemoryWarning() {

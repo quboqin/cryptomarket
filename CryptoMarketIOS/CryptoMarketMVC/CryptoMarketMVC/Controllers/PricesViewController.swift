@@ -11,6 +11,11 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
+struct GlobalViewModel {
+    let totalMarketCap: Double
+    let totalVolume24H: Double
+}
+
 class PricesViewController: CryptoCurrencyListViewController {
     let maxHeaderHeight: CGFloat = 88;
     let minHeaderHeight: CGFloat = 32;
@@ -20,13 +25,14 @@ class PricesViewController: CryptoCurrencyListViewController {
     var favoritesViewController: FavoritesViewController!
     
     @IBOutlet weak var searchBar: UISearchBar!
-    var lowercasedSearchText: String!
     var searchActive: Bool = false
     
     var showCoinOnly = Variable<Bool>(false)
 
     var coinSectionHeaderView: SectionHeaderView?
     var tokenSectionHeaderView: SectionHeaderView?
+    
+    var globalData = Variable<GlobalViewModel>(GlobalViewModel(totalMarketCap: 0, totalVolume24H: 0))
     
     let refreshControl = UIRefreshControl()
     
@@ -50,24 +56,6 @@ class PricesViewController: CryptoCurrencyListViewController {
         self.globalLabel.layer.add(transformAnimation, forKey: #keyPath(CALayer.transform))
         
         CATransaction.commit()
-    }
-
-    @objc
-    fileprivate func reloadData() {
-        let coinMarketNetworkManager = CoinMarketNetworkManager.shared
-        
-        _ = coinMarketNetworkManager.getDataFromEndPoint(.globalData(convert: "USD"), type: GlobalResponse.self) { [weak self]
-            (data, error) in
-            if error != nil {
-                return
-            }
-            
-            if let globalResponse = data as? GlobalResponse {
-                let totalVolume24H = globalResponse.data.quotes["USD"]?.totalVolume24H
-                self?.globalLabel.text = "$" + String(format: "%.1f", totalVolume24H!)
-                self?.flipGlobalData()
-            }
-        }
     }
     
     func bindingTableView(_ tickers: Observable<[Ticker]>) {
@@ -118,10 +106,32 @@ class PricesViewController: CryptoCurrencyListViewController {
         .disposed(by: disposeBag)
     }
     
-    override func setupBinding() {
-        super.setupBinding()
+    override func setupBindings() {
+        super.setupBindings()
         
         let reload = refreshControl.rx.controlEvent(.valueChanged).asObservable()
+        
+        reload
+            .flatMap { () -> Observable<GlobalResponse> in
+                return CoinMarketNetworkManager.shared.getDataFromEndPointRx(.globalData(convert: "USD"),
+                                                                                type: GlobalResponse.self)
+            }
+            .map({ (globalResponse) -> GlobalViewModel in
+                return GlobalViewModel(totalMarketCap: globalResponse.data.quotes["USD"]?.totalMarketCap ?? 0, totalVolume24H: globalResponse.data.quotes["USD"]?.totalVolume24H ?? 0)
+            })
+            .do(onNext: { [weak self] (global) -> Void in
+                self?.flipGlobalData()
+            })
+            .bind(to: globalData)
+            .disposed(by: disposeBag)
+        
+        globalData.asObservable()
+            .map { (globalData) -> String in
+            return "$" + String(format: "%.1f", globalData.totalMarketCap)
+            }
+            .bind(to: self.globalLabel.rx.text)
+            .disposed(by: disposeBag)
+
 
         let coinsRx = PublishSubject<[Coin]>()
         // FIXME: the Variable type has a initial value, if one of the http request return, the combine will be emitted!
@@ -211,7 +221,7 @@ class PricesViewController: CryptoCurrencyListViewController {
         self.tokenSectionHeaderView?.section = .token
         
         let navigationViewController = self.tabBarController?.viewControllers![1] as! UINavigationController
-        self.favoritesViewController = navigationViewController.topViewController as! FavoritesViewController
+        self.favoritesViewController = navigationViewController.topViewController as? FavoritesViewController
     }
 
     override func viewDidLoad() {
@@ -222,9 +232,7 @@ class PricesViewController: CryptoCurrencyListViewController {
         // FIXME: You need to call [self.view layoutIfNeeded] to fix it in iOS 10 to make refreshControl refresh when the view controller is loading.
         self.view.layoutIfNeeded()
         
-        setupBinding()
-        
-        reloadData()
+        setupBindings()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -238,8 +246,7 @@ class PricesViewController: CryptoCurrencyListViewController {
                 .bind(to: showCoinOnly)
                 .disposed(by: disposeBag)
             
-            // FIXED: How to make bidirectional binding between
-//            showCoinOnly.asObservable().bind(to: settingsViewController._selectShowCoinOnly).disposed(by: disposeBag)
+            // FIXED: How to save the status
             settingsViewController._selectShowCoinOnly.onNext(showCoinOnly.value)
 
             if let favoriteViewController = self.favoritesViewController {
@@ -266,7 +273,7 @@ class PricesViewController: CryptoCurrencyListViewController {
 
 extension PricesViewController {    
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Favorite", handler:{ [weak self] action, indexpath in
+        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowAction.Style.default, title: "Favorite", handler:{ [weak self] action, indexpath in
             
             guard let ticker = self?.dataSource?[indexPath] else {
                 return

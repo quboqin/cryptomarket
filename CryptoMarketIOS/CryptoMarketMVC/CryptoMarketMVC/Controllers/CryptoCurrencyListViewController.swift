@@ -74,7 +74,7 @@ class CryptoCurrencyListViewController: UIViewController {
         return tickers
     }
     
-    func setupBinding() {
+    func setupBindings() {
         dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>(
             configureCell: { dataSource, tableView, indexPath, item in
                 let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! CurrencyCell
@@ -91,7 +91,7 @@ class CryptoCurrencyListViewController: UIViewController {
                 
                 if self.expandedIndexPaths.contains(indexPath) {
                     if let expandViewController = self.expandViewController {
-                        self.addChildViewController(expandViewController)
+                        self.addChild(expandViewController)
                         cell.embeddedView.addSubview(expandViewController.view)
                         
                         expandViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -103,7 +103,7 @@ class CryptoCurrencyListViewController: UIViewController {
                             expandViewController.view.bottomAnchor.constraint(equalTo: cell.embeddedView.bottomAnchor)
                             ])
                         
-                        expandViewController.didMove(toParentViewController: self)
+                        expandViewController.didMove(toParent: self)
                         
                         expandViewController.symbol = item.symbol
                     }
@@ -127,9 +127,9 @@ class CryptoCurrencyListViewController: UIViewController {
                 if(self?.expandedIndexPaths.contains(indexPath))! {
                     self?.expandedIndexPaths.remove(indexPath)
                     
-                    self?.expandViewController?.willMove(toParentViewController: self)
+                    self?.expandViewController?.willMove(toParent: self)
                     self?.expandViewController?.view.removeFromSuperview()
-                    self?.expandViewController?.removeFromParentViewController()
+                    self?.expandViewController?.removeFromParent()
                     
                 } else {
                     if (self?.expandedIndexPaths.count)! > 0 {
@@ -146,7 +146,7 @@ class CryptoCurrencyListViewController: UIViewController {
     
     func setupUI() {
         tableView.tableFooterView = UIView()
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         
         self.expandViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ExpandViewController") as? ExpandViewController
     }

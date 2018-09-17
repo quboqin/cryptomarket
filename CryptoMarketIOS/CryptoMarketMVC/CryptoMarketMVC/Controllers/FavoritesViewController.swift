@@ -38,8 +38,8 @@ class FavoritesViewController: CryptoCurrencyListViewController {
             .disposed(by: disposeBag)
     }
     
-    override func setupBinding() {
-        super.setupBinding()
+    override func setupBindings() {
+        super.setupBindings()
         
         _selectRemoveMyFavorites.subscribe(onNext: {
            self.removeSavedJSONFileFromDisk()
@@ -65,7 +65,7 @@ class FavoritesViewController: CryptoCurrencyListViewController {
         
         setupUI()
         
-        setupBinding()
+        setupBindings()
         
         self.getTickersFromDisk()
     }
@@ -78,7 +78,7 @@ class FavoritesViewController: CryptoCurrencyListViewController {
 
 extension FavoritesViewController {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {        
-        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Remove", handler:{ [weak self] action, indexpath in
+        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowAction.Style.default, title: "Remove", handler:{ [weak self] action, indexpath in
             CATransaction.begin()
             CATransaction.setCompletionBlock({
                 self?.tableView.beginUpdates()
