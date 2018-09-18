@@ -26,12 +26,11 @@ class PricesViewController: CryptoCurrencyListViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     var searchActive: Bool = false
-    
-    var showCoinOnly = Variable<Bool>(false)
 
     var coinSectionHeaderView: SectionHeaderView?
     var tokenSectionHeaderView: SectionHeaderView?
     
+    var showCoinOnly = Variable<Bool>(false)
     var globalData = Variable<GlobalViewModel>(GlobalViewModel(totalMarketCap: 0, totalVolume24H: 0))
     
     let refreshControl = UIRefreshControl()
@@ -65,7 +64,7 @@ class PricesViewController: CryptoCurrencyListViewController {
             })
         }
         
-        let _coins = Observable.combineLatest(coins.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
+        let sortedCoins = Observable.combineLatest(coins.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
             (tickers_, sort) -> [Ticker] in
             return self.sortedBykey(tickers: tickers_, key: sort)
         }
@@ -83,12 +82,12 @@ class PricesViewController: CryptoCurrencyListViewController {
             })
         }
         
-        let __tokens = Observable.combineLatest(_tokens.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
+        let sortedTokens = Observable.combineLatest(_tokens.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
             (tickers_, sort) -> [Ticker] in
             return self.sortedBykey(tickers: tickers_, key: sort)
         }
         
-        Observable.combineLatest(_coins, __tokens) {
+        Observable.combineLatest(sortedCoins, sortedTokens) {
             return ($0, $1)
         }
         .map {
@@ -191,7 +190,7 @@ class PricesViewController: CryptoCurrencyListViewController {
             .bind(to: searchBehaviorSubject)
             .disposed(by: disposeBag)
         
-        let __tickers = Observable.combineLatest(_tickers.asObservable(), searchBehaviorSubject.asObserver()) {
+        let filterTickers = Observable.combineLatest(_tickers.asObservable(), searchBehaviorSubject.asObserver()) {
             (tickers, search) -> [Ticker] in
             let lowcasedSearch = search.lowercased()
             return tickers.filter {
@@ -202,10 +201,7 @@ class PricesViewController: CryptoCurrencyListViewController {
             }
         }
 
-        bindingTableView(__tickers)
-        
-        refreshControl.beginRefreshing()
-        refreshControl.sendActions(for: .valueChanged)
+        bindingTableView(filterTickers)
     }
     
     override func setupUI() {
@@ -235,6 +231,13 @@ class PricesViewController: CryptoCurrencyListViewController {
         setupBindings()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        refreshControl.beginRefreshing()
+        refreshControl.sendActions(for: .valueChanged)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         segue.destination.transitioningDelegate = self
@@ -247,20 +250,12 @@ class PricesViewController: CryptoCurrencyListViewController {
                 .disposed(by: disposeBag)
             
             // FIXED: How to save the status
-            settingsViewController._selectShowCoinOnly.onNext(showCoinOnly.value)
+            settingsViewController.selectShowCoinOnly.onNext(showCoinOnly.value)
 
             if let favoriteViewController = self.favoritesViewController {
                 settingsViewController.didSelectRemoveMyFavorites
-                    .bind(to: favoriteViewController._selectRemoveMyFavorites)
+                    .bind(to: favoriteViewController.selectRemoveMyFavorites)
                     .disposed(by: disposeBag)
-            }
-            
-            if let expandViewController = self.expandViewController {
-                settingsViewController.didSwitchKlineSource
-                    .bind(to: expandViewController._switchKlineSource)
-                    .disposed(by: disposeBag)
-                
-                settingsViewController._switchKlineSource.onNext(KLineSource.shared.dataSource)
             }
         }
     }
@@ -287,19 +282,7 @@ extension PricesViewController {
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 0 && self.coinSectionHeaderView == nil || section == 1 && self.tokenSectionHeaderView == nil {
-            if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
-                if section == 0 {
-                    headerView.section = SortSection.coin
-                    self.coinSectionHeaderView = headerView
-                } else {
-                    headerView.section = SortSection.token
-                    self.tokenSectionHeaderView = headerView
-                }
-                return headerView
-            }
-            return self.coinSectionHeaderView
-        } else if section == 0 {
+        if section == 0 {
             return self.coinSectionHeaderView
         } else {
             return self.tokenSectionHeaderView

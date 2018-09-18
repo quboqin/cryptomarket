@@ -10,7 +10,6 @@
 		ED0D4C4D214B13A2009F48BC /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0D4C4C214B13A2009F48BC /* RxSwift.framework */; };
 		ED0D4C4F214B13A7009F48BC /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0D4C4E214B13A6009F48BC /* RxCocoa.framework */; };
 		ED0D4C51214B13AC009F48BC /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0D4C50214B13AC009F48BC /* RxBlocking.framework */; };
-		ED0D4C54214B17C0009F48BC /* NetworkingManager+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED0D4C53214B17C0009F48BC /* NetworkingManager+Extension.swift */; };
 		ED52DC922134FEA3001198E7 /* SettingsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */; };
 		ED52DC992134FED6001198E7 /* DismissTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC952134FED6001198E7 /* DismissTransitionController.swift */; };
 		ED52DC9A2134FED6001198E7 /* PresentTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC962134FED6001198E7 /* PresentTransitionController.swift */; };
@@ -75,7 +74,6 @@
 		ED0D4C4C214B13A2009F48BC /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		ED0D4C4E214B13A6009F48BC /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		ED0D4C50214B13AC009F48BC /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
-		ED0D4C53214B17C0009F48BC /* NetworkingManager+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkingManager+Extension.swift"; sourceTree = "<group>"; };
 		ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		ED52DC952134FED6001198E7 /* DismissTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissTransitionController.swift; sourceTree = "<group>"; };
 		ED52DC962134FED6001198E7 /* PresentTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentTransitionController.swift; sourceTree = "<group>"; };
@@ -160,14 +158,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		ED0D4C52214B179C009F48BC /* Rx */ = {
-			isa = PBXGroup;
-			children = (
-				ED0D4C53214B17C0009F48BC /* NetworkingManager+Extension.swift */,
-			);
-			path = Rx;
-			sourceTree = "<group>";
-		};
 		ED52DC932134FED6001198E7 /* Transitions */ = {
 			isa = PBXGroup;
 			children = (
@@ -259,7 +249,6 @@
 		ED7636A82131F883000592F4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				ED0D4C52214B179C009F48BC /* Rx */,
 				EDD89F5821421BE80031EA10 /* Endpoint */,
 				EDD4B47E2148CA4300D8E297 /* kLineSource.swift */,
 				EDD89F6B21421C190031EA10 /* CoinMarketModel.swift */,
@@ -540,7 +529,6 @@
 			files = (
 				ED7636B021325AAA000592F4 /* ScaleWidthImageView.swift in Sources */,
 				ED7636AC21320160000592F4 /* CurrencyCell.swift in Sources */,
-				ED0D4C54214B17C0009F48BC /* NetworkingManager+Extension.swift in Sources */,
 				EDD89F6E21421C190031EA10 /* CoinMarketModel.swift in Sources */,
 				ED52DC992134FED6001198E7 /* DismissTransitionController.swift in Sources */,
 				EDD89F6121421BE80031EA10 /* ParameterEncoder.swift in Sources */,

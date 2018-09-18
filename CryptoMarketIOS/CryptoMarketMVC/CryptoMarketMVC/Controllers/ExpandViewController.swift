@@ -88,7 +88,7 @@ enum Option {
     }
 }
 
-enum DataSource {
+enum DataSource: Int {
     case cryptoCompare
     case houbi
     
@@ -104,19 +104,11 @@ enum DataSource {
 
 class ExpandViewController: UIViewController, ChartViewDelegate {
     @IBOutlet weak var chartView: CandleStickChartView!
-    
-    fileprivate var histoHourVolumes = [OHLCV]()
-    
-    let disposeBag = DisposeBag()
-    let _switchKlineSource = PublishSubject<DataSource>()
-    
-    var symbol: String = "BTC" {
-        didSet {
-            reloadData()
-        }
-    }
-    
     var options: [Option]!
+    
+    fileprivate var histoHourVolumes = Variable<[OHLCV]>([])
+    let symbol = Variable<String>("")
+    let disposeBag = DisposeBag()
     
     private func setupUI() {
         self.options = [.toggleValues,
@@ -152,81 +144,113 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
         chartView.xAxis.labelFont = UIFont(name: "HelveticaNeue-Light", size: 10)!
     }
     
-    func reloadData() {
-        if KLineSource.shared.dataSource == DataSource.cryptoCompare {
-            let cryptoCompareNetworkManager = CryptoCompareNetworkManager.shared
-            _ = cryptoCompareNetworkManager.getDataFromEndPoint(.histohour(fsym: symbol, tsym: "USD", limit: 11), type: HistoHourResponse.self) { [weak self]
-                (data, error) in
-                if let histoHourResponse = data as? HistoHourResponse {
-                    Log.i(histoHourResponse)
-                    self?.histoHourVolumes = histoHourResponse.data
-                }
-                self?.setDataCount()
-            }
-        } else {
-            let huobiNetworkManager = HuobiNetworkManager.shared
-            _ = huobiNetworkManager.getDataFromEndPoint(.historyKline(symbol: symbol.lowercased() + "usdt", period: "5min", size: 150), type: KlineResponse.self) { [weak self]
-                (data, error) in
-                if let kLineResponse = data as? KlineResponse {
-                    Log.i(kLineResponse.data)
-                    let kLineItems = kLineResponse.data
-                    
-                    kLineItems.forEach({ (kLineItem) in
-                        let ohlcv = OHLCV(time: 0, open: kLineItem.open!, close: kLineItem.close!, low: kLineItem.low!, high: kLineItem.high!, volumefrom: 0.0, volumeto: 0.0)
-                        self?.histoHourVolumes.append(ohlcv)
-                    })
-                    self?.setDataCount()
-                }
-            }
-        }
-    }
-    
     func setupBindings() {
-        _switchKlineSource.subscribe(onNext: {
-            (dataSource) in
-            KLineSource.shared.dataSource = dataSource
-            self.reloadData()
-        }).disposed(by: disposeBag)
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // FIXED: How to make bidirectional binding between..., force load view
-        _ = self.view
-        setupBindings()
+        // Trigger is KLineSource.shared.dataSource
+        let cryptoCompareReload = KLineSource.shared.dataSource.asObservable().distinctUntilChanged()
+            .filter { (dataSource) -> Bool in
+                return dataSource == DataSource.cryptoCompare
+            }
+        
+        cryptoCompareReload.withLatestFrom(symbol.asObservable())
+            { (dataSource, symbol) in
+                return symbol
+            }
+            .flatMap { (symbol) -> Observable<HistoHourResponse> in
+                return CryptoCompareNetworkManager.shared.getDataFromEndPointRx(.histohour(fsym: symbol, tsym: "USD", limit: 11), type: HistoHourResponse.self)
+            }
+            .map { (histoHourResponse) -> [OHLCV] in
+                return histoHourResponse.data
+            }
+            .bind(to: histoHourVolumes)
+            .disposed(by: disposeBag)
+        
+        let huobiReload = KLineSource.shared.dataSource.asObservable().distinctUntilChanged()
+            .filter { (dataSource) -> Bool in
+                return dataSource == DataSource.houbi
+            }
+        
+        huobiReload.withLatestFrom(symbol.asObservable())
+            { (dataSource, symbol) in
+                return symbol
+            }
+            .flatMap { (symbol) ->  Observable<Event<KlineResponse>> in
+                return HuobiNetworkManager.shared.getDataFromEndPointRx(.historyKline(symbol: symbol.lowercased() + "usdt", period: "5min", size: 150), type: KlineResponse.self).materialize()
+            }
+            .filter { [unowned self ] in
+                guard $0.error == nil else {
+                    Log.e("Catch Error: +\($0.error!)")
+                    
+                    if self.parent?.presentedViewController != nil {
+                        return false
+                    }
+                    
+                    let alert = UIAlertController(title: "Alert", message: "Can not find the symbol on Huobi", preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                        switch action.style{
+                        case .default:
+                            Log.e("default")
+                            
+                        case .cancel:
+                            Log.e("cancel")
+                            
+                        case .destructive:
+                            Log.e("destructive")
+                        }}))
+                    self.present(alert, animated: true, completion: nil)
+                    
+                    self.histoHourVolumes = Variable<[OHLCV]>([])
+                    return false
+                }
+                return true
+            }
+            .dematerialize()
+            .map { (kLineResponse) -> [KlineItem] in
+                return kLineResponse.data
+            }
+            .map { (kLineItems) -> [OHLCV] in
+                var ohlcvs = [OHLCV]()
+                kLineItems.forEach({ (kLineItem) in
+                    let ohlcv = OHLCV(time: 0, open: kLineItem.open!, close: kLineItem.close!, low: kLineItem.low!, high: kLineItem.high!, volumefrom: 0.0, volumeto: 0.0)
+                    ohlcvs.append(ohlcv)
+                })
+                return ohlcvs
+            }
+            .bind(to: histoHourVolumes)
+            .disposed(by: disposeBag)
+        
+        histoHourVolumes.asObservable()
+            .subscribe({_ in
+                self.setDataCount()
+            })
+            .disposed(by: disposeBag)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         setupUI()
+        setupBindings()
         
         chartView.delegate = self
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        self.reloadData()
-    }
-    
     fileprivate func setDataCount() -> Void {
-        let count = self.histoHourVolumes.count
+        let count = self.histoHourVolumes.value.count
         
         if count == 0 {
             return
         }
         
         let yVals1 = (0 ..< count).map { (i) -> CandleChartDataEntry? in
-            let high = self.histoHourVolumes[i].high
-            let low = self.histoHourVolumes[i].low
-            let open = self.histoHourVolumes[i].open
-            let close = self.histoHourVolumes[i].close
+            let high = self.histoHourVolumes.value[i].high
+            let low = self.histoHourVolumes.value[i].low
+            let open = self.histoHourVolumes.value[i].open
+            let close = self.histoHourVolumes.value[i].close
             
             return CandleChartDataEntry(x: Double(i), shadowH: high, shadowL: low, open: open, close: close, icon: UIImage(named: "icon")!)
         }
         
-        chartView.leftAxis.axisMinimum = self.histoHourVolumes.map {
+        chartView.leftAxis.axisMinimum = self.histoHourVolumes.value.map {
             $0.low
             }.min()!
         
@@ -250,23 +274,4 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
-
-//extension ExpandViewController: SettingsViewControllerKLineDelegate {
-//    func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource) {
-//        Log.v("Select kLine Datasource \(dataSource)")
-//        self.reloadData()
-//    }
-//}

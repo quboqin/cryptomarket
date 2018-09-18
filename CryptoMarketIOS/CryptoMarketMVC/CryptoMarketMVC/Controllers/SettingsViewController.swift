@@ -10,6 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+// 2-way binding example
 //infix operator <->
 //
 //@discardableResult func <-><T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable {
@@ -28,14 +29,11 @@ import RxCocoa
 class SettingsViewController: UITableViewController {    
     let disposeBag = DisposeBag()
     
-    let _switchKlineSource = PublishSubject<DataSource>()
-    var didSwitchKlineSource: Observable<DataSource> { return _switchKlineSource.asObservable() }
+    let selectShowCoinOnly = PublishSubject<Bool>()
+    var didSelectShowCoinOnly: Observable<Bool> { return selectShowCoinOnly.asObservable() }
     
-    let _selectShowCoinOnly = PublishSubject<Bool>()
-    var didSelectShowCoinOnly: Observable<Bool> { return _selectShowCoinOnly.asObservable() }
-    
-    let _selectRemoveMyFavorites = PublishSubject<Void>()
-    var didSelectRemoveMyFavorites: Observable<Void> { return _selectRemoveMyFavorites.asObservable() }
+    let selectRemoveMyFavorites = PublishSubject<Void>()
+    var didSelectRemoveMyFavorites: Observable<Void> { return selectRemoveMyFavorites.asObservable() }
     
     private let _cancel = PublishSubject<Void>()
     var didCancel: Observable<Void> { return _cancel.asObservable() }
@@ -49,21 +47,22 @@ class SettingsViewController: UITableViewController {
             .map({ (index) -> DataSource in
                 return DataSource(source: index)
             })
-            .bind(to: _switchKlineSource)
+            .bind(to: KLineSource.shared.dataSource)
             .disposed(by: disposeBag)
         
-        didSwitchKlineSource
-            .map({ (dataSource) -> Int in
-                return dataSource.hashValue
-            })
-            .bind(to: dataSourceSegment.rx.selectedSegmentIndex)
-            .disposed(by: disposeBag)
+        // set the initial value of the segment control from the global singleton object, so I remove the 2-way binding here
+//        KLineSource.shared.dataSource.asObservable()
+//            .map({ (dataSource) -> Int in
+//                return dataSource.hashValue
+//            })
+//            .bind(to: dataSourceSegment.rx.selectedSegmentIndex)
+//            .disposed(by: disposeBag)
         
-        showCoinOnlySwitch.rx.isOn.changed
-            .bind(to: _selectShowCoinOnly)
+        showCoinOnlySwitch.rx.isOn.changed.debug()
+            .bind(to: selectShowCoinOnly)
             .disposed(by: disposeBag)
 
-        didSelectShowCoinOnly
+        didSelectShowCoinOnly.debug()
             .bind(to: showCoinOnlySwitch.rx.isOn)
             .disposed(by: disposeBag)
         
@@ -72,7 +71,7 @@ class SettingsViewController: UITableViewController {
         
         removeMyFavoriteButton
             .rx.tap
-            .bind(to: _selectRemoveMyFavorites)
+            .bind(to: selectRemoveMyFavorites)
             .disposed(by: disposeBag)
         
         self.navigationItem.leftBarButtonItem?
@@ -88,18 +87,19 @@ class SettingsViewController: UITableViewController {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // FIXED: How to make bidirectional binding between..., force load view
+        // FIXED: How to save the status..., force load view
         _ = self.view
         
         let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: nil)
         self.navigationItem.leftBarButtonItem = closeButton
+        
+        dataSourceSegment.selectedSegmentIndex = KLineSource.shared.dataSource.value.rawValue
         
         setupBindings()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
     }
 
     override func didReceiveMemoryWarning() {
