@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import RxSwift
 
 class KLineSource {
     static let shared = KLineSource()
     
-    var dataSource = DataSource.cryptoCompare
+    var dataSource = Variable<DataSource>(DataSource.cryptoCompare)
     
     private init() {
         

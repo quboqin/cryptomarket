@@ -7,57 +7,99 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-protocol SettingsViewControllerDelegate: class {
-    func settingsViewController(_ viewController: SettingsViewController, didSelectTokenOnly isOnlyToken: Bool)
-    func settingsViewControllerDidCancel(_ viewController: SettingsViewController)
-}
+// 2-way binding example
+//infix operator <->
+//
+//@discardableResult func <-><T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable {
+//    let variableToProperty = variable.asObservable()
+//        .bind(to: property)
+//
+//    let propertyToVariable = property
+//        .subscribe(
+//            onNext: { variable.value = $0 },
+//            onCompleted: { variableToProperty.dispose() }
+//    )
+//
+//    return Disposables.create(variableToProperty, propertyToVariable)
+//}
 
-protocol SettingsViewControllerKLineDelegate: class {
-    func settingsViewController(_ viewController: SettingsViewController, didSelectDataSource dataSource: DataSource)
-}
-
-protocol SettingsViewControllerFavoriteDelegate: class {
-    func settingsViewController(_ viewController: SettingsViewController, didRemoveMyFavorites isRemoveMyFavorites: Bool)
-}
-
-class SettingsViewController: UITableViewController {
-    @objc
-    func closeButtonPressed(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
-    }
+class SettingsViewController: UITableViewController {    
+    let disposeBag = DisposeBag()
     
-    weak var delegate: SettingsViewControllerDelegate!
-    weak var kLineDelegate: SettingsViewControllerKLineDelegate?
-    weak var favoriteDelegate: SettingsViewControllerFavoriteDelegate?
+    let selectShowCoinOnly = PublishSubject<Bool>()
+    var didSelectShowCoinOnly: Observable<Bool> { return selectShowCoinOnly.asObservable() }
+    
+    let selectRemoveMyFavorites = PublishSubject<Void>()
+    var didSelectRemoveMyFavorites: Observable<Void> { return selectRemoveMyFavorites.asObservable() }
+    
+    private let _cancel = PublishSubject<Void>()
+    var didCancel: Observable<Void> { return _cancel.asObservable() }
     
     @IBOutlet weak var dataSourceSegment: UISegmentedControl!
-    
+    @IBOutlet weak var removeMyFavoriteButton: UIButton!
     @IBOutlet weak var showCoinOnlySwitch: UISwitch!
-    var showCoinOnly: Bool!
+    
+    private func setupBindings() {
+        dataSourceSegment.rx.selectedSegmentIndex
+            .map({ (index) -> DataSource in
+                return DataSource(source: index)
+            })
+            .bind(to: KLineSource.shared.dataSource)
+            .disposed(by: disposeBag)
+        
+        // set the initial value of the segment control from the global singleton object, so I remove the 2-way binding here
+//        KLineSource.shared.dataSource.asObservable()
+//            .map({ (dataSource) -> Int in
+//                return dataSource.hashValue
+//            })
+//            .bind(to: dataSourceSegment.rx.selectedSegmentIndex)
+//            .disposed(by: disposeBag)
+        
+        showCoinOnlySwitch.rx.isOn.changed.debug()
+            .bind(to: selectShowCoinOnly)
+            .disposed(by: disposeBag)
 
-    @IBAction func selectDatasource(_ sender: UISegmentedControl) {
-        let selectedSegmentIndex = sender.selectedSegmentIndex
-        KLineSource.shared.dataSource = DataSource(source: selectedSegmentIndex)
-        kLineDelegate?.settingsViewController(self, didSelectDataSource: KLineSource.shared.dataSource)
+        didSelectShowCoinOnly.debug()
+            .bind(to: showCoinOnlySwitch.rx.isOn)
+            .disposed(by: disposeBag)
+        
+//        (showCoinOnlySwitch.rx.isOn <-> _selectShowCoinOnly)
+//            .disposed(by: disposeBag)
+        
+        removeMyFavoriteButton
+            .rx.tap
+            .bind(to: selectRemoveMyFavorites)
+            .disposed(by: disposeBag)
+        
+        self.navigationItem.leftBarButtonItem?
+            .rx.tap
+            .bind(to: _cancel)
+            .disposed(by: disposeBag)
+         
+        didCancel
+            .subscribe(onNext: {
+                self.dismiss(animated: true, completion: nil)
+            }).disposed(by: disposeBag)
     }
     
-    @IBAction func showTokenOnly(_ sender: UISwitch) {
-        delegate.settingsViewController(self, didSelectTokenOnly: sender.isOn)
-    }
-    
-    @IBAction func clearMyFavorites(_ sender: UIButton) {
-        favoriteDelegate?.settingsViewController(self, didRemoveMyFavorites: true)
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // FIXED: How to save the status..., force load view
+        _ = self.view
+        
+        let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: nil)
+        self.navigationItem.leftBarButtonItem = closeButton
+        
+        dataSourceSegment.selectedSegmentIndex = KLineSource.shared.dataSource.value.rawValue
+        
+        setupBindings()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeButtonPressed(_:)))
-        self.navigationItem.leftBarButtonItem = closeButton
-
-        dataSourceSegment.selectedSegmentIndex = KLineSource.shared.dataSource.hashValue
-        showCoinOnlySwitch.isOn = showCoinOnly
     }
 
     override func didReceiveMemoryWarning() {

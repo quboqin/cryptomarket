@@ -16,7 +16,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="BDD-sa-cFG">
+                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="BDD-sa-cFG" customClass="ClickView" customModule="CryptoMarketMVC" customModuleProvider="target">
                     <rect key="frame" x="8" y="10" width="61.5" height="24.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aSA-2z-hid">
@@ -33,8 +33,11 @@
                             </constraints>
                         </imageView>
                     </subviews>
+                    <connections>
+                        <outlet property="sortingImage" destination="fN5-za-yNt" id="0Z0-EZ-yll"/>
+                    </connections>
                 </stackView>
-                <stackView opaque="NO" tag="1" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="qOb-EN-YuO">
+                <stackView opaque="NO" tag="1" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="qOb-EN-YuO" customClass="ClickView" customModule="CryptoMarketMVC" customModuleProvider="target">
                     <rect key="frame" x="227" y="10" width="58" height="24.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Price" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ym-qv-QTR">
@@ -51,8 +54,11 @@
                             </constraints>
                         </imageView>
                     </subviews>
+                    <connections>
+                        <outlet property="sortingImage" destination="WJo-gK-xhz" id="COf-RX-OpP"/>
+                    </connections>
                 </stackView>
-                <stackView opaque="NO" tag="2" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Vxy-4f-QTO">
+                <stackView opaque="NO" tag="2" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Vxy-4f-QTO" customClass="ClickView" customModule="CryptoMarketMVC" customModuleProvider="target">
                     <rect key="frame" x="303.5" y="10" width="63.5" height="24.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ8-nJ-JpX">
@@ -69,6 +75,9 @@
                             </constraints>
                         </imageView>
                     </subviews>
+                    <connections>
+                        <outlet property="sortingImage" destination="H7M-k6-bjl" id="r54-2x-AuV"/>
+                    </connections>
                 </stackView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -84,12 +93,9 @@
             <viewLayoutGuide key="safeArea" id="YiQ-C4-CR4"/>
             <connections>
                 <outlet property="changeContainView" destination="Vxy-4f-QTO" id="Gg4-VK-ZEX"/>
-                <outlet property="changeSortingImage" destination="H7M-k6-bjl" id="RaM-fU-5R6"/>
                 <outlet property="nameContainView" destination="BDD-sa-cFG" id="igT-ou-il9"/>
                 <outlet property="nameLableInSectionHeader" destination="aSA-2z-hid" id="o6N-so-6FZ"/>
-                <outlet property="nameSortingImage" destination="fN5-za-yNt" id="HuI-3s-Hbd"/>
                 <outlet property="priceContainView" destination="qOb-EN-YuO" id="pjB-wC-ECh"/>
-                <outlet property="priceSortingImage" destination="WJo-gK-xhz" id="FLI-Ec-GYZ"/>
             </connections>
             <point key="canvasLocation" x="-304.5" y="-566"/>
         </view>

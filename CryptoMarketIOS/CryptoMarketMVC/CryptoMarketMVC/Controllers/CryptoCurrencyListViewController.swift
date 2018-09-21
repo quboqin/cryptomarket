@@ -8,22 +8,24 @@
 
 import UIKit
 import SafariServices
+import RxSwift
+import RxDataSources
 
 class CryptoCurrencyListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var expandedIndexPaths: Set<IndexPath> = []
     var expandViewController: ExpandViewController?
-    
-    var tickers = [Ticker]()
+
     var baseImageUrl: String!
-    
-    var sectionSortedArray = [Sorting.none, Sorting.none, Sorting.none]
     
     var sectionHeaderView: SectionHeaderView?
     var cellIdentifier = "CurrencyCell2"
     
     var currentUrlString: String?
+    
+    var dataSource: RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>?
+    let disposeBag = DisposeBag()
     
     @IBAction func presentSafariViewController(_ sender: Any) {
         guard let urlString = currentUrlString,
@@ -36,11 +38,127 @@ class CryptoCurrencyListViewController: UIViewController {
         present(vc, animated: true)
     }
     
+    func sortedBykey(tickers: [Ticker], key: SortOrder) -> [Ticker] {
+        if case SortOrder.ascend(_, let _key) = key {
+            switch _key {
+            case .name:
+                return tickers.sorted(by: {
+                    $0.fullName < $1.fullName
+                })
+            case .price:
+                return tickers.sorted(by: {
+                    $0.quotes["USD"]!.price < $1.quotes["USD"]!.price
+                })
+            case .change:
+                return tickers.sorted(by: {
+                    $0.quotes["USD"]!.percentChange24h < $1.quotes["USD"]!.percentChange24h
+                })
+            }
+        }
+        if case SortOrder.descend(_, let _key) = key {
+            switch _key {
+            case .name:
+                return tickers.sorted(by: {
+                    $0.fullName > $1.fullName
+                })
+            case .price:
+                return tickers.sorted(by: {
+                    $0.quotes["USD"]!.price > $1.quotes["USD"]!.price
+                })
+            case .change:
+                return tickers.sorted(by: {
+                    $0.quotes["USD"]!.percentChange24h > $1.quotes["USD"]!.percentChange24h
+                })
+            }
+        }
+        return tickers
+    }
+    
+    func setupBindings() {
+        dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>(
+            configureCell: { dataSource, tableView, indexPath, item in
+                let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! CurrencyCell
+                cell.selectionStyle = .none
+                cell.setCoinImage(item.imageUrl, with: (self.baseImageUrl)!)
+                cell.setName(item.fullName)
+                cell.setPrice((item.quotes["USD"]?.price)!)
+                cell.setChange((item.quotes["USD"]?.percentChange24h)!)
+                cell.setVolume24h((item.quotes["USD"]?.volume24h)!)
+                
+                self.currentUrlString = (self.baseImageUrl)! + item.url
+                
+                cell.setWithExpand(self.expandedIndexPaths.contains(indexPath))
+                
+                if self.expandedIndexPaths.contains(indexPath) {
+                    if self.expandViewController == nil {
+                        self.expandViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ExpandViewController") as? ExpandViewController
+                        self.expandViewController?.symbol.value = item.symbol
+                    }
+                    if let expandViewController = self.expandViewController {
+                        self.addChild(expandViewController)
+                        cell.embeddedView.addSubview(expandViewController.view)
+                        
+                        expandViewController.view.translatesAutoresizingMaskIntoConstraints = false
+                        
+                        NSLayoutConstraint.activate([
+                            expandViewController.view.leadingAnchor.constraint(equalTo: cell.embeddedView.leadingAnchor),
+                            expandViewController.view.trailingAnchor.constraint(equalTo: cell.embeddedView.trailingAnchor),
+                            expandViewController.view.topAnchor.constraint(equalTo: cell.embeddedView.topAnchor),
+                            expandViewController.view.bottomAnchor.constraint(equalTo: cell.embeddedView.bottomAnchor)
+                            ])
+                        
+                        expandViewController.didMove(toParent: self)
+                    }
+                }
+                
+                return cell
+        })
+        
+        dataSource?.canEditRowAtIndexPath = { dataSource, indexPath in
+            return !self.expandedIndexPaths.contains(indexPath as IndexPath)
+        }
+        
+        tableView.rx
+            .setDelegate(self)
+            .disposed(by: disposeBag)
+        
+        func removeViewControllerBy(index: IndexPath) {
+            self.expandedIndexPaths.remove(index)
+            self.expandViewController?.willMove(toParent: self)
+            self.expandViewController?.view.removeFromSuperview()
+            self.expandViewController?.removeFromParent()
+            self.expandViewController = nil
+        }
+        
+        tableView.rx.itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                var indexPaths = [IndexPath]()
+                
+                if(self?.expandedIndexPaths.contains(indexPath))! {
+                    removeViewControllerBy(index: indexPath)
+                } else {
+                    if (self?.expandedIndexPaths.count)! > 0 {
+                        let firstIndex = self?.expandedIndexPaths.removeFirst()
+                        removeViewControllerBy(index: firstIndex!)
+                        indexPaths.append(firstIndex!)
+                    }
+                    self?.expandedIndexPaths.insert(indexPath)
+                }
+                indexPaths.append(indexPath)
+                
+                self?.tableView.reloadRows(at: indexPaths, with: .automatic)
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }).disposed(by: disposeBag)
+    }
+    
+    func setupUI() {
+        tableView.tableFooterView = UIView()
+        tableView.rowHeight = UITableView.automaticDimension
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        self.tableView.rowHeight = UITableViewAutomaticDimension
     }
 
     override func didReceiveMemoryWarning() {
@@ -62,48 +180,6 @@ extension CryptoCurrencyListViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! CurrencyCell
         return cell
     }
-    
-    func _tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath, with ticker: Ticker) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! CurrencyCell
-        
-        cell.selectionStyle = .none
-        cell.setCoinImage(ticker.imageUrl, with: baseImageUrl)
-        cell.setName(ticker.fullName)
-        cell.setPrice((ticker.quotes["USD"]?.price)!)
-        cell.setChange((ticker.quotes["USD"]?.percentChange24h)!)
-        cell.setVolume24h((ticker.quotes["USD"]?.volume24h)!)
-        
-        self.currentUrlString = baseImageUrl + ticker.url
-        
-        cell.setWithExpand(self.expandedIndexPaths.contains(indexPath))
-        
-        if self.expandedIndexPaths.contains(indexPath) {
-            self.expandViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ExpandViewController") as? ExpandViewController
-            if let expandViewController = self.expandViewController {
-                self.addChildViewController(expandViewController)
-                cell.embeddedView.addSubview(expandViewController.view)
-
-                expandViewController.view.translatesAutoresizingMaskIntoConstraints = false
-
-                NSLayoutConstraint.activate([
-                    expandViewController.view.leadingAnchor.constraint(equalTo: cell.embeddedView.leadingAnchor),
-                    expandViewController.view.trailingAnchor.constraint(equalTo: cell.embeddedView.trailingAnchor),
-                    expandViewController.view.topAnchor.constraint(equalTo: cell.embeddedView.topAnchor),
-                    expandViewController.view.bottomAnchor.constraint(equalTo: cell.embeddedView.bottomAnchor)
-                    ])
-
-                expandViewController.didMove(toParentViewController: self)
-                
-                expandViewController.symbol = ticker.symbol
-            }
-        }
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return !self.expandedIndexPaths.contains(indexPath as IndexPath)
-    }
 }
 
 extension CryptoCurrencyListViewController: UITableViewDelegate {
@@ -112,47 +188,11 @@ extension CryptoCurrencyListViewController: UITableViewDelegate {
             self.sectionHeaderView = UINib(nibName: "SectionHeaderView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? SectionHeaderView
         }
         if let headerView = self.sectionHeaderView {
-            headerView.delegate = self
             headerView.backgroundColor = .groupTableViewBackground
             self.sectionHeaderView = nil
             return headerView
         }
         return UIView()
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 44
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var indexPaths = [IndexPath]()
-        
-        if(self.expandedIndexPaths.contains(indexPath)) {
-            self.expandedIndexPaths.remove(indexPath)
-            
-            expandViewController?.willMove(toParentViewController: self)
-            expandViewController?.view.removeFromSuperview()
-            expandViewController?.removeFromParentViewController()
-            self.expandViewController = nil
-            
-        } else {
-            if self.expandedIndexPaths.count > 0 {
-                indexPaths.append(self.expandedIndexPaths.removeFirst())
-            }
-            self.expandedIndexPaths.insert(indexPath)
-        }
-        indexPaths.append(indexPath)
-        
-        tableView.reloadRows(at: indexPaths, with: .automatic)
-        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
 }
 
@@ -161,97 +201,3 @@ extension CryptoCurrencyListViewController: SFSafariViewControllerDelegate {
         dismiss(animated: true)
     }
 }
-
-extension CryptoCurrencyListViewController: SectionHeaderViewDelegate {
-    func sectionHeaderView(_ sectionHeaderView: SectionHeaderView, tap whichCol: Int) {
-        var _sorted = sectionSortedArray[sectionHeaderView.tag]
-
-        switch whichCol {
-        case 0:
-            if _sorted == .nameDesc || _sorted == .none {
-                _sorted = .name
-            } else {
-                _sorted = .nameDesc
-            }
-        case 1:
-            if _sorted == .priceDesc {
-                _sorted = .price
-            } else {
-                _sorted = .priceDesc
-            }
-        case 2:
-            if _sorted == .changeDesc {
-                _sorted = .change
-            } else {
-                _sorted = .changeDesc
-            }
-        default:
-            return
-        }
-        
-        sectionSortedArray[sectionHeaderView.tag] = _sorted
-    
-        var sectionToReload = sectionHeaderView.tag
-        if sectionToReload == Section.favorite.hashValue {
-            sectionToReload = 0
-        }
-        let indexSet: IndexSet = [sectionToReload]
-        self.tableView.reloadSections(indexSet, with: .automatic)
-
-        Log.d("Tap \(whichCol)")
-    }
-}
-
-extension Array where Element == Ticker {
-    func filter(BySearch searchText: String?) -> [Ticker] {
-        var filterTickers = [Ticker]()
-        if let lowcasedSearchText = searchText?.lowercased() {
-            filterTickers = self.filter { $0.fullName.lowercased().range(of: lowcasedSearchText) != nil }
-        }
-        if filterTickers.count == 0 {
-            filterTickers = self
-        }
-        return filterTickers
-    }
-    
-    func milter(filterBy searchText: String?, separatedBy section: Section, sortedBy condition: Sorting) -> [Ticker] {
-        var filterTickers = [Ticker]()
-        filterTickers = filter(BySearch: searchText)
-        
-        filterTickers = filterTickers.filter {
-            switch section {
-            case .coin:
-                return !$0.isToken
-            case .token:
-                return $0.isToken
-            default:
-                return true
-            }
-        }
-        
-        if condition == .none {
-            return filterTickers
-        }
-        filterTickers = filterTickers.sorted {
-            switch condition {
-            case .name:
-                return $0.fullName < $1.fullName
-            case .nameDesc:
-                return $0.fullName > $1.fullName
-            case .change:
-                return $0.quotes["USD"]!.percentChange24h < $1.quotes["USD"]!.percentChange24h
-            case .changeDesc:
-                return $0.quotes["USD"]!.percentChange24h > $1.quotes["USD"]!.percentChange24h
-            case .price:
-                return $0.quotes["USD"]!.price < $1.quotes["USD"]!.price
-            case .priceDesc:
-                return $0.quotes["USD"]!.price > $1.quotes["USD"]!.price
-            default:
-                return $0.fullName < $1.fullName
-            }
-        }
-        
-        return filterTickers
-    }
-}
-

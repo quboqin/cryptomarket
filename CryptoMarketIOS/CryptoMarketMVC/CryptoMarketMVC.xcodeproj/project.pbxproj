@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ED0D4C4D214B13A2009F48BC /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0D4C4C214B13A2009F48BC /* RxSwift.framework */; };
+		ED0D4C4F214B13A7009F48BC /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0D4C4E214B13A6009F48BC /* RxCocoa.framework */; };
+		ED0D4C51214B13AC009F48BC /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0D4C50214B13AC009F48BC /* RxBlocking.framework */; };
 		ED52DC922134FEA3001198E7 /* SettingsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */; };
 		ED52DC992134FED6001198E7 /* DismissTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC952134FED6001198E7 /* DismissTransitionController.swift */; };
 		ED52DC9A2134FED6001198E7 /* PresentTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC962134FED6001198E7 /* PresentTransitionController.swift */; };
@@ -44,6 +47,10 @@
 		EDD89F6E21421C190031EA10 /* CoinMarketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F6B21421C190031EA10 /* CoinMarketModel.swift */; };
 		EDD89F6F21421C190031EA10 /* CryptoCompareModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F6C21421C190031EA10 /* CryptoCompareModel.swift */; };
 		EDD89F7021421C190031EA10 /* HuobiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F6D21421C190031EA10 /* HuobiModel.swift */; };
+		EDDA22DF214D76CB00088F48 /* RxDataSources.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDDA22DE214D76CB00088F48 /* RxDataSources.framework */; };
+		EDDA22E1214D7A3600088F48 /* Differentiator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDDA22E0214D7A3600088F48 /* Differentiator.framework */; };
+		EDDA22E3214DE4BA00088F48 /* RxGesture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDDA22E2214DE4BA00088F48 /* RxGesture.framework */; };
+		EDDA22E5214DF18E00088F48 /* ClickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDA22E4214DF18E00088F48 /* ClickView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +71,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		ED0D4C4C214B13A2009F48BC /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		ED0D4C4E214B13A6009F48BC /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
+		ED0D4C50214B13AC009F48BC /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
 		ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		ED52DC952134FED6001198E7 /* DismissTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissTransitionController.swift; sourceTree = "<group>"; };
 		ED52DC962134FED6001198E7 /* PresentTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentTransitionController.swift; sourceTree = "<group>"; };
@@ -110,6 +120,10 @@
 		EDD89F6C21421C190031EA10 /* CryptoCompareModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CryptoCompareModel.swift; sourceTree = "<group>"; };
 		EDD89F6D21421C190031EA10 /* HuobiModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HuobiModel.swift; sourceTree = "<group>"; };
 		EDD89F7121421C4B0031EA10 /* CommonCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommonCrypto.h; sourceTree = "<group>"; };
+		EDDA22DE214D76CB00088F48 /* RxDataSources.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxDataSources.framework; path = Carthage/Build/iOS/RxDataSources.framework; sourceTree = "<group>"; };
+		EDDA22E0214D7A3600088F48 /* Differentiator.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Differentiator.framework; path = Carthage/Build/iOS/Differentiator.framework; sourceTree = "<group>"; };
+		EDDA22E2214DE4BA00088F48 /* RxGesture.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxGesture.framework; path = Carthage/Build/iOS/RxGesture.framework; sourceTree = "<group>"; };
+		EDDA22E4214DF18E00088F48 /* ClickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,7 +131,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDDA22E1214D7A3600088F48 /* Differentiator.framework in Frameworks */,
 				EDD4B47A214882B800D8E297 /* Charts.framework in Frameworks */,
+				ED0D4C4D214B13A2009F48BC /* RxSwift.framework in Frameworks */,
+				ED0D4C4F214B13A7009F48BC /* RxCocoa.framework in Frameworks */,
+				ED0D4C51214B13AC009F48BC /* RxBlocking.framework in Frameworks */,
+				EDDA22DF214D76CB00088F48 /* RxDataSources.framework in Frameworks */,
+				EDDA22E3214DE4BA00088F48 /* RxGesture.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,6 +239,7 @@
 				ED7636AF21325AAA000592F4 /* ScaleWidthImageView.swift */,
 				ED7636AB21320160000592F4 /* CurrencyCell.swift */,
 				ED7636B121325EEF000592F4 /* SectionHeaderView.swift */,
+				EDDA22E4214DF18E00088F48 /* ClickView.swift */,
 				ED52DC9C21365FE2001198E7 /* SectionHeaderView.xib */,
 				ED52DC932134FED6001198E7 /* Transitions */,
 			);
@@ -266,6 +287,12 @@
 		EDD4B478214882B700D8E297 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EDDA22E2214DE4BA00088F48 /* RxGesture.framework */,
+				EDDA22E0214D7A3600088F48 /* Differentiator.framework */,
+				EDDA22DE214D76CB00088F48 /* RxDataSources.framework */,
+				ED0D4C50214B13AC009F48BC /* RxBlocking.framework */,
+				ED0D4C4E214B13A6009F48BC /* RxCocoa.framework */,
+				ED0D4C4C214B13A2009F48BC /* RxSwift.framework */,
 				EDD4B479214882B800D8E297 /* Charts.framework */,
 			);
 			name = Frameworks;
@@ -403,13 +430,16 @@
 				TargetAttributes = {
 					ED7636722131F63D000592F4 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 					};
 					ED7636882131F640000592F4 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = ED7636722131F63D000592F4;
 					};
 					ED7636932131F640000592F4 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = ED7636722131F63D000592F4;
 					};
 				};
@@ -470,13 +500,25 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/Charts.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxDataSources.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Differentiator.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxGesture.framework",
 			);
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Charts.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxCocoa.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxBlocking.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxDataSources.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Differentiator.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxGesture.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -495,6 +537,7 @@
 				ED76367B2131F63D000592F4 /* FavoritesViewController.swift in Sources */,
 				EDD89F6A21421BE80031EA10 /* EndPointType.swift in Sources */,
 				ED7636772131F63D000592F4 /* AppDelegate.swift in Sources */,
+				EDDA22E5214DF18E00088F48 /* ClickView.swift in Sources */,
 				ED7636B82134CE95000592F4 /* PricesViewController.swift in Sources */,
 				ED7636B221325EEF000592F4 /* SectionHeaderView.swift in Sources */,
 				EDD4B47F2148CA4300D8E297 /* kLineSource.swift in Sources */,
@@ -701,7 +744,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CryptoMarketMVC/CommonCrypto.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -724,7 +767,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CryptoMarketMVC/CommonCrypto.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -744,7 +787,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CryptoMarketMVC.app/CryptoMarketMVC";
 			};
@@ -765,7 +808,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CryptoMarketMVC.app/CryptoMarketMVC";
 			};
@@ -785,7 +828,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = CryptoMarketMVC;
 			};
@@ -805,7 +848,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = CryptoMarketMVC;
 			};

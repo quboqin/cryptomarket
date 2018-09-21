@@ -7,17 +7,45 @@
 //
 
 import UIKit
+import RxSwift
+import RxDataSources
 
 class FavoritesViewController: CryptoCurrencyListViewController {
     var favoriteSectionHeaderView: SectionHeaderView?
     
+    private let favoritesRx = Variable<[Ticker]>([])
+    let selectRemoveMyFavorites = PublishSubject<Void>()
+    
     func addTicker(_ ticker: Ticker) {
-        if self.tickers.contains(where: { $0.id == ticker.id }) {
+        if self.favoritesRx.value.contains(where: { $0.id == ticker.id }) {
             return
         }
         
-        self.tickers.append(ticker)
-        self.tableView?.reloadData()
+        self.favoritesRx.value.append(ticker)
+    }
+    
+    func bindingTableView(_ tickers: Variable<[Ticker]>) {
+        let favorites = Observable.combineLatest(tickers.asObservable(), self.favoriteSectionHeaderView!.sortingOrder) {
+            (tickers_, sort) -> [Ticker] in
+            return self.sortedBykey(tickers: tickers_, key: sort)
+        }
+        
+        favorites
+            .map {
+                return [SectionModel(model: "Name", items: $0)]
+            }
+            .bind(to: tableView.rx.items(dataSource: dataSource!))
+            .disposed(by: disposeBag)
+    }
+    
+    override func setupBindings() {
+        super.setupBindings()
+        
+        selectRemoveMyFavorites.subscribe(onNext: {
+           self.removeSavedJSONFileFromDisk()
+        }).disposed(by: disposeBag)
+        
+        bindingTableView(favoritesRx)
     }
 
     override func didReceiveMemoryWarning() {
@@ -25,59 +53,48 @@ class FavoritesViewController: CryptoCurrencyListViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func setupUI() {
+        super.setupUI()
+        
+        self.favoriteSectionHeaderView = UINib(nibName: "SectionHeaderView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? SectionHeaderView
+        self.favoriteSectionHeaderView?.section = .favorite
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupUI()
+        setupBindings()
+        
         self.getTickersFromDisk()
-        self.tableView.reloadData()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        
         self.saveTickersToDisk()
     }
 }
 
 extension FavoritesViewController {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {        
-        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Remove", handler:{ [weak self] action, indexpath in
-            self?.tickers.remove(at: indexPath.row)
-            self?.tableView.reloadData()
+        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowAction.Style.default, title: "Remove", handler:{ [weak self] action, indexpath in
+            CATransaction.begin()
+            CATransaction.setCompletionBlock({
+                self?.tableView.beginUpdates()
+                self?.favoritesRx.value.remove(at: indexPath.row)
+                self?.tableView.deleteRows(at: [indexPath], with: .right)
+                self?.tableView.endUpdates()
+            })
+            CATransaction.commit()
+
         })
 
         return [favoriteRowAction]
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if self.favoriteSectionHeaderView == nil {
-            if let headerView = super.tableView(tableView, viewForHeaderInSection: section) as? SectionHeaderView {
-                headerView.tag = Section.favorite.hashValue
-                self.favoriteSectionHeaderView = headerView
-                return headerView
-            }
-        }
         return self.favoriteSectionHeaderView
-    }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tickers.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let ticker = tickers.milter(filterBy: nil, separatedBy: Section.favorite, sortedBy: self.sectionSortedArray[2])[indexPath.row]
-        return _tableView(tableView, cellForRowAt: indexPath, with: ticker)
-    }
-}
-
-extension FavoritesViewController: SettingsViewControllerFavoriteDelegate {
-    func settingsViewController(_ viewController: SettingsViewController, didRemoveMyFavorites isRemoveMyFavorites: Bool) {
-        Log.v("Remove SaveMyFavorites \(isRemoveMyFavorites)")
-       self.removeSavedJSONFileFromDisk()
-       self.tableView.reloadData()
     }
 }
 
@@ -94,9 +111,10 @@ extension FavoritesViewController {
         let encoder = JSONEncoder()
         do {
             var _savedTickers = [SavedTicker]()
-            tickers.forEach {
-                _savedTickers.append(SavedTicker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, fullName: $0.fullName, imageUrl: $0.imageUrl))
+            self.favoritesRx.value.forEach {
+                 _savedTickers.append(SavedTicker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, fullName: $0.fullName, imageUrl: $0.imageUrl))
             }
+
             if _savedTickers.count == 0 {
                 return
             }
@@ -111,16 +129,17 @@ extension FavoritesViewController {
     func getTickersFromDisk() {
         let decoder = JSONDecoder()
         do {
+            self.favoritesRx.value.removeAll()
             let data = try Data(contentsOf: getDocumentsURL(), options: [])
             let savedTickers = try decoder.decode(SavedTickers.self, from: data)
             self.baseImageUrl = savedTickers.baseImageUrl
             let _savedTickers = savedTickers.data
             _savedTickers.forEach {
                 let _ticker = $0
-                if self.tickers.contains(where: { $0.id == _ticker.id }) {
+                if self.favoritesRx.value.contains(where: { $0.id == _ticker.id }) {
                     return
                 }
-                self.tickers.append(Ticker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, isToken: false, fullName: $0.fullName, url: "", imageUrl: $0.imageUrl))
+                self.favoritesRx.value.append(Ticker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, isToken: false, fullName: $0.fullName, url: "", imageUrl: $0.imageUrl))
             }
         } catch {
             Log.e("An error took place: \(error.localizedDescription)")
@@ -132,7 +151,7 @@ extension FavoritesViewController {
         do {
             if fileManager.fileExists(atPath: getDocumentsURL().path) {
                 try fileManager.removeItem(at: getDocumentsURL())
-                self.tickers = [Ticker]()
+                self.favoritesRx.value.removeAll()
             } else {
                 Log.v("File does not exist")
             }
