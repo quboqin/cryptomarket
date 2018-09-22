@@ -13,39 +13,40 @@ import RxDataSources
 class FavoritesViewController: CryptoCurrencyListViewController {
     var favoriteSectionHeaderView: SectionHeaderView?
     
-    private let favoritesRx = Variable<[Ticker]>([])
-    let selectRemoveMyFavorites = PublishSubject<Void>()
-    
-    func addTicker(_ ticker: Ticker) {
-        if self.favoritesRx.value.contains(where: { $0.id == ticker.id }) {
-            return
-        }
-        
-        self.favoritesRx.value.append(ticker)
-    }
-    
-    func bindingTableView(_ tickers: Variable<[Ticker]>) {
-        let favorites = Observable.combineLatest(tickers.asObservable(), self.favoriteSectionHeaderView!.sortingOrder) {
-            (tickers_, sort) -> [Ticker] in
-            return self.sortedBykey(tickers: tickers_, key: sort)
-        }
-        
-        favorites
-            .map {
-                return [SectionModel(model: "Name", items: $0)]
-            }
-            .bind(to: tableView.rx.items(dataSource: dataSource!))
-            .disposed(by: disposeBag)
-    }
+    let viewModel = FavoriteViewModel()
     
     override func setupBindings() {
         super.setupBindings()
         
-        selectRemoveMyFavorites.subscribe(onNext: {
-           self.removeSavedJSONFileFromDisk()
-        }).disposed(by: disposeBag)
+        self.favoriteSectionHeaderView?.sortingOrder
+            .bind(to: viewModel.setSortOrder)
+            .disposed(by: disposeBag)
         
-        bindingTableView(favoritesRx)
+        viewModel.newTicker
+            .subscribe(onNext: { (newTicker) in
+                if self.viewModel.tickers.value.contains(where: { $0.id == newTicker.id }) {
+                    return
+                }
+                self.viewModel.tickers.value.append(newTicker)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.removeIndex
+            .subscribe(onNext: { (indexPath) in
+                self.viewModel.tickers.value.remove(at: indexPath.row)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.deleteFavoriteListAndFile
+            .subscribe(onNext: {
+                self.viewModel.tickers.value.removeAll()
+                self.removeSavedJSONFileFromDisk()
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.sections
+            .bind(to: tableView.rx.items(dataSource: dataSource!))
+            .disposed(by: disposeBag)
     }
 
     override func didReceiveMemoryWarning() {
@@ -82,7 +83,7 @@ extension FavoritesViewController {
             CATransaction.begin()
             CATransaction.setCompletionBlock({
                 self?.tableView.beginUpdates()
-                self?.favoritesRx.value.remove(at: indexPath.row)
+                self?.viewModel.removeIndex.onNext(indexPath)
                 self?.tableView.deleteRows(at: [indexPath], with: .right)
                 self?.tableView.endUpdates()
             })
@@ -111,14 +112,14 @@ extension FavoritesViewController {
         let encoder = JSONEncoder()
         do {
             var _savedTickers = [SavedTicker]()
-            self.favoritesRx.value.forEach {
+            self.viewModel.tickers.value.forEach {
                  _savedTickers.append(SavedTicker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, fullName: $0.fullName, imageUrl: $0.imageUrl))
             }
 
             if _savedTickers.count == 0 {
                 return
             }
-            let savedTickers = SavedTickers(baseImageUrl: baseImageUrl, data: _savedTickers)
+            let savedTickers = SavedTickers(baseImageUrl: GlobalStatus.shared.baseImageUrl.value, data: _savedTickers)
             let data = try encoder.encode(savedTickers)
             try data.write(to: getDocumentsURL(), options: [])
         } catch {
@@ -129,17 +130,17 @@ extension FavoritesViewController {
     func getTickersFromDisk() {
         let decoder = JSONDecoder()
         do {
-            self.favoritesRx.value.removeAll()
+            self.viewModel.tickers.value.removeAll()
             let data = try Data(contentsOf: getDocumentsURL(), options: [])
             let savedTickers = try decoder.decode(SavedTickers.self, from: data)
-            self.baseImageUrl = savedTickers.baseImageUrl
+            GlobalStatus.shared.baseImageUrl.value = savedTickers.baseImageUrl
             let _savedTickers = savedTickers.data
             _savedTickers.forEach {
                 let _ticker = $0
-                if self.favoritesRx.value.contains(where: { $0.id == _ticker.id }) {
+                if self.viewModel.tickers.value.contains(where: { $0.id == _ticker.id }) {
                     return
                 }
-                self.favoritesRx.value.append(Ticker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, isToken: false, fullName: $0.fullName, url: "", imageUrl: $0.imageUrl))
+                self.viewModel.tickers.value.append(Ticker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, isToken: false, fullName: $0.fullName, url: "", imageUrl: $0.imageUrl))
             }
         } catch {
             Log.e("An error took place: \(error.localizedDescription)")
@@ -151,7 +152,6 @@ extension FavoritesViewController {
         do {
             if fileManager.fileExists(atPath: getDocumentsURL().path) {
                 try fileManager.removeItem(at: getDocumentsURL())
-                self.favoritesRx.value.removeAll()
             } else {
                 Log.v("File does not exist")
             }

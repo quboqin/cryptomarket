@@ -9,10 +9,11 @@
 import Foundation
 import RxSwift
 
-class KLineSource {
-    static let shared = KLineSource()
+class GlobalStatus {
+    static let shared = GlobalStatus()
     
-    var dataSource = Variable<DataSource>(DataSource.cryptoCompare)
+    var klineDataSource = Variable<DataSource>(DataSource.cryptoCompare)
+    var baseImageUrl = Variable<String>("")
     
     private init() {
         
