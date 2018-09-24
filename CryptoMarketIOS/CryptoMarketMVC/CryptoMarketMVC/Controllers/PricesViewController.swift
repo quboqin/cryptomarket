@@ -69,11 +69,11 @@ class PricesViewController: CryptoCurrencyListViewController {
             .bind(to: viewModel.setSearchKeyword)
             .disposed(by: disposeBag)
         
-        self.coinSectionHeaderView?.sortingOrder
+        self.coinSectionHeaderView?.viewModel.didSelectSortingOrder
             .bind(to: viewModel.setCoinSortOrder)
             .disposed(by: disposeBag)
         
-        self.tokenSectionHeaderView?.sortingOrder
+        self.tokenSectionHeaderView?.viewModel.didSelectSortingOrder
             .bind(to: viewModel.setTokenSortOrder)
             .disposed(by: disposeBag)
         
@@ -148,7 +148,7 @@ class PricesViewController: CryptoCurrencyListViewController {
             settingsViewController.viewModel.selectDataSource.onNext(GlobalStatus.shared.klineDataSource.value)
 
             if let favoriteViewController = self.favoritesViewController {
-                settingsViewController.viewModel.didSelectRemoveMyFavorites
+                settingsViewController.viewModel.didRemoveMyFavorites
                     .bind(to: favoriteViewController.viewModel.deleteFavoriteList)
                     .disposed(by: disposeBag)
             }

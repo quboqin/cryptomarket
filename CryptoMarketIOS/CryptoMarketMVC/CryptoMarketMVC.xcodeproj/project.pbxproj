@@ -36,6 +36,7 @@
 		EDB942022156AED60070C278 /* FavoriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB942012156AED60070C278 /* FavoriteViewModel.swift */; };
 		EDB94204215709AD0070C278 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB94203215709AD0070C278 /* SettingViewModel.swift */; };
 		EDB9420621570EE00070C278 /* ExpandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB9420521570EE00070C278 /* ExpandViewModel.swift */; };
+		EDB94208215885950070C278 /* SectionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB94207215885950070C278 /* SectionHeaderViewModel.swift */; };
 		EDD4B47A214882B800D8E297 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD4B479214882B800D8E297 /* Charts.framework */; };
 		EDD4B47D2148C2BF00D8E297 /* PersistentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */; };
 		EDD4B47F2148CA4300D8E297 /* GlobalStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47E2148CA4300D8E297 /* GlobalStatus.swift */; };
@@ -111,6 +112,7 @@
 		EDB942012156AED60070C278 /* FavoriteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewModel.swift; sourceTree = "<group>"; };
 		EDB94203215709AD0070C278 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
 		EDB9420521570EE00070C278 /* ExpandViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandViewModel.swift; sourceTree = "<group>"; };
+		EDB94207215885950070C278 /* SectionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderViewModel.swift; sourceTree = "<group>"; };
 		EDD4B479214882B800D8E297 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = Carthage/Build/iOS/Charts.framework; sourceTree = "<group>"; };
 		EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentModel.swift; sourceTree = "<group>"; };
 		EDD4B47E2148CA4300D8E297 /* GlobalStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalStatus.swift; sourceTree = "<group>"; };
@@ -303,6 +305,7 @@
 				EDB942012156AED60070C278 /* FavoriteViewModel.swift */,
 				EDB94203215709AD0070C278 /* SettingViewModel.swift */,
 				EDB9420521570EE00070C278 /* ExpandViewModel.swift */,
+				EDB94207215885950070C278 /* SectionHeaderViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -582,6 +585,7 @@
 				EDD89F6F21421C190031EA10 /* CryptoCompareModel.swift in Sources */,
 				EDD89F6921421BE80031EA10 /* NetworkLogger.swift in Sources */,
 				ED7636B4213300B2000592F4 /* DetailViewController.swift in Sources */,
+				EDB94208215885950070C278 /* SectionHeaderViewModel.swift in Sources */,
 				EDB942022156AED60070C278 /* FavoriteViewModel.swift in Sources */,
 				EDD89F6721421BE80031EA10 /* NetworkRouter.swift in Sources */,
 			);

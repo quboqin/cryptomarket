@@ -13,7 +13,7 @@ class SettingViewModel {
     // MARK: - Inputs
     let selectDataSource: AnyObserver<DataSource>
     let selectShowCoinOnly: AnyObserver<Bool>
-    let selectRemoveMyFavorites: AnyObserver<Void>
+    let removeMyFavorites: AnyObserver<Void>
     let cancel: AnyObserver<Void>
     
     // MARK: - Status
@@ -21,7 +21,7 @@ class SettingViewModel {
     // MARK: - Outputs
     let didSelectDataSource : Observable<DataSource>
     let didSelectShowCoinOnly: Observable<Bool>
-    let didSelectRemoveMyFavorites: Observable<Void>
+    let didRemoveMyFavorites: Observable<Void>
     let didCancel: Observable<Void>
     
     
@@ -30,9 +30,9 @@ class SettingViewModel {
         self.selectShowCoinOnly = _selectShowCoinOnly.asObserver()
         self.didSelectShowCoinOnly = _selectShowCoinOnly.asObservable()
         
-        let _selectRemoveMyFavorites = PublishSubject<Void>()
-        self.selectRemoveMyFavorites = _selectRemoveMyFavorites.asObserver()
-        self.didSelectRemoveMyFavorites = _selectRemoveMyFavorites.asObservable()
+        let _removeMyFavorites = PublishSubject<Void>()
+        self.removeMyFavorites = _removeMyFavorites.asObserver()
+        self.didRemoveMyFavorites = _removeMyFavorites.asObservable()
         
         let _cancel = PublishSubject<Void>()
         self.cancel = _cancel.asObserver()

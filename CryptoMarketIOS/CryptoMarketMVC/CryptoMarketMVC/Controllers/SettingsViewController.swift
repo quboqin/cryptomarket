@@ -28,7 +28,6 @@ import RxCocoa
 
 class SettingsViewController: UITableViewController {    
     let disposeBag = DisposeBag()
-    
     let viewModel = SettingViewModel()
     
     @IBOutlet weak var dataSourceSegment: UISegmentedControl!
@@ -63,7 +62,7 @@ class SettingsViewController: UITableViewController {
         
         removeMyFavoriteButton
             .rx.tap
-            .bind(to: viewModel.selectRemoveMyFavorites)
+            .bind(to: viewModel.removeMyFavorites)
             .disposed(by: disposeBag)
         
         self.navigationItem.leftBarButtonItem?
@@ -79,7 +78,7 @@ class SettingsViewController: UITableViewController {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // FIXED: How to save the status..., force load view
+        // FIXED: Must finish binding when the view controller is created
         _ = self.view
         
         let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: nil)

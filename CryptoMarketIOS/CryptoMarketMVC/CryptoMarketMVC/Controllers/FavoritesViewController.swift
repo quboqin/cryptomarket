@@ -18,7 +18,7 @@ class FavoritesViewController: CryptoCurrencyListViewController {
     override func setupBindings() {
         super.setupBindings()
         
-        self.favoriteSectionHeaderView?.sortingOrder
+        self.favoriteSectionHeaderView?.viewModel.didSelectSortingOrder
             .bind(to: viewModel.setSortOrder)
             .disposed(by: disposeBag)
         
