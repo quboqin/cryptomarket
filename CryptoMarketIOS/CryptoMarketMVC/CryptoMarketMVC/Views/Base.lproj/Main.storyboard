@@ -205,16 +205,13 @@
                         <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
                     </view>
                     <navigationItem key="navigationItem" title="CryptoCurrency Market" id="VNF-Sx-FUp">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="gear" id="Xnr-1F-NT7">
-                            <connections>
-                                <segue destination="DuN-ny-oI7" kind="presentation" modalPresentationStyle="overFullScreen" id="hCk-ii-eOQ"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="gear" id="Xnr-1F-NT7"/>
                     </navigationItem>
                     <connections>
                         <outlet property="globalLabel" destination="cX7-8U-tsz" id="tVI-EN-n9t"/>
                         <outlet property="headerHeightConstraint" destination="mxV-W9-a2F" id="Ti8-3Q-fuB"/>
                         <outlet property="searchBar" destination="1ub-NW-nep" id="S2J-VE-myJ"/>
+                        <outlet property="settingButton" destination="Xnr-1F-NT7" id="LVJ-vc-L9j"/>
                         <outlet property="tableView" destination="5cw-4O-zEm" id="ETL-gJ-ElK"/>
                     </connections>
                 </viewController>
@@ -225,7 +222,7 @@
         <!--Settings-->
         <scene sceneID="rMn-nh-7Qi">
             <objects>
-                <tableViewController id="z8F-4R-4o7" customClass="SettingsViewController" customModule="CryptoMarketMVC" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="SettingsViewController" id="z8F-4R-4o7" customClass="SettingsViewController" customModule="CryptoMarketMVC" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="eOc-NZ-4dZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -561,24 +558,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hro-bY-onn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="749.60000000000002" y="359.37031484257875"/>
-        </scene>
-        <!--Settings Navigation Controller-->
-        <scene sceneID="DwS-d5-VWS">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DuN-ny-oI7" customClass="SettingsNavigationController" customModule="CryptoMarketMVC" customModuleProvider="target" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Msf-GY-CAL">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="z8F-4R-4o7" kind="relationship" relationship="rootViewController" id="RnN-Nj-IJ0"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="knD-cv-gc4" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2497.5" y="-678.5"/>
         </scene>
     </scenes>
     <resources>

@@ -26,9 +26,9 @@ import RxCocoa
 //    return Disposables.create(variableToProperty, propertyToVariable)
 //}
 
-class SettingsViewController: UITableViewController {    
+class SettingsViewController: UITableViewController, StoryboardInitializable {    
     let disposeBag = DisposeBag()
-    let viewModel = SettingViewModel()
+    var viewModel: SettingViewModel!
     
     @IBOutlet weak var dataSourceSegment: UISegmentedControl!
     @IBOutlet weak var removeMyFavoriteButton: UIButton!
@@ -62,6 +62,9 @@ class SettingsViewController: UITableViewController {
         
         removeMyFavoriteButton
             .rx.tap
+            .map {
+                return true
+            }
             .bind(to: viewModel.removeMyFavorites)
             .disposed(by: disposeBag)
         
@@ -69,26 +72,19 @@ class SettingsViewController: UITableViewController {
             .rx.tap
             .bind(to: viewModel.cancel)
             .disposed(by: disposeBag)
-         
-        viewModel.didCancel
-            .subscribe(onNext: {
-                self.dismiss(animated: true, completion: nil)
-            }).disposed(by: disposeBag)
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // FIXED: Must finish binding when the view controller is created
-        _ = self.view
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: nil)
         self.navigationItem.leftBarButtonItem = closeButton
         
         setupBindings()
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
     }
 
     override func didReceiveMemoryWarning() {

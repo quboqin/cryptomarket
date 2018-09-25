@@ -15,7 +15,7 @@ class FavoriteViewModel: CryptoCurrencyListViewModel {
     let setSortOrder: AnyObserver<SortOrder>
     let addTicker: AnyObserver<CurrencyViewModel>
     let removeTicker: AnyObserver<IndexPath>
-    let deleteFavoriteList: AnyObserver<Void>
+    let deleteFavoriteList: AnyObserver<Bool>
     
     // MARK: - Status
     let tickers = Variable<[CurrencyViewModel]>([])
@@ -24,7 +24,7 @@ class FavoriteViewModel: CryptoCurrencyListViewModel {
     let newTicker = PublishSubject<CurrencyViewModel>()
     let removeIndex = PublishSubject<IndexPath>()
     let sections: Observable<[SectionModel<String, CurrencyViewModel>]>
-    let deleteFavoriteListAndFile: Observable<Void>
+    let deleteFavoriteListAndFile: Observable<Bool>
     
     override init() {
         self.addTicker = newTicker.asObserver()
@@ -41,7 +41,7 @@ class FavoriteViewModel: CryptoCurrencyListViewModel {
             return [SectionModel(model: "Name", items: $0)]
         }
         
-        let _deleteFavoriteList = PublishSubject<Void>()
+        let _deleteFavoriteList = PublishSubject<Bool>()
         self.deleteFavoriteList = _deleteFavoriteList.asObserver()
         self.deleteFavoriteListAndFile = _deleteFavoriteList.asObservable()
         

@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		ED064779215AE147005B34B6 /* BaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED064777215AE146005B34B6 /* BaseCoordinator.swift */; };
 		ED06477A215AE147005B34B6 /* StoryboardInitializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED064778215AE147005B34B6 /* StoryboardInitializable.swift */; };
+		ED06477C215AE2D8005B34B6 /* PriceCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED06477B215AE2D8005B34B6 /* PriceCoordinator.swift */; };
+		ED06477E215AE32D005B34B6 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED06477D215AE32D005B34B6 /* AppCoordinator.swift */; };
+		ED064782215AEBCE005B34B6 /* SettingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED064781215AEBCE005B34B6 /* SettingCoordinator.swift */; };
+		ED064784215B1308005B34B6 /* FavoriteCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED064783215B1308005B34B6 /* FavoriteCoordinator.swift */; };
 		ED0D4C4D214B13A2009F48BC /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0D4C4C214B13A2009F48BC /* RxSwift.framework */; };
 		ED0D4C4F214B13A7009F48BC /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0D4C4E214B13A6009F48BC /* RxCocoa.framework */; };
 		ED0D4C51214B13AC009F48BC /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0D4C50214B13AC009F48BC /* RxBlocking.framework */; };
@@ -82,6 +86,10 @@
 /* Begin PBXFileReference section */
 		ED064777215AE146005B34B6 /* BaseCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCoordinator.swift; sourceTree = "<group>"; };
 		ED064778215AE147005B34B6 /* StoryboardInitializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryboardInitializable.swift; sourceTree = "<group>"; };
+		ED06477B215AE2D8005B34B6 /* PriceCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceCoordinator.swift; sourceTree = "<group>"; };
+		ED06477D215AE32D005B34B6 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		ED064781215AEBCE005B34B6 /* SettingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCoordinator.swift; sourceTree = "<group>"; };
+		ED064783215B1308005B34B6 /* FavoriteCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCoordinator.swift; sourceTree = "<group>"; };
 		ED0D4C4C214B13A2009F48BC /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		ED0D4C4E214B13A6009F48BC /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		ED0D4C50214B13AC009F48BC /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
@@ -195,6 +203,7 @@
 			children = (
 				ED7636B72134CE95000592F4 /* PricesViewController.swift */,
 				EDB62CB121554EEF006EA432 /* PriceViewModel.swift */,
+				ED06477B215AE2D8005B34B6 /* PriceCoordinator.swift */,
 			);
 			path = Price;
 			sourceTree = "<group>";
@@ -204,6 +213,7 @@
 			children = (
 				ED76367A2131F63D000592F4 /* FavoritesViewController.swift */,
 				EDB942012156AED60070C278 /* FavoriteViewModel.swift */,
+				ED064783215B1308005B34B6 /* FavoriteCoordinator.swift */,
 			);
 			path = Favorites;
 			sourceTree = "<group>";
@@ -214,6 +224,7 @@
 				ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */,
 				ED7636AD213203A2000592F4 /* SettingsViewController.swift */,
 				EDB94203215709AD0070C278 /* SettingViewModel.swift */,
+				ED064781215AEBCE005B34B6 /* SettingCoordinator.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -336,6 +347,7 @@
 			isa = PBXGroup;
 			children = (
 				ED7636762131F63D000592F4 /* AppDelegate.swift */,
+				ED06477D215AE32D005B34B6 /* AppCoordinator.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -645,6 +657,10 @@
 				EDB9420621570EE00070C278 /* ExpandViewModel.swift in Sources */,
 				EDB62CB021554DED006EA432 /* CryptoCurrencyListViewModel.swift in Sources */,
 				ED76367B2131F63D000592F4 /* FavoritesViewController.swift in Sources */,
+				ED064782215AEBCE005B34B6 /* SettingCoordinator.swift in Sources */,
+				ED06477C215AE2D8005B34B6 /* PriceCoordinator.swift in Sources */,
+				ED06477E215AE32D005B34B6 /* AppCoordinator.swift in Sources */,
+				ED064784215B1308005B34B6 /* FavoriteCoordinator.swift in Sources */,
 				EDD89F6A21421BE80031EA10 /* EndPointType.swift in Sources */,
 				ED7636772131F63D000592F4 /* AppDelegate.swift in Sources */,
 				EDDA22E5214DF18E00088F48 /* ClickView.swift in Sources */,

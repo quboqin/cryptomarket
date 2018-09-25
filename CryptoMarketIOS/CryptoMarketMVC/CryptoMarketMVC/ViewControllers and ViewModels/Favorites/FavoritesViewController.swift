@@ -13,7 +13,7 @@ import RxDataSources
 class FavoritesViewController: CryptoCurrencyListViewController {
     var favoriteSectionHeaderView: SectionHeaderView?
     
-    let viewModel = FavoriteViewModel()
+    var viewModel: FavoriteViewModel!
     
     override func setupBindings() {
         super.setupBindings()
@@ -38,7 +38,7 @@ class FavoritesViewController: CryptoCurrencyListViewController {
             .disposed(by: disposeBag)
         
         viewModel.deleteFavoriteListAndFile
-            .subscribe(onNext: {
+            .subscribe({_ in 
                 self.viewModel.tickers.value.removeAll()
                 self.removeSavedJSONFileFromDisk()
             })

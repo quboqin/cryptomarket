@@ -30,7 +30,9 @@ class PricesViewController: CryptoCurrencyListViewController {
     var coinSectionHeaderView: SectionHeaderView?
     var tokenSectionHeaderView: SectionHeaderView?
     
-    private let viewModel = PriceViewModel()
+    @IBOutlet weak var settingButton: UIBarButtonItem!
+    
+    var viewModel: PriceViewModel!
     
     let refreshControl = UIRefreshControl()
     
@@ -61,6 +63,10 @@ class PricesViewController: CryptoCurrencyListViewController {
         
         refreshControl.rx.controlEvent(.valueChanged)
             .bind(to: viewModel.reload)
+            .disposed(by: disposeBag)
+        
+        settingButton.rx.tap.debug()
+            .bind(to: viewModel.clickSettings)
             .disposed(by: disposeBag)
         
         searchBar.rx.text
@@ -126,33 +132,6 @@ class PricesViewController: CryptoCurrencyListViewController {
         
         refreshControl.beginRefreshing()
         refreshControl.sendActions(for: .valueChanged)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-        segue.destination.transitioningDelegate = self
-        
-        if let navigationController = segue.destination as? SettingsNavigationController,
-            let settingsViewController = navigationController.viewControllers.first as? SettingsViewController {
-    
-            settingsViewController.viewModel.didSelectShowCoinOnly
-                .bind(to: viewModel.showCoinOnly)
-                .disposed(by: disposeBag)
-            
-            settingsViewController.viewModel.didSelectDataSource.debug()
-                .bind(to: GlobalStatus.shared.klineDataSource)
-                .disposed(by: disposeBag)
-            
-            // FIXED: How to save the status
-            settingsViewController.viewModel.selectShowCoinOnly.onNext(viewModel.showCoinOnly.value)
-            settingsViewController.viewModel.selectDataSource.onNext(GlobalStatus.shared.klineDataSource.value)
-
-            if let favoriteViewController = self.favoritesViewController {
-                settingsViewController.viewModel.didRemoveMyFavorites
-                    .bind(to: favoriteViewController.viewModel.deleteFavoriteList)
-                    .disposed(by: disposeBag)
-            }
-        }
     }
 
     override func didReceiveMemoryWarning() {

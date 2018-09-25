@@ -16,6 +16,7 @@ class PriceViewModel: CryptoCurrencyListViewModel {
     let setSearchKeyword: AnyObserver<String>
     let setCoinSortOrder: AnyObserver<SortOrder>
     let setTokenSortOrder: AnyObserver<SortOrder>
+    let clickSettings: AnyObserver<Void>
     
     // MARK: - Status
     let showCoinOnly: Variable<Bool>
@@ -24,6 +25,7 @@ class PriceViewModel: CryptoCurrencyListViewModel {
     let totalVolume24H: Observable<String>
     let baseImageUrl: Observable<String>
     let sections: Observable<[SectionModel<String, CurrencyViewModel>]>
+    let showSettings: Observable<Void>
     
     override init() {
         let _reload = PublishSubject<Void>()
@@ -160,6 +162,10 @@ class PriceViewModel: CryptoCurrencyListViewModel {
             
             return sections
         }
+        
+        let _clickSettings = PublishSubject<Void>()
+        self.clickSettings = _clickSettings.asObserver()
+        self.showSettings = _clickSettings.asObservable()
         
         super.init()
     }

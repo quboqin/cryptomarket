@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RxSwift
 
 /*
  The @UIApplicationMain attribute in Swift replaces the trivial main.m file found in Objective-C projects (whose purpose is to implement the main function that's the entry point for all C programs and call UIApplicationMain to kick off the Cocoa Touch run loop and app infrastructure).
@@ -16,9 +17,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    private var appCoordinator: AppCoordinator!
+    private let disposeBag = DisposeBag()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        window = UIWindow()
+        
+        appCoordinator = AppCoordinator(window: window!)
+        appCoordinator.start()
+            .subscribe()
+            .disposed(by: disposeBag)
+        
         return true
     }
 
