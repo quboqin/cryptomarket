@@ -252,10 +252,10 @@
 			children = (
 				ED76367C2131F63D000592F4 /* Main.storyboard */,
 				ED7636AF21325AAA000592F4 /* ScaleWidthImageView.swift */,
-				ED7636AB21320160000592F4 /* CurrencyCell.swift */,
 				ED7636B121325EEF000592F4 /* SectionHeaderView.swift */,
 				EDDA22E4214DF18E00088F48 /* ClickView.swift */,
 				ED52DC9C21365FE2001198E7 /* SectionHeaderView.xib */,
+				ED7636AB21320160000592F4 /* CurrencyCell.swift */,
 				ED52DC932134FED6001198E7 /* Transitions */,
 			);
 			path = Views;
