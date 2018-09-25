@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import RxDataSources
 
-class PriceViewModel: CurrencyListViewModel {
+class PriceViewModel: CryptoCurrencyListViewModel {
     // MARK: - Inputs
     let reload: AnyObserver<Void>
     let setSearchKeyword: AnyObserver<String>
@@ -115,7 +115,7 @@ class PriceViewModel: CurrencyListViewModel {
         
         let sortedCoins = Observable.combineLatest(coins.asObservable(), _currentCoinSortOrder) {
             (tickers, sort) -> [CurrencyViewModel] in
-            return CurrencyListViewModel.sortedBykey(tickers: tickers, key: sort)
+            return CryptoCurrencyListViewModel.sortedBykey(tickers: tickers, key: sort)
         }
         
         let tokens = filterTickers.map { (tickers_) -> [Ticker] in
@@ -143,7 +143,7 @@ class PriceViewModel: CurrencyListViewModel {
         
         let sortedTokens = Observable.combineLatest(_tokens.asObservable(), _currentTokenSortOrder) {
             (tickers_, sort) -> [CurrencyViewModel] in
-            return CurrencyListViewModel.sortedBykey(tickers: tickers_, key: sort)
+            return CryptoCurrencyListViewModel.sortedBykey(tickers: tickers_, key: sort)
         }
         
         sections = Observable.combineLatest(sortedCoins, sortedTokens) {

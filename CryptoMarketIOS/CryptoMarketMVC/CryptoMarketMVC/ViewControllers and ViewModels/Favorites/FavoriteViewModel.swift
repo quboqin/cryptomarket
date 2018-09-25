@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import RxDataSources
 
-class FavoriteViewModel: CurrencyListViewModel {
+class FavoriteViewModel: CryptoCurrencyListViewModel {
     // MARK: - Inputs
     let setSortOrder: AnyObserver<SortOrder>
     let addTicker: AnyObserver<CurrencyViewModel>
@@ -35,7 +35,7 @@ class FavoriteViewModel: CurrencyListViewModel {
         
         sections = Observable.combineLatest(tickers.asObservable(), _currentSortOrder) {
             (tickers_, sort) -> [CurrencyViewModel] in
-            return CurrencyListViewModel.sortedBykey(tickers: tickers_, key: sort)
+            return CryptoCurrencyListViewModel.sortedBykey(tickers: tickers_, key: sort)
         }
         .map {
             return [SectionModel(model: "Name", items: $0)]

@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-class CurrencyListViewModel {
+class CryptoCurrencyListViewModel {
     // MARK: - Inputs
     let selectCurrency: AnyObserver<CurrencyViewModel>
     

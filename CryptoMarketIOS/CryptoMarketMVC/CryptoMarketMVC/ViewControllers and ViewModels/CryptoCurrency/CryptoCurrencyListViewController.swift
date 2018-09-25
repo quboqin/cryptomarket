@@ -21,7 +21,7 @@ class CryptoCurrencyListViewController: UIViewController {
     var sectionHeaderView: SectionHeaderView?
     var cellIdentifier = "CurrencyCell2"
     
-    private let viewModel = CurrencyListViewModel()
+    private let viewModel = CryptoCurrencyListViewModel()
     var dataSource: RxTableViewSectionedReloadDataSource<SectionModel<String, CurrencyViewModel>>?
     let disposeBag = DisposeBag()
     
