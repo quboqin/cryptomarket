@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -40,7 +39,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4GE-ac-z3z">
-                                                            <rect key="frame" x="324" y="13" width="43" height="19"/>
+                                                            <rect key="frame" x="324" y="12.5" width="43" height="19"/>
                                                             <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="13"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -75,14 +74,11 @@
                                                     </constraints>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="86a-iP-TNw" userLabel="ExpandView">
-                                                    <rect key="frame" x="0.0" y="44" width="375" height="240"/>
+                                                    <rect key="frame" x="0.0" y="44" width="375" height="239.5"/>
                                                     <subviews>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fyU-Ks-e9F">
                                                             <rect key="frame" x="331" y="2" width="29" height="29"/>
                                                             <state key="normal" image="eye"/>
-                                                            <connections>
-                                                                <action selector="presentSafariViewController:" destination="9pv-A4-QxB" eventType="touchUpInside" id="3i4-7m-YHF"/>
-                                                            </connections>
                                                         </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XCS-EY-EdS">
                                                             <rect key="frame" x="8" y="8" width="69.5" height="12"/>
@@ -91,7 +87,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bWI-W6-Uxp" userLabel="EmbeddedView">
-                                                            <rect key="frame" x="0.0" y="28" width="375" height="212"/>
+                                                            <rect key="frame" x="0.0" y="28" width="375" height="211.5"/>
                                                             <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" priority="998" constant="212" id="Xgx-nO-3Lt"/>
@@ -129,6 +125,7 @@
                                             <outlet property="coinImageView" destination="9hK-eq-RgZ" id="baA-L5-X6m"/>
                                             <outlet property="embeddedView" destination="bWI-W6-Uxp" id="w2N-tS-LhK"/>
                                             <outlet property="expandViewHeightConstraint" destination="SVX-Gu-b6V" id="hFs-ov-3hV"/>
+                                            <outlet property="eyeButton" destination="fyU-Ks-e9F" id="mvP-Hs-0f0"/>
                                             <outlet property="nameLabel" destination="wPC-HD-Ioa" id="a6a-dz-auW"/>
                                             <outlet property="priceLabel" destination="ctS-v8-Iff" id="DLE-IH-3iZ"/>
                                             <outlet property="volume24hLabel" destination="XCS-EY-EdS" id="6ad-Zl-rqc"/>
@@ -170,13 +167,13 @@
                                                 <rect key="frame" x="0.0" y="15.5" width="25" height="25"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Filter:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M3b-Ph-cEA">
-                                                <rect key="frame" x="25" y="19.5" width="40.5" height="17"/>
+                                                <rect key="frame" x="25" y="19.5" width="41" height="17"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="crypto currency name" translatesAutoresizingMaskIntoConstraints="NO" id="1ub-NW-nep">
-                                                <rect key="frame" x="65.5" y="0.0" width="293.5" height="56"/>
+                                                <rect key="frame" x="66" y="0.0" width="293" height="56"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </searchBar>
                                         </subviews>
@@ -335,15 +332,15 @@
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CurrencyCell2" rowHeight="284" id="YhK-eZ-8NJ" customClass="CurrencyCell" customModule="CryptoMarketMVC" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="284"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="YhK-eZ-8NJ" id="plB-hc-viF">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="YhK-eZ-8NJ" id="plB-hc-viF">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="283.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mB4-xM-rku" userLabel="CellView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gc4-ci-peH">
-                                                            <rect key="frame" x="40" y="11" width="38" height="22"/>
+                                                            <rect key="frame" x="40" y="11.5" width="38" height="22"/>
                                                             <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="15"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -355,14 +352,14 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="btc" translatesAutoresizingMaskIntoConstraints="NO" id="rdp-BM-5Mk">
-                                                            <rect key="frame" x="8" y="10" width="24" height="24"/>
+                                                            <rect key="frame" x="8" y="10.5" width="24" height="24"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="24" id="8sx-gR-ZD3"/>
                                                                 <constraint firstAttribute="width" constant="24" id="bm2-vD-DYC"/>
                                                             </constraints>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Price" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kL4-Lw-7ju">
-                                                            <rect key="frame" x="243" y="11" width="34" height="22"/>
+                                                            <rect key="frame" x="243" y="11.5" width="34" height="22"/>
                                                             <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="15"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -384,14 +381,11 @@
                                                     </constraints>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dhh-YV-HL8" userLabel="ExpandView">
-                                                    <rect key="frame" x="0.0" y="44" width="375" height="240"/>
+                                                    <rect key="frame" x="0.0" y="44.5" width="375" height="240"/>
                                                     <subviews>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ln-g4-SY3">
                                                             <rect key="frame" x="331" y="2" width="29" height="29"/>
                                                             <state key="normal" image="eye"/>
-                                                            <connections>
-                                                                <action selector="presentSafariViewController:" destination="9pv-A4-QxB" eventType="touchUpInside" id="hfj-Ji-E6s"/>
-                                                            </connections>
                                                         </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ivO-NF-DKg">
                                                             <rect key="frame" x="8" y="8" width="69.5" height="12"/>
@@ -438,6 +432,7 @@
                                             <outlet property="coinImageView" destination="rdp-BM-5Mk" id="kIB-0c-iYh"/>
                                             <outlet property="embeddedView" destination="hl0-oB-lMn" id="wYL-sA-QnW"/>
                                             <outlet property="expandViewHeightConstraint" destination="Tee-VU-h2n" id="4Kr-Lc-xvB"/>
+                                            <outlet property="eyeButton" destination="9Ln-g4-SY3" id="bVV-Zq-czk"/>
                                             <outlet property="nameLabel" destination="Gc4-ci-peH" id="vuU-e5-Ew9"/>
                                             <outlet property="priceLabel" destination="kL4-Lw-7ju" id="TtL-5d-hmH"/>
                                             <outlet property="volume24hLabel" destination="ivO-NF-DKg" id="DG6-bb-jg4"/>
@@ -574,9 +569,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="btc" width="100" height="100"/>
+        <image name="btc" width="300" height="300"/>
         <image name="eye" width="29" height="29"/>
-        <image name="filter" width="16" height="16"/>
+        <image name="filter" width="24" height="24"/>
         <image name="first" width="30" height="30"/>
         <image name="gear" width="32" height="32"/>
         <image name="second" width="30" height="30"/>

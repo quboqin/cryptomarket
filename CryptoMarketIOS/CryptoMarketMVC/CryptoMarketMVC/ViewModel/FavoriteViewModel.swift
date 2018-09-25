@@ -13,17 +13,17 @@ import RxDataSources
 class FavoriteViewModel: CurrencyListViewModel {
     // MARK: - Inputs
     let setSortOrder: AnyObserver<SortOrder>
-    let addTicker: AnyObserver<Ticker>
+    let addTicker: AnyObserver<CurrencyViewModel>
     let removeTicker: AnyObserver<IndexPath>
     let deleteFavoriteList: AnyObserver<Void>
     
     // MARK: - Status
-    let tickers = Variable<[Ticker]>([])
+    let tickers = Variable<[CurrencyViewModel]>([])
     
     // MARK: - Outputs
-    let newTicker = PublishSubject<Ticker>()
+    let newTicker = PublishSubject<CurrencyViewModel>()
     let removeIndex = PublishSubject<IndexPath>()
-    let sections: Observable<[SectionModel<String, Ticker>]>
+    let sections: Observable<[SectionModel<String, CurrencyViewModel>]>
     let deleteFavoriteListAndFile: Observable<Void>
     
     override init() {
@@ -34,7 +34,7 @@ class FavoriteViewModel: CurrencyListViewModel {
         self.setSortOrder = _currentSortOrder.asObserver()
         
         sections = Observable.combineLatest(tickers.asObservable(), _currentSortOrder) {
-            (tickers_, sort) -> [Ticker] in
+            (tickers_, sort) -> [CurrencyViewModel] in
             return CurrencyListViewModel.sortedBykey(tickers: tickers_, key: sort)
         }
         .map {
@@ -44,5 +44,7 @@ class FavoriteViewModel: CurrencyListViewModel {
         let _deleteFavoriteList = PublishSubject<Void>()
         self.deleteFavoriteList = _deleteFavoriteList.asObserver()
         self.deleteFavoriteListAndFile = _deleteFavoriteList.asObservable()
+        
+        super.init()
     }
 }

@@ -23,7 +23,7 @@ class PriceViewModel: CurrencyListViewModel {
     // MARK: - Outputs
     let totalVolume24H: Observable<String>
     let baseImageUrl: Observable<String>
-    let sections: Observable<[SectionModel<String, Ticker>]>
+    let sections: Observable<[SectionModel<String, CurrencyViewModel>]>
     
     override init() {
         let _reload = PublishSubject<Void>()
@@ -104,12 +104,17 @@ class PriceViewModel: CurrencyListViewModel {
                 return !ticker.isToken
             })
         }
+        .map {
+            $0.map({ (ticker) -> CurrencyViewModel in
+                return CurrencyViewModel(currency: ticker)
+            })
+        }
         
         let _currentCoinSortOrder = BehaviorSubject<SortOrder>(value: SortOrder.none)
         self.setCoinSortOrder = _currentCoinSortOrder.asObserver()
         
         let sortedCoins = Observable.combineLatest(coins.asObservable(), _currentCoinSortOrder) {
-            (tickers, sort) -> [Ticker] in
+            (tickers, sort) -> [CurrencyViewModel] in
             return CurrencyListViewModel.sortedBykey(tickers: tickers, key: sort)
         }
         
@@ -127,12 +132,17 @@ class PriceViewModel: CurrencyListViewModel {
                 return !showCoinOnly && ticker.isToken
             })
         }
+        .map {
+            $0.map({ (ticker) -> CurrencyViewModel in
+                return CurrencyViewModel(currency: ticker)
+            })
+        }
         
         let _currentTokenSortOrder = BehaviorSubject<SortOrder>(value: SortOrder.none)
         self.setTokenSortOrder = _currentTokenSortOrder.asObserver()
         
         let sortedTokens = Observable.combineLatest(_tokens.asObservable(), _currentTokenSortOrder) {
-            (tickers_, sort) -> [Ticker] in
+            (tickers_, sort) -> [CurrencyViewModel] in
             return CurrencyListViewModel.sortedBykey(tickers: tickers_, key: sort)
         }
         
@@ -140,7 +150,7 @@ class PriceViewModel: CurrencyListViewModel {
             return ($0, $1)
         }
         .map {
-            var sections = [SectionModel<String, Ticker>]()
+            var sections = [SectionModel<String, CurrencyViewModel>]()
             if $0.count != 0 {
                 sections.append(SectionModel(model: "Coin", items: $0))
             }
@@ -150,5 +160,7 @@ class PriceViewModel: CurrencyListViewModel {
             
             return sections
         }
+        
+        super.init()
     }
 }

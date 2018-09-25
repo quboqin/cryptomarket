@@ -113,7 +113,7 @@ extension FavoritesViewController {
         do {
             var _savedTickers = [SavedTicker]()
             self.viewModel.tickers.value.forEach {
-                 _savedTickers.append(SavedTicker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, fullName: $0.fullName, imageUrl: $0.imageUrl))
+                 _savedTickers.append(SavedTicker(id: $0.id, name: $0.name, symbol: $0.symbol, quotes: $0.quotes, fullName: $0.fullName, imageUrl: $0.imageUrl))
             }
 
             if _savedTickers.count == 0 {
@@ -140,7 +140,10 @@ extension FavoritesViewController {
                 if self.viewModel.tickers.value.contains(where: { $0.id == _ticker.id }) {
                     return
                 }
-                self.viewModel.tickers.value.append(Ticker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: $0.websiteSlug, rank: $0.rank, circulatingSupply: $0.circulatingSupply, totalSupply: $0.totalSupply, maxSupply: $0.maxSupply, quotes: $0.quotes, lastUpdated: $0.lastUpdated, isToken: false, fullName: $0.fullName, url: "", imageUrl: $0.imageUrl))
+                
+                let ticker = Ticker(id: $0.id, name: $0.name, symbol: $0.symbol, websiteSlug: "", rank: 0, circulatingSupply: 0, totalSupply: 0, maxSupply: 0, quotes: $0.quotes, lastUpdated: 0, isToken: false, fullName: $0.fullName, url: "", imageUrl: $0.imageUrl)
+                
+                self.viewModel.tickers.value.append(CurrencyViewModel(currency: ticker))
             }
         } catch {
             Log.e("An error took place: \(error.localizedDescription)")

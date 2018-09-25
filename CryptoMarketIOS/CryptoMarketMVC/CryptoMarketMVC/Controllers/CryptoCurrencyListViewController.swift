@@ -9,6 +9,7 @@
 import UIKit
 import SafariServices
 import RxSwift
+import RxCocoa
 import RxDataSources
 
 class CryptoCurrencyListViewController: UIViewController {
@@ -20,35 +21,20 @@ class CryptoCurrencyListViewController: UIViewController {
     var sectionHeaderView: SectionHeaderView?
     var cellIdentifier = "CurrencyCell2"
     
-    var currentUrlString: String?
-    
-    var dataSource: RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>?
+    private let viewModel = CurrencyListViewModel()
+    var dataSource: RxTableViewSectionedReloadDataSource<SectionModel<String, CurrencyViewModel>>?
     let disposeBag = DisposeBag()
     
-    @IBAction func presentSafariViewController(_ sender: Any) {
-        guard let urlString = currentUrlString,
-              let url = URL(string: urlString) else {
-            return
-        }
-        
-        let vc = DetailViewController(url: url)
-        vc.delegate = self
-        present(vc, animated: true)
-    }
-    
     func setupBindings() {
-        dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Ticker>>(
+        dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, CurrencyViewModel>>(
             configureCell: { dataSource, tableView, indexPath, item in
                 let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! CurrencyCell
                 cell.selectionStyle = .none
                 cell.setCoinImage(item.imageUrl, with: GlobalStatus.shared.baseImageUrl.value)
                 cell.setName(item.fullName)
-                cell.setPrice((item.quotes["USD"]?.price)!)
-                cell.setChange((item.quotes["USD"]?.percentChange24h)!)
-                cell.setVolume24h((item.quotes["USD"]?.volume24h)!)
-                
-                self.currentUrlString = GlobalStatus.shared.baseImageUrl.value + item.url
-                
+                cell.setPrice(item.price!)
+                cell.setChange(item.change!)
+                cell.setVolume24h(item.volume24h!)
                 cell.setWithExpand(self.expandedIndexPaths.contains(indexPath))
                 
                 if self.expandedIndexPaths.contains(indexPath) {
@@ -59,6 +45,25 @@ class CryptoCurrencyListViewController: UIViewController {
                         
                         GlobalStatus.shared.klineDataSource.asObservable().debug()
                             .bind(to: self.expandViewController.viewModel.setDataSource)
+                            .disposed(by: self.disposeBag)
+                        
+                        cell.eyeButton.rx
+                            .tap.debug()
+                            .map { _ in
+                                return item
+                            }
+                            .bind(to: self.viewModel.selectCurrency)
+                            .disposed(by: self.disposeBag)
+                        
+                        self.viewModel.showCurrency.debug()
+                            .subscribe(onNext : { [weak self] urlString in
+                                Log.e(urlString)
+                                if let url = URL(string: urlString) {
+                                    let vc = DetailViewController(url: url)
+                                    vc.delegate = self
+                                    self?.present(vc, animated: true)
+                                }
+                            })
                             .disposed(by: self.disposeBag)
                     }
                     if let expandViewController = self.expandViewController {

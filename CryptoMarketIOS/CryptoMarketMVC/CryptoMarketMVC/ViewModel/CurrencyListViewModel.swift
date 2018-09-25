@@ -11,12 +11,21 @@ import RxSwift
 
 class CurrencyListViewModel {
     // MARK: - Inputs
+    let selectCurrency: AnyObserver<CurrencyViewModel>
     
     // MARK: - Status
     
     // MARK: - Outputs
+    let showCurrency: Observable<String>
     
-    class func sortedBykey(tickers: [Ticker], key: SortOrder) -> [Ticker] {
+    init() {
+        let _selectCurrency = PublishSubject<CurrencyViewModel>()
+        self.selectCurrency = _selectCurrency.asObserver()
+        self.showCurrency = _selectCurrency.asObservable()
+            .map { $0.url }
+    }
+    
+    class func sortedBykey(tickers: [CurrencyViewModel], key: SortOrder) -> [CurrencyViewModel] {
         if case SortOrder.ascend(_, let _key) = key {
             switch _key {
             case .name:

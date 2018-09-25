@@ -37,6 +37,7 @@
 		EDB94204215709AD0070C278 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB94203215709AD0070C278 /* SettingViewModel.swift */; };
 		EDB9420621570EE00070C278 /* ExpandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB9420521570EE00070C278 /* ExpandViewModel.swift */; };
 		EDB94208215885950070C278 /* SectionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB94207215885950070C278 /* SectionHeaderViewModel.swift */; };
+		EDB9420C2158C5260070C278 /* CurrencyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB9420B2158C5260070C278 /* CurrencyViewModel.swift */; };
 		EDD4B47A214882B800D8E297 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD4B479214882B800D8E297 /* Charts.framework */; };
 		EDD4B47D2148C2BF00D8E297 /* PersistentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */; };
 		EDD4B47F2148CA4300D8E297 /* GlobalStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47E2148CA4300D8E297 /* GlobalStatus.swift */; };
@@ -113,6 +114,7 @@
 		EDB94203215709AD0070C278 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
 		EDB9420521570EE00070C278 /* ExpandViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandViewModel.swift; sourceTree = "<group>"; };
 		EDB94207215885950070C278 /* SectionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderViewModel.swift; sourceTree = "<group>"; };
+		EDB9420B2158C5260070C278 /* CurrencyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyViewModel.swift; sourceTree = "<group>"; };
 		EDD4B479214882B800D8E297 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = Carthage/Build/iOS/Charts.framework; sourceTree = "<group>"; };
 		EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentModel.swift; sourceTree = "<group>"; };
 		EDD4B47E2148CA4300D8E297 /* GlobalStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalStatus.swift; sourceTree = "<group>"; };
@@ -306,6 +308,7 @@
 				EDB94203215709AD0070C278 /* SettingViewModel.swift */,
 				EDB9420521570EE00070C278 /* ExpandViewModel.swift */,
 				EDB94207215885950070C278 /* SectionHeaderViewModel.swift */,
+				EDB9420B2158C5260070C278 /* CurrencyViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -578,6 +581,7 @@
 				ED7636B62133012C000592F4 /* ExpandViewController.swift in Sources */,
 				EDD89F7021421C190031EA10 /* HuobiModel.swift in Sources */,
 				EDD89F6621421BE80031EA10 /* HuobiEndPoint.swift in Sources */,
+				EDB9420C2158C5260070C278 /* CurrencyViewModel.swift in Sources */,
 				ED7636AE213203A2000592F4 /* SettingsViewController.swift in Sources */,
 				EDD89F6221421BE80031EA10 /* Signature.swift in Sources */,
 				EDD89F512141DA890031EA10 /* Logger.swift in Sources */,
