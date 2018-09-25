@@ -31,9 +31,16 @@
 		EDADE8872145970B00FF3D89 /* HuobiEndPointsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDADE8862145970B00FF3D89 /* HuobiEndPointsTests.swift */; };
 		EDADE8972145A48F00FF3D89 /* CoinMarketEndPointsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDADE8962145A48F00FF3D89 /* CoinMarketEndPointsTests.swift */; };
 		EDADE8992145A5A500FF3D89 /* CryptoCompareEndPointsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDADE8982145A5A500FF3D89 /* CryptoCompareEndPointsTests.swift */; };
+		EDB62CB021554DED006EA432 /* CurrencyListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB62CAF21554DED006EA432 /* CurrencyListViewModel.swift */; };
+		EDB62CB221554EEF006EA432 /* PriceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB62CB121554EEF006EA432 /* PriceViewModel.swift */; };
+		EDB942022156AED60070C278 /* FavoriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB942012156AED60070C278 /* FavoriteViewModel.swift */; };
+		EDB94204215709AD0070C278 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB94203215709AD0070C278 /* SettingViewModel.swift */; };
+		EDB9420621570EE00070C278 /* ExpandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB9420521570EE00070C278 /* ExpandViewModel.swift */; };
+		EDB94208215885950070C278 /* SectionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB94207215885950070C278 /* SectionHeaderViewModel.swift */; };
+		EDB9420C2158C5260070C278 /* CurrencyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB9420B2158C5260070C278 /* CurrencyViewModel.swift */; };
 		EDD4B47A214882B800D8E297 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD4B479214882B800D8E297 /* Charts.framework */; };
 		EDD4B47D2148C2BF00D8E297 /* PersistentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */; };
-		EDD4B47F2148CA4300D8E297 /* kLineSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47E2148CA4300D8E297 /* kLineSource.swift */; };
+		EDD4B47F2148CA4300D8E297 /* GlobalStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47E2148CA4300D8E297 /* GlobalStatus.swift */; };
 		EDD89F512141DA890031EA10 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F502141DA890031EA10 /* Logger.swift */; };
 		EDD89F6121421BE80031EA10 /* ParameterEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F5421421BE80031EA10 /* ParameterEncoder.swift */; };
 		EDD89F6221421BE80031EA10 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F5521421BE80031EA10 /* Signature.swift */; };
@@ -101,9 +108,16 @@
 		EDADE8862145970B00FF3D89 /* HuobiEndPointsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HuobiEndPointsTests.swift; sourceTree = "<group>"; };
 		EDADE8962145A48F00FF3D89 /* CoinMarketEndPointsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinMarketEndPointsTests.swift; sourceTree = "<group>"; };
 		EDADE8982145A5A500FF3D89 /* CryptoCompareEndPointsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoCompareEndPointsTests.swift; sourceTree = "<group>"; };
+		EDB62CAF21554DED006EA432 /* CurrencyListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyListViewModel.swift; sourceTree = "<group>"; };
+		EDB62CB121554EEF006EA432 /* PriceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceViewModel.swift; sourceTree = "<group>"; };
+		EDB942012156AED60070C278 /* FavoriteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewModel.swift; sourceTree = "<group>"; };
+		EDB94203215709AD0070C278 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
+		EDB9420521570EE00070C278 /* ExpandViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandViewModel.swift; sourceTree = "<group>"; };
+		EDB94207215885950070C278 /* SectionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderViewModel.swift; sourceTree = "<group>"; };
+		EDB9420B2158C5260070C278 /* CurrencyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyViewModel.swift; sourceTree = "<group>"; };
 		EDD4B479214882B800D8E297 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = Carthage/Build/iOS/Charts.framework; sourceTree = "<group>"; };
 		EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentModel.swift; sourceTree = "<group>"; };
-		EDD4B47E2148CA4300D8E297 /* kLineSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kLineSource.swift; sourceTree = "<group>"; };
+		EDD4B47E2148CA4300D8E297 /* GlobalStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalStatus.swift; sourceTree = "<group>"; };
 		EDD4B4802148D50A00D8E297 /* coin.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = coin.css; path = ../../../../../../../Desktop/coin.css; sourceTree = "<group>"; };
 		EDD4B4812148D50A00D8E297 /* coin.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = coin.html; path = ../../../../../../../Desktop/coin.html; sourceTree = "<group>"; };
 		EDD89F502141DA890031EA10 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../../../../swiftlogger/SwiftLogger/Debug/Logger.swift; sourceTree = "<group>"; };
@@ -196,6 +210,7 @@
 				EDD89F5221421BE80031EA10 /* Networking */,
 				ED7636A82131F883000592F4 /* Models */,
 				ED7636A72131F879000592F4 /* Views */,
+				EDB942002156A7AB0070C278 /* ViewModel */,
 				ED7636A92131F88F000592F4 /* Controllers */,
 				EDD89F492141D6770031EA10 /* Helpers */,
 				ED7636AA2131F8CE000592F4 /* Resources */,
@@ -237,10 +252,10 @@
 			children = (
 				ED76367C2131F63D000592F4 /* Main.storyboard */,
 				ED7636AF21325AAA000592F4 /* ScaleWidthImageView.swift */,
-				ED7636AB21320160000592F4 /* CurrencyCell.swift */,
 				ED7636B121325EEF000592F4 /* SectionHeaderView.swift */,
 				EDDA22E4214DF18E00088F48 /* ClickView.swift */,
 				ED52DC9C21365FE2001198E7 /* SectionHeaderView.xib */,
+				ED7636AB21320160000592F4 /* CurrencyCell.swift */,
 				ED52DC932134FED6001198E7 /* Transitions */,
 			);
 			path = Views;
@@ -250,7 +265,6 @@
 			isa = PBXGroup;
 			children = (
 				EDD89F5821421BE80031EA10 /* Endpoint */,
-				EDD4B47E2148CA4300D8E297 /* kLineSource.swift */,
 				EDD89F6B21421C190031EA10 /* CoinMarketModel.swift */,
 				EDD89F6C21421C190031EA10 /* CryptoCompareModel.swift */,
 				EDD89F6D21421C190031EA10 /* HuobiModel.swift */,
@@ -282,6 +296,21 @@
 				ED7636812131F63F000592F4 /* LaunchScreen.storyboard */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		EDB942002156A7AB0070C278 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				EDD4B47E2148CA4300D8E297 /* GlobalStatus.swift */,
+				EDB62CAF21554DED006EA432 /* CurrencyListViewModel.swift */,
+				EDB62CB121554EEF006EA432 /* PriceViewModel.swift */,
+				EDB942012156AED60070C278 /* FavoriteViewModel.swift */,
+				EDB94203215709AD0070C278 /* SettingViewModel.swift */,
+				EDB9420521570EE00070C278 /* ExpandViewModel.swift */,
+				EDB94207215885950070C278 /* SectionHeaderViewModel.swift */,
+				EDB9420B2158C5260070C278 /* CurrencyViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		EDD4B478214882B700D8E297 /* Frameworks */ = {
@@ -533,21 +562,26 @@
 				ED52DC992134FED6001198E7 /* DismissTransitionController.swift in Sources */,
 				EDD89F6121421BE80031EA10 /* ParameterEncoder.swift in Sources */,
 				ED52DC922134FEA3001198E7 /* SettingsNavigationController.swift in Sources */,
+				EDB62CB221554EEF006EA432 /* PriceViewModel.swift in Sources */,
 				EDD89F6421421BE80031EA10 /* CoinMarketEndPoint.swift in Sources */,
+				EDB9420621570EE00070C278 /* ExpandViewModel.swift in Sources */,
+				EDB62CB021554DED006EA432 /* CurrencyListViewModel.swift in Sources */,
 				ED76367B2131F63D000592F4 /* FavoritesViewController.swift in Sources */,
 				EDD89F6A21421BE80031EA10 /* EndPointType.swift in Sources */,
 				ED7636772131F63D000592F4 /* AppDelegate.swift in Sources */,
 				EDDA22E5214DF18E00088F48 /* ClickView.swift in Sources */,
 				ED7636B82134CE95000592F4 /* PricesViewController.swift in Sources */,
 				ED7636B221325EEF000592F4 /* SectionHeaderView.swift in Sources */,
-				EDD4B47F2148CA4300D8E297 /* kLineSource.swift in Sources */,
+				EDD4B47F2148CA4300D8E297 /* GlobalStatus.swift in Sources */,
 				ED52DC9A2134FED6001198E7 /* PresentTransitionController.swift in Sources */,
 				EDD89F6521421BE80031EA10 /* CryptoCompareEndPoint.swift in Sources */,
 				EDD4B47D2148C2BF00D8E297 /* PersistentModel.swift in Sources */,
+				EDB94204215709AD0070C278 /* SettingViewModel.swift in Sources */,
 				EDD89F6321421BE80031EA10 /* NetworkManager.swift in Sources */,
 				ED7636B62133012C000592F4 /* ExpandViewController.swift in Sources */,
 				EDD89F7021421C190031EA10 /* HuobiModel.swift in Sources */,
 				EDD89F6621421BE80031EA10 /* HuobiEndPoint.swift in Sources */,
+				EDB9420C2158C5260070C278 /* CurrencyViewModel.swift in Sources */,
 				ED7636AE213203A2000592F4 /* SettingsViewController.swift in Sources */,
 				EDD89F6221421BE80031EA10 /* Signature.swift in Sources */,
 				EDD89F512141DA890031EA10 /* Logger.swift in Sources */,
@@ -555,6 +589,8 @@
 				EDD89F6F21421C190031EA10 /* CryptoCompareModel.swift in Sources */,
 				EDD89F6921421BE80031EA10 /* NetworkLogger.swift in Sources */,
 				ED7636B4213300B2000592F4 /* DetailViewController.swift in Sources */,
+				EDB94208215885950070C278 /* SectionHeaderViewModel.swift in Sources */,
+				EDB942022156AED60070C278 /* FavoriteViewModel.swift in Sources */,
 				EDD89F6721421BE80031EA10 /* NetworkRouter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

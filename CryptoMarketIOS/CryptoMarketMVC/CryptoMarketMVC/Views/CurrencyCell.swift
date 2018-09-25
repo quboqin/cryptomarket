@@ -20,6 +20,8 @@ class CurrencyCell: UITableViewCell {
     
     @IBOutlet weak var volume24hLabel: UILabel!
     
+    @IBOutlet weak var eyeButton: UIButton!
+    
 //    var expandViewHeightConstraintPriority: Float = 999
     
     override func awakeFromNib() {

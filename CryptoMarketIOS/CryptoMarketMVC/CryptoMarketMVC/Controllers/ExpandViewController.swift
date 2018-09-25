@@ -106,8 +106,7 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
     @IBOutlet weak var chartView: CandleStickChartView!
     var options: [Option]!
     
-    fileprivate var histoHourVolumes = Variable<[OHLCV]>([])
-    let symbol = Variable<String>("")
+    var viewModel: ExpandViewModel!
     let disposeBag = DisposeBag()
     
     private func setupUI() {
@@ -144,113 +143,68 @@ class ExpandViewController: UIViewController, ChartViewDelegate {
         chartView.xAxis.labelFont = UIFont(name: "HelveticaNeue-Light", size: 10)!
     }
     
+    func showAlert() {
+        if self.parent?.presentedViewController != nil {
+            return
+        }
+        
+        let alert = UIAlertController(title: "Alert", message: "Can not find the symbol on Huobi", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            switch action.style{
+            case .default:
+                Log.e("default")
+                
+            case .cancel:
+                Log.e("cancel")
+                
+            case .destructive:
+                Log.e("destructive")
+            }}))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     func setupBindings() {
-        // Trigger is KLineSource.shared.dataSource
-        let cryptoCompareReload = KLineSource.shared.dataSource.asObservable().distinctUntilChanged()
-            .filter { (dataSource) -> Bool in
-                return dataSource == DataSource.cryptoCompare
-            }
-        
-        cryptoCompareReload.withLatestFrom(symbol.asObservable())
-            { (dataSource, symbol) in
-                return symbol
-            }
-            .flatMap { (symbol) -> Observable<HistoHourResponse> in
-                return CryptoCompareNetworkManager.shared.getDataFromEndPointRx(.histohour(fsym: symbol, tsym: "USD", limit: 11), type: HistoHourResponse.self)
-            }
-            .map { (histoHourResponse) -> [OHLCV] in
-                return histoHourResponse.data
-            }
-            .bind(to: histoHourVolumes)
-            .disposed(by: disposeBag)
-        
-        let huobiReload = KLineSource.shared.dataSource.asObservable().distinctUntilChanged()
-            .filter { (dataSource) -> Bool in
-                return dataSource == DataSource.houbi
-            }
-        
-        huobiReload.withLatestFrom(symbol.asObservable())
-            { (dataSource, symbol) in
-                return symbol
-            }
-            .flatMap { (symbol) ->  Observable<Event<KlineResponse>> in
-                return HuobiNetworkManager.shared.getDataFromEndPointRx(.historyKline(symbol: symbol.lowercased() + "usdt", period: "5min", size: 150), type: KlineResponse.self).materialize()
-            }
-            .filter { [unowned self ] in
-                guard $0.error == nil else {
-                    Log.e("Catch Error: +\($0.error!)")
-                    
-                    if self.parent?.presentedViewController != nil {
-                        return false
-                    }
-                    
-                    let alert = UIAlertController(title: "Alert", message: "Can not find the symbol on Huobi", preferredStyle: UIAlertController.Style.alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                        switch action.style{
-                        case .default:
-                            Log.e("default")
-                            
-                        case .cancel:
-                            Log.e("cancel")
-                            
-                        case .destructive:
-                            Log.e("destructive")
-                        }}))
-                    self.present(alert, animated: true, completion: nil)
-                    
-                    self.histoHourVolumes = Variable<[OHLCV]>([])
-                    return false
-                }
-                return true
-            }
-            .dematerialize()
-            .map { (kLineResponse) -> [KlineItem] in
-                return kLineResponse.data
-            }
-            .map { (kLineItems) -> [OHLCV] in
-                var ohlcvs = [OHLCV]()
-                kLineItems.forEach({ (kLineItem) in
-                    let ohlcv = OHLCV(time: 0, open: kLineItem.open!, close: kLineItem.close!, low: kLineItem.low!, high: kLineItem.high!, volumefrom: 0.0, volumeto: 0.0)
-                    ohlcvs.append(ohlcv)
-                })
-                return ohlcvs
-            }
-            .bind(to: histoHourVolumes)
-            .disposed(by: disposeBag)
-        
-        histoHourVolumes.asObservable()
+        viewModel = ExpandViewModel(viewController: self)
+        viewModel.histoHourVolumes.asObservable()
             .subscribe({_ in
                 self.setDataCount()
             })
             .disposed(by: disposeBag)
     }
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        // FIXED: How to save the status..., force load view
+        _ = self.view
+    
+        setupBindings()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         setupUI()
-        setupBindings()
-        
         chartView.delegate = self
     }
     
     fileprivate func setDataCount() -> Void {
-        let count = self.histoHourVolumes.value.count
+        let count = viewModel.histoHourVolumes.value.count
         
         if count == 0 {
             return
         }
         
         let yVals1 = (0 ..< count).map { (i) -> CandleChartDataEntry? in
-            let high = self.histoHourVolumes.value[i].high
-            let low = self.histoHourVolumes.value[i].low
-            let open = self.histoHourVolumes.value[i].open
-            let close = self.histoHourVolumes.value[i].close
+            let high = viewModel.histoHourVolumes.value[i].high
+            let low = viewModel.histoHourVolumes.value[i].low
+            let open = viewModel.histoHourVolumes.value[i].open
+            let close = viewModel.histoHourVolumes.value[i].close
             
             return CandleChartDataEntry(x: Double(i), shadowH: high, shadowL: low, open: open, close: close, icon: UIImage(named: "icon")!)
         }
         
-        chartView.leftAxis.axisMinimum = self.histoHourVolumes.value.map {
+        chartView.leftAxis.axisMinimum = viewModel.histoHourVolumes.value.map {
             $0.low
             }.min()!
         

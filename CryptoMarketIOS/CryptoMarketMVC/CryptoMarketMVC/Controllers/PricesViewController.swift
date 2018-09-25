@@ -30,8 +30,7 @@ class PricesViewController: CryptoCurrencyListViewController {
     var coinSectionHeaderView: SectionHeaderView?
     var tokenSectionHeaderView: SectionHeaderView?
     
-    var showCoinOnly = Variable<Bool>(false)
-    var globalData = Variable<GlobalViewModel>(GlobalViewModel(totalMarketCap: 0, totalVolume24H: 0))
+    private let viewModel = PriceViewModel()
     
     let refreshControl = UIRefreshControl()
     
@@ -57,151 +56,42 @@ class PricesViewController: CryptoCurrencyListViewController {
         CATransaction.commit()
     }
     
-    func bindingTableView(_ tickers: Observable<[Ticker]>) {
-        let coins = tickers.map { (tickers_) -> [Ticker] in
-            return tickers_.filter({ (ticker) -> Bool in
-                return !ticker.isToken
-            })
-        }
-        
-        let sortedCoins = Observable.combineLatest(coins.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
-            (tickers_, sort) -> [Ticker] in
-            return self.sortedBykey(tickers: tickers_, key: sort)
-        }
-        
-        let tokens = tickers.map { (tickers_) -> [Ticker] in
-            return tickers_.filter({ (ticker) -> Bool in
-                return ticker.isToken
-            })
-        }
-        
-        let _tokens = Observable.combineLatest(tokens.asObservable(), showCoinOnly.asObservable()) {
-            (tickers_, showCoinOnly) -> [Ticker] in
-            return tickers_.filter({ (ticker) -> Bool in
-                return !showCoinOnly && ticker.isToken
-            })
-        }
-        
-        let sortedTokens = Observable.combineLatest(_tokens.asObservable(), self.coinSectionHeaderView!.sortingOrder) {
-            (tickers_, sort) -> [Ticker] in
-            return self.sortedBykey(tickers: tickers_, key: sort)
-        }
-        
-        Observable.combineLatest(sortedCoins, sortedTokens) {
-            return ($0, $1)
-        }
-        .map {
-            var sections = [SectionModel<String, Ticker>]()
-            if $0.count != 0 {
-                sections.append(SectionModel(model: "Coin", items: $0))
-            }
-            if $1.count != 0 {
-                sections.append(SectionModel(model: "Token", items: $1))
-            }
-        
-            return sections
-        }
-        .bind(to: tableView.rx.items(dataSource: dataSource!))
-        .disposed(by: disposeBag)
-    }
-    
     override func setupBindings() {
         super.setupBindings()
         
-        let reload = refreshControl.rx.controlEvent(.valueChanged).asObservable()
-        
-        reload
-            .flatMap { () -> Observable<GlobalResponse> in
-                return CoinMarketNetworkManager.shared.getDataFromEndPointRx(.globalData(convert: "USD"),
-                                                                                type: GlobalResponse.self)
-            }
-            .map({ (globalResponse) -> GlobalViewModel in
-                return GlobalViewModel(totalMarketCap: globalResponse.data.quotes["USD"]?.totalMarketCap ?? 0, totalVolume24H: globalResponse.data.quotes["USD"]?.totalVolume24H ?? 0)
-            })
-            .do(onNext: { [weak self] (global) -> Void in
-                self?.flipGlobalData()
-            })
-            .bind(to: globalData)
+        refreshControl.rx.controlEvent(.valueChanged)
+            .bind(to: viewModel.reload)
             .disposed(by: disposeBag)
-        
-        globalData.asObservable()
-            .map { (globalData) -> String in
-            return "$" + String(format: "%.1f", globalData.totalMarketCap)
-            }
-            .bind(to: self.globalLabel.rx.text)
-            .disposed(by: disposeBag)
-
-
-        let coinsRx = PublishSubject<[Coin]>()
-        // FIXME: the Variable type has a initial value, if one of the http request return, the combine will be emitted!
-//        let coins Rx = Variable<Coin>([])
-        
-        let tickersRx = PublishSubject<[Ticker]>()
-
-        reload
-            .flatMap { () -> Observable<CoinListResponse> in
-                return CryptoCompareNetworkManager.shared.getDataFromEndPointRx(.coinlist, type: CoinListResponse.self)
-            }
-            .map({ [weak self] (coinListResponse) -> [String : Coin] in
-                self?.baseImageUrl = coinListResponse.baseImageUrl
-                return coinListResponse.data
-            })
-            .map({
-                return [Coin]($0.values)
-            })
-            .bind(to: coinsRx)
-            .disposed(by: disposeBag)
-        
-        reload
-            .flatMap { () -> Observable<TickersResponse> in
-                return CoinMarketNetworkManager.shared.getDataFromEndPointRx(.ticker(start: 1, limit: 60, sort: "id", structure: "array", convert: "BTC"), type: TickersResponse.self)
-            }
-            .map({ (tickersResponse) -> [Ticker] in
-                return tickersResponse.data
-            })
-            .bind(to: tickersRx)
-            .disposed(by: disposeBag)
-
-        let _tickers = Observable.combineLatest(tickersRx.asObservable(), coinsRx.asObservable()) { tickers, coins in
-            return tickers.map({ (ticker) -> Ticker in
-                var _ticker = ticker
-                if let coin = coins.first(where: {$0.symbol == ticker.symbol}) {
-                    _ticker.fullName = coin.fullName
-                    _ticker.imageUrl = coin.imageUrl
-                    _ticker.url = coin.url
-                    if coin.builtOn != "N/A" {
-                        _ticker.isToken = true
-                    } else {
-                        _ticker.isToken = false
-                    }
-                } else {
-                    _ticker.fullName = ticker.symbol
-                }
-                return _ticker
-            })
-        }
-        .do(onNext: { [weak self] _ in self?.refreshControl.endRefreshing() })
-        
-        let searchBehaviorSubject = BehaviorSubject<String>(value: "")
         
         searchBar.rx.text
             .orEmpty
             .debounce(0.5, scheduler: MainScheduler.instance)
-            .bind(to: searchBehaviorSubject)
+            .bind(to: viewModel.setSearchKeyword)
             .disposed(by: disposeBag)
         
-        let filterTickers = Observable.combineLatest(_tickers.asObservable(), searchBehaviorSubject.asObserver()) {
-            (tickers, search) -> [Ticker] in
-            let lowcasedSearch = search.lowercased()
-            return tickers.filter {
-                if lowcasedSearch == "" {
-                    return true
-                }
-                return $0.fullName.lowercased().range(of: lowcasedSearch) != nil
-            }
-        }
-
-        bindingTableView(filterTickers)
+        self.coinSectionHeaderView?.viewModel.didSelectSortingOrder
+            .bind(to: viewModel.setCoinSortOrder)
+            .disposed(by: disposeBag)
+        
+        self.tokenSectionHeaderView?.viewModel.didSelectSortingOrder
+            .bind(to: viewModel.setTokenSortOrder)
+            .disposed(by: disposeBag)
+        
+        viewModel.totalVolume24H
+            .do(onNext: { [weak self] (global) -> Void in
+                self?.flipGlobalData()
+            })
+            .bind(to: self.globalLabel.rx.text)
+            .disposed(by: disposeBag)
+    
+        viewModel.baseImageUrl
+            .bind(to: GlobalStatus.shared.baseImageUrl)
+            .disposed(by: disposeBag)
+        
+        viewModel.sections
+            .do(onNext: { [weak self] _ in self?.refreshControl.endRefreshing() })
+            .bind(to: tableView.rx.items(dataSource: dataSource!))
+            .disposed(by: disposeBag)
     }
     
     override func setupUI() {
@@ -245,16 +135,21 @@ class PricesViewController: CryptoCurrencyListViewController {
         if let navigationController = segue.destination as? SettingsNavigationController,
             let settingsViewController = navigationController.viewControllers.first as? SettingsViewController {
     
-            settingsViewController.didSelectShowCoinOnly
-                .bind(to: showCoinOnly)
+            settingsViewController.viewModel.didSelectShowCoinOnly
+                .bind(to: viewModel.showCoinOnly)
+                .disposed(by: disposeBag)
+            
+            settingsViewController.viewModel.didSelectDataSource.debug()
+                .bind(to: GlobalStatus.shared.klineDataSource)
                 .disposed(by: disposeBag)
             
             // FIXED: How to save the status
-            settingsViewController.selectShowCoinOnly.onNext(showCoinOnly.value)
+            settingsViewController.viewModel.selectShowCoinOnly.onNext(viewModel.showCoinOnly.value)
+            settingsViewController.viewModel.selectDataSource.onNext(GlobalStatus.shared.klineDataSource.value)
 
             if let favoriteViewController = self.favoritesViewController {
-                settingsViewController.didSelectRemoveMyFavorites
-                    .bind(to: favoriteViewController.selectRemoveMyFavorites)
+                settingsViewController.viewModel.didRemoveMyFavorites
+                    .bind(to: favoriteViewController.viewModel.deleteFavoriteList)
                     .disposed(by: disposeBag)
             }
         }
@@ -273,9 +168,8 @@ extension PricesViewController {
             guard let ticker = self?.dataSource?[indexPath] else {
                 return
             }
-            
-            self?.favoritesViewController.baseImageUrl = self?.baseImageUrl
-            self?.favoritesViewController.addTicker(ticker)
+        
+            self?.favoritesViewController.viewModel.addTicker.onNext(ticker)
         })
         
         return [favoriteRowAction]

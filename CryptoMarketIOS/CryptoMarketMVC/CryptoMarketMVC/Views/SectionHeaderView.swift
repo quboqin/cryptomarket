@@ -55,41 +55,33 @@ class SectionHeaderView: UIView {
     var containViews: [ClickView]!
     
     @IBOutlet weak var nameLableInSectionHeader: UILabel!
+    
+    var viewModel: SectionHeaderViewModel!
 
     var section: SortSection! {
         didSet {
             nameLableInSectionHeader.text = section.rawValue
+            setupBindings(section: section)
         }
     }
-    var sortingOrder: Observable<SortOrder>!
+
     let disposeBag = DisposeBag()
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    func setupBindings(section: SortSection) {
+        self.viewModel = SectionHeaderViewModel(section: section)
         
         containViews = [nameContainView, priceContainView, changeContainView]
-        var sortOrderSubjects = [BehaviorSubject<SortOrder>(value: SortOrder.none), BehaviorSubject<SortOrder>(value: SortOrder.none), BehaviorSubject<SortOrder>(value: SortOrder.none)]
         
         for (index, containView) in containViews.enumerated() {
-            let sortKey = SortKey(key: index)
             containView.sortingImage.alpha = 0.1
             containView.rx
                 .tapGesture()
                 .when(.recognized)
-                .map {_ in
-                    return sortOrderSubjects[index]
-                }
-                .scan(SortOrder.none) { lastValue, _ in
-                    if case SortOrder.ascend(let _section, let _key) = lastValue {
-                        return SortOrder.descend(_section, _key)
-                    }
-                    if case SortOrder.descend(let _section, let _key) = lastValue {
-                        return SortOrder.ascend(_section, _key)
-                    }
-                    return SortOrder.ascend(self.section, sortKey)
-                }
-                .do(onNext: { (sortOrder) -> Void in
+                .bind(to: viewModel.sortOrderSubjects[index])
+                .disposed(by: disposeBag)
+            
+            viewModel.didSelectOrderSubjects[index]
+                .subscribe(onNext: { (sortOrder) -> Void in
                     self.containViews[0].sortingImage.alpha = 0.1
                     self.containViews[1].sortingImage.alpha = 0.1
                     self.containViews[2].sortingImage.alpha = 0.1
@@ -103,9 +95,13 @@ class SectionHeaderView: UIView {
                         }
                         
                     }
-                }).bind(to: sortOrderSubjects[index])
+                })
                 .disposed(by: disposeBag)
         }
-        sortingOrder = Observable.from(sortOrderSubjects).merge()
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
     }
 }
