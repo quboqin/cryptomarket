@@ -43,19 +43,19 @@ class CryptoCurrencyListViewController: UIViewController {
 
                         self.expandViewController.viewModel.setSymbol.onNext(item.symbol)
                         
-                        GlobalStatus.shared.klineDataSource.asObservable().debug()
+                        GlobalStatus.shared.klineDataSource.asObservable()
                             .bind(to: self.expandViewController.viewModel.setDataSource)
                             .disposed(by: self.disposeBag)
                         
                         cell.eyeButton.rx
-                            .tap.debug()
+                            .tap
                             .map { _ in
                                 return item
                             }
                             .bind(to: self.viewModel.selectCurrency)
                             .disposed(by: self.disposeBag)
                         
-                        self.viewModel.showCurrency.debug()
+                        self.viewModel.showCurrency
                             .subscribe(onNext : { [weak self] urlString in
                                 Log.e(urlString)
                                 if let url = URL(string: urlString) {

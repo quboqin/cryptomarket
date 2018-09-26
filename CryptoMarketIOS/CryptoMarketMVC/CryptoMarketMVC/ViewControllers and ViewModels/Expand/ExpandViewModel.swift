@@ -33,11 +33,11 @@ class ExpandViewModel {
         self.didSetSymbol = _symbol.asObservable()
         
         // Trigger is KLineSource.shared.dataSources
-        didSetDataSource.distinctUntilChanged().debug()
+        didSetDataSource.distinctUntilChanged()
             .filter { (dataSource) -> Bool in
                 return dataSource == DataSource.cryptoCompare
             }
-            .withLatestFrom(didSetSymbol.debug()) { (dataSource, symbol) in
+            .withLatestFrom(didSetSymbol) { (dataSource, symbol) in
                 return symbol
             }
             .flatMap { (symbol) -> Observable<HistoHourResponse> in

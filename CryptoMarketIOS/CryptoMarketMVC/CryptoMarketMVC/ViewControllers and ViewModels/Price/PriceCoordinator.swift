@@ -19,17 +19,36 @@ class PriceCoordinator: BaseCoordinator<Void> {
     }
 
     override func start() -> Observable<Void> {
-        let navigationViewController = rootViewController.viewControllers![0] as! UINavigationController
-        let viewController = navigationViewController.viewControllers[0] as! PricesViewController
+        let navigationViewController0 = rootViewController.viewControllers![0] as! UINavigationController
+        let viewController = navigationViewController0.viewControllers[0] as! PricesViewController
+        
+        let navigationViewController1 = rootViewController.viewControllers![1] as! UINavigationController
+        let favoritesViewController = navigationViewController1.viewControllers[0] as? FavoritesViewController
         
         let viewModel = PriceViewModel()
         viewController.viewModel = viewModel
         
-        let showSettings = viewModel.showSettings.debug()
+        let showSettings = viewModel.showSettings
             .flatMap { [weak self] _ -> Observable<SettingCoordinationResult> in
                 guard let `self` = self else { return .empty() }
                 return self.showSettings(on: viewController, with: viewModel)
+            }.share()
+        
+        showSettings
+            .filter({
+                if case .kLineDataSource = $0 {
+                    return true
+                }
+                return false
+            })
+            .map {
+                if case .kLineDataSource(let value) = $0 {
+                    return value
+                }
+                return DataSource.cryptoCompare
             }
+            .bind(to: GlobalStatus.shared.klineDataSource)
+            .disposed(by: disposeBag)
             
         showSettings
             .filter({
@@ -46,40 +65,23 @@ class PriceCoordinator: BaseCoordinator<Void> {
             }
             .bind(to: viewModel.showCoinOnly)
             .disposed(by: disposeBag)
-            
+        
         showSettings
             .filter({
-                if case .kLineDataSource = $0 {
+                if case .removeMyFavorites = $0 {
                     return true
                 }
                 return false
             })
             .map {
-                if case .kLineDataSource(let value) = $0 {
+                if case .removeMyFavorites(let value) = $0 {
                     return value
                 }
-                return DataSource.cryptoCompare
+                return false
             }
-            .bind(to: GlobalStatus.shared.klineDataSource)
+            .bind(to: (favoritesViewController?.viewModel.deleteFavoriteList)!)
             .disposed(by: disposeBag)
         
-        if let favoriteViewController = viewController.favoritesViewController {
-            showSettings
-                .filter({
-                    if case .removeMyFavorites = $0 {
-                        return true
-                    }
-                    return false
-                })
-                .map {
-                    if case .removeMyFavorites(let value) = $0 {
-                        return value
-                    }
-                    return false
-                }
-                .bind(to: favoriteViewController.viewModel.deleteFavoriteList)
-                .disposed(by: disposeBag)
-        }
         
         window.makeKeyAndVisible()
         

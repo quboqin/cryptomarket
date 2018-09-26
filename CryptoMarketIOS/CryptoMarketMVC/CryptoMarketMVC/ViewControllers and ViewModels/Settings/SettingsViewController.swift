@@ -38,22 +38,22 @@ class SettingsViewController: UITableViewController, StoryboardInitializable {
         dataSourceSegment.rx.selectedSegmentIndex.changed
             .map({ (index) -> DataSource in
                 return DataSource(source: index)
-            }).debug()
+            })
             .bind(to: viewModel.selectDataSource)
             .disposed(by: disposeBag)
         
         viewModel.didSelectDataSource
             .map({ (dataSource) -> Int in
                 return dataSource.rawValue
-            }).debug()
+            })
             .bind(to: dataSourceSegment.rx.selectedSegmentIndex)
             .disposed(by: disposeBag)
         
-        showCoinOnlySwitch.rx.isOn.changed.debug()
+        showCoinOnlySwitch.rx.isOn.changed
             .bind(to: viewModel.selectShowCoinOnly)
             .disposed(by: disposeBag)
 
-        viewModel.didSelectShowCoinOnly.debug()
+        viewModel.didSelectShowCoinOnly
             .bind(to: showCoinOnlySwitch.rx.isOn)
             .disposed(by: disposeBag)
         

@@ -65,7 +65,7 @@ class PricesViewController: CryptoCurrencyListViewController {
             .bind(to: viewModel.reload)
             .disposed(by: disposeBag)
         
-        settingButton.rx.tap.debug()
+        settingButton.rx.tap
             .bind(to: viewModel.clickSettings)
             .disposed(by: disposeBag)
         
