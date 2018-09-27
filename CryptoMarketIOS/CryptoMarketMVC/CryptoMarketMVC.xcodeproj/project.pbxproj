@@ -20,6 +20,7 @@
 		ED52DC992134FED6001198E7 /* DismissTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC952134FED6001198E7 /* DismissTransitionController.swift */; };
 		ED52DC9A2134FED6001198E7 /* PresentTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC962134FED6001198E7 /* PresentTransitionController.swift */; };
 		ED52DC9D21365FE2001198E7 /* SectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ED52DC9C21365FE2001198E7 /* SectionHeaderView.xib */; };
+		ED61A011215C0F6100685C47 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED61A010215C0F6100685C47 /* Logger.swift */; };
 		ED7636772131F63D000592F4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED7636762131F63D000592F4 /* AppDelegate.swift */; };
 		ED7636792131F63D000592F4 /* CryptoCurrencyListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED7636782131F63D000592F4 /* CryptoCurrencyListViewController.swift */; };
 		ED76367B2131F63D000592F4 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED76367A2131F63D000592F4 /* FavoritesViewController.swift */; };
@@ -47,7 +48,6 @@
 		EDD4B47A214882B800D8E297 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD4B479214882B800D8E297 /* Charts.framework */; };
 		EDD4B47D2148C2BF00D8E297 /* PersistentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */; };
 		EDD4B47F2148CA4300D8E297 /* GlobalStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47E2148CA4300D8E297 /* GlobalStatus.swift */; };
-		EDD89F512141DA890031EA10 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F502141DA890031EA10 /* Logger.swift */; };
 		EDD89F6121421BE80031EA10 /* ParameterEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F5421421BE80031EA10 /* ParameterEncoder.swift */; };
 		EDD89F6221421BE80031EA10 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F5521421BE80031EA10 /* Signature.swift */; };
 		EDD89F6321421BE80031EA10 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F5721421BE80031EA10 /* NetworkManager.swift */; };
@@ -97,6 +97,7 @@
 		ED52DC952134FED6001198E7 /* DismissTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissTransitionController.swift; sourceTree = "<group>"; };
 		ED52DC962134FED6001198E7 /* PresentTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentTransitionController.swift; sourceTree = "<group>"; };
 		ED52DC9C21365FE2001198E7 /* SectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SectionHeaderView.xib; sourceTree = "<group>"; };
+		ED61A010215C0F6100685C47 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../../../../swiftlogger/SwiftLogger/Debug/Logger.swift; sourceTree = "<group>"; };
 		ED7636732131F63D000592F4 /* CryptoMarketMVC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CryptoMarketMVC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED7636762131F63D000592F4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ED7636782131F63D000592F4 /* CryptoCurrencyListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoCurrencyListViewController.swift; sourceTree = "<group>"; };
@@ -132,7 +133,6 @@
 		EDD4B47E2148CA4300D8E297 /* GlobalStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalStatus.swift; sourceTree = "<group>"; };
 		EDD4B4802148D50A00D8E297 /* coin.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = coin.css; path = ../../../../../../../Desktop/coin.css; sourceTree = "<group>"; };
 		EDD4B4812148D50A00D8E297 /* coin.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = coin.html; path = ../../../../../../../Desktop/coin.html; sourceTree = "<group>"; };
-		EDD89F502141DA890031EA10 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../../../../swiftlogger/SwiftLogger/Debug/Logger.swift; sourceTree = "<group>"; };
 		EDD89F5421421BE80031EA10 /* ParameterEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterEncoder.swift; sourceTree = "<group>"; };
 		EDD89F5521421BE80031EA10 /* Signature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
 		EDD89F5721421BE80031EA10 /* NetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
@@ -286,6 +286,22 @@
 			path = Transitions;
 			sourceTree = "<group>";
 		};
+		ED61A00E215C0F4800685C47 /* Help */ = {
+			isa = PBXGroup;
+			children = (
+				ED61A00F215C0F4E00685C47 /* Logger */,
+			);
+			path = Help;
+			sourceTree = "<group>";
+		};
+		ED61A00F215C0F4E00685C47 /* Logger */ = {
+			isa = PBXGroup;
+			children = (
+				ED61A010215C0F6100685C47 /* Logger.swift */,
+			);
+			path = Logger;
+			sourceTree = "<group>";
+		};
 		ED76366A2131F63D000592F4 = {
 			isa = PBXGroup;
 			children = (
@@ -310,13 +326,13 @@
 		ED7636752131F63D000592F4 /* CryptoMarketMVC */ = {
 			isa = PBXGroup;
 			children = (
+				ED61A00E215C0F4800685C47 /* Help */,
 				ED064776215AE125005B34B6 /* Commons */,
 				ED7636A62131F86B000592F4 /* App */,
 				EDD89F5221421BE80031EA10 /* Networking */,
 				ED06476E2159EAE4005B34B6 /* ViewControllers and ViewModels */,
 				ED7636A82131F883000592F4 /* Models */,
 				ED7636A72131F879000592F4 /* Views */,
-				EDD89F492141D6770031EA10 /* Helpers */,
 				ED7636AA2131F8CE000592F4 /* Resources */,
 				ED7636842131F63F000592F4 /* Info.plist */,
 			);
@@ -415,22 +431,6 @@
 				EDD4B479214882B800D8E297 /* Charts.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		EDD89F492141D6770031EA10 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				EDD89F4D2141DA470031EA10 /* Loggers */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
-		EDD89F4D2141DA470031EA10 /* Loggers */ = {
-			isa = PBXGroup;
-			children = (
-				EDD89F502141DA890031EA10 /* Logger.swift */,
-			);
-			path = Loggers;
 			sourceTree = "<group>";
 		};
 		EDD89F5221421BE80031EA10 /* Networking */ = {
@@ -671,6 +671,7 @@
 				EDD89F6521421BE80031EA10 /* CryptoCompareEndPoint.swift in Sources */,
 				EDD4B47D2148C2BF00D8E297 /* PersistentModel.swift in Sources */,
 				EDB94204215709AD0070C278 /* SettingViewModel.swift in Sources */,
+				ED61A011215C0F6100685C47 /* Logger.swift in Sources */,
 				EDD89F6321421BE80031EA10 /* NetworkManager.swift in Sources */,
 				ED7636B62133012C000592F4 /* ExpandViewController.swift in Sources */,
 				EDD89F7021421C190031EA10 /* HuobiModel.swift in Sources */,
@@ -679,7 +680,6 @@
 				ED7636AE213203A2000592F4 /* SettingsViewController.swift in Sources */,
 				EDD89F6221421BE80031EA10 /* Signature.swift in Sources */,
 				ED06477A215AE147005B34B6 /* StoryboardInitializable.swift in Sources */,
-				EDD89F512141DA890031EA10 /* Logger.swift in Sources */,
 				ED064779215AE147005B34B6 /* BaseCoordinator.swift in Sources */,
 				ED7636792131F63D000592F4 /* CryptoCurrencyListViewController.swift in Sources */,
 				EDD89F6F21421C190031EA10 /* CryptoCompareModel.swift in Sources */,
@@ -869,6 +869,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = CryptoMarketMVC/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -892,6 +893,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = CryptoMarketMVC/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
