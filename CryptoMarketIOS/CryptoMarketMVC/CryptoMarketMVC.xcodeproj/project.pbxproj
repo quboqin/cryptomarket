@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ED34598E216DA68000011929 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED34598D216DA68000011929 /* Logger.swift */; };
 		ED52DC922134FEA3001198E7 /* SettingsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */; };
 		ED52DC992134FED6001198E7 /* DismissTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC952134FED6001198E7 /* DismissTransitionController.swift */; };
 		ED52DC9A2134FED6001198E7 /* PresentTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC962134FED6001198E7 /* PresentTransitionController.swift */; };
@@ -31,7 +32,6 @@
 		EDD4B47A214882B800D8E297 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD4B479214882B800D8E297 /* Charts.framework */; };
 		EDD4B47D2148C2BF00D8E297 /* PersistentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */; };
 		EDD4B47F2148CA4300D8E297 /* kLineSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD4B47E2148CA4300D8E297 /* kLineSource.swift */; };
-		EDD89F512141DA890031EA10 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F502141DA890031EA10 /* Logger.swift */; };
 		EDD89F6121421BE80031EA10 /* ParameterEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F5421421BE80031EA10 /* ParameterEncoder.swift */; };
 		EDD89F6221421BE80031EA10 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F5521421BE80031EA10 /* Signature.swift */; };
 		EDD89F6321421BE80031EA10 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD89F5721421BE80031EA10 /* NetworkManager.swift */; };
@@ -64,6 +64,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		ED34598D216DA68000011929 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = Loggers/Logger.swift; sourceTree = SOURCE_ROOT; };
 		ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		ED52DC952134FED6001198E7 /* DismissTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissTransitionController.swift; sourceTree = "<group>"; };
 		ED52DC962134FED6001198E7 /* PresentTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentTransitionController.swift; sourceTree = "<group>"; };
@@ -96,7 +97,6 @@
 		EDD4B47E2148CA4300D8E297 /* kLineSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kLineSource.swift; sourceTree = "<group>"; };
 		EDD4B4802148D50A00D8E297 /* coin.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = coin.css; path = ../../../../../../../Desktop/coin.css; sourceTree = "<group>"; };
 		EDD4B4812148D50A00D8E297 /* coin.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = coin.html; path = ../../../../../../../Desktop/coin.html; sourceTree = "<group>"; };
-		EDD89F502141DA890031EA10 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../../../../swiftlogger/SwiftLogger/Debug/Logger.swift; sourceTree = "<group>"; };
 		EDD89F5421421BE80031EA10 /* ParameterEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterEncoder.swift; sourceTree = "<group>"; };
 		EDD89F5521421BE80031EA10 /* Signature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
 		EDD89F5721421BE80031EA10 /* NetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
@@ -282,7 +282,7 @@
 		EDD89F4D2141DA470031EA10 /* Loggers */ = {
 			isa = PBXGroup;
 			children = (
-				EDD89F502141DA890031EA10 /* Logger.swift */,
+				ED34598D216DA68000011929 /* Logger.swift */,
 			);
 			path = Loggers;
 			sourceTree = "<group>";
@@ -403,13 +403,16 @@
 				TargetAttributes = {
 					ED7636722131F63D000592F4 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 					};
 					ED7636882131F640000592F4 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = ED7636722131F63D000592F4;
 					};
 					ED7636932131F640000592F4 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = ED7636722131F63D000592F4;
 					};
 				};
@@ -490,6 +493,7 @@
 				EDD89F6E21421C190031EA10 /* CoinMarketModel.swift in Sources */,
 				ED52DC992134FED6001198E7 /* DismissTransitionController.swift in Sources */,
 				EDD89F6121421BE80031EA10 /* ParameterEncoder.swift in Sources */,
+				ED34598E216DA68000011929 /* Logger.swift in Sources */,
 				ED52DC922134FEA3001198E7 /* SettingsNavigationController.swift in Sources */,
 				EDD89F6421421BE80031EA10 /* CoinMarketEndPoint.swift in Sources */,
 				ED76367B2131F63D000592F4 /* FavoritesViewController.swift in Sources */,
@@ -507,7 +511,6 @@
 				EDD89F6621421BE80031EA10 /* HuobiEndPoint.swift in Sources */,
 				ED7636AE213203A2000592F4 /* SettingsViewController.swift in Sources */,
 				EDD89F6221421BE80031EA10 /* Signature.swift in Sources */,
-				EDD89F512141DA890031EA10 /* Logger.swift in Sources */,
 				ED7636792131F63D000592F4 /* CryptoCurrencyListViewController.swift in Sources */,
 				EDD89F6F21421C190031EA10 /* CryptoCompareModel.swift in Sources */,
 				EDD89F6921421BE80031EA10 /* NetworkLogger.swift in Sources */,
@@ -701,7 +704,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CryptoMarketMVC/CommonCrypto.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -724,7 +727,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CryptoMarketMVC/CommonCrypto.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -744,7 +747,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CryptoMarketMVC.app/CryptoMarketMVC";
 			};
@@ -765,7 +768,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CryptoMarketMVC.app/CryptoMarketMVC";
 			};
@@ -785,7 +788,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = CryptoMarketMVC;
 			};
@@ -805,7 +808,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.magicefire.CryptoMarketMVCUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = CryptoMarketMVC;
 			};

@@ -40,7 +40,7 @@ class CryptoCurrencyListViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.rowHeight = UITableView.automaticDimension
     }
 
     override func didReceiveMemoryWarning() {
@@ -80,7 +80,7 @@ extension CryptoCurrencyListViewController: UITableViewDataSource {
         if self.expandedIndexPaths.contains(indexPath) {
             self.expandViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ExpandViewController") as? ExpandViewController
             if let expandViewController = self.expandViewController {
-                self.addChildViewController(expandViewController)
+                self.addChild(expandViewController)
                 cell.embeddedView.addSubview(expandViewController.view)
 
                 expandViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -92,7 +92,7 @@ extension CryptoCurrencyListViewController: UITableViewDataSource {
                     expandViewController.view.bottomAnchor.constraint(equalTo: cell.embeddedView.bottomAnchor)
                     ])
 
-                expandViewController.didMove(toParentViewController: self)
+                expandViewController.didMove(toParent: self)
                 
                 expandViewController.symbol = ticker.symbol
             }
@@ -138,9 +138,9 @@ extension CryptoCurrencyListViewController: UITableViewDelegate {
         if(self.expandedIndexPaths.contains(indexPath)) {
             self.expandedIndexPaths.remove(indexPath)
             
-            expandViewController?.willMove(toParentViewController: self)
+            expandViewController?.willMove(toParent: self)
             expandViewController?.view.removeFromSuperview()
-            expandViewController?.removeFromParentViewController()
+            expandViewController?.removeFromParent()
             self.expandViewController = nil
             
         } else {

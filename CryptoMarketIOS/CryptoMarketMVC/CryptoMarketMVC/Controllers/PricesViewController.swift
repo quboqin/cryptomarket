@@ -186,7 +186,7 @@ class PricesViewController: CryptoCurrencyListViewController {
 
 extension PricesViewController {    
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Favorite", handler:{ [weak self] action, indexpath in
+        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowAction.Style.default, title: "Favorite", handler:{ [weak self] action, indexpath in
             let _sorted = self?.sectionSortedArray[indexPath.section]
             let ticker = self?.tickers.milter(filterBy: self?.lowercasedSearchText,
                                               separatedBy: Section(section: indexPath.section),

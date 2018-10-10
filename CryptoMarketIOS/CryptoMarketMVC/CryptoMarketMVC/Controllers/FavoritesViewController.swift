@@ -40,7 +40,7 @@ class FavoritesViewController: CryptoCurrencyListViewController {
 
 extension FavoritesViewController {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {        
-        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Remove", handler:{ [weak self] action, indexpath in
+        let favoriteRowAction = UITableViewRowAction(style: UITableViewRowAction.Style.default, title: "Remove", handler:{ [weak self] action, indexpath in
             self?.tickers.remove(at: indexPath.row)
             self?.tableView.reloadData()
         })
