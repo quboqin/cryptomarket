@@ -129,3 +129,11 @@ class HuobiNetworkManager: NetworkManager<HuobiAPI> {
         super.init(Router<HuobiAPI>())
     }
 }
+
+class GoogleCloudNetworkManager: NetworkManager<GoogleCloudAPI> {
+    static let shared = GoogleCloudNetworkManager()
+    
+    private init() {
+        super.init(Router<GoogleCloudAPI>())
+    }
+}

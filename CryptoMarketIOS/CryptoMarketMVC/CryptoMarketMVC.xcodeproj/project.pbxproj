@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		ED34598E216DA68000011929 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED34598D216DA68000011929 /* Logger.swift */; };
+		ED345990216DA7FB00011929 /* GoogleCloudEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED34598F216DA7FB00011929 /* GoogleCloudEndPoint.swift */; };
+		ED345992216EB16700011929 /* Image-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED345991216EB16700011929 /* Image-Extensions.swift */; };
+		ED345994216EB76300011929 /* GoogleCloudModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED345993216EB76300011929 /* GoogleCloudModel.swift */; };
 		ED52DC922134FEA3001198E7 /* SettingsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */; };
 		ED52DC992134FED6001198E7 /* DismissTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC952134FED6001198E7 /* DismissTransitionController.swift */; };
 		ED52DC9A2134FED6001198E7 /* PresentTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52DC962134FED6001198E7 /* PresentTransitionController.swift */; };
@@ -65,6 +68,9 @@
 
 /* Begin PBXFileReference section */
 		ED34598D216DA68000011929 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = Loggers/Logger.swift; sourceTree = SOURCE_ROOT; };
+		ED34598F216DA7FB00011929 /* GoogleCloudEndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleCloudEndPoint.swift; sourceTree = "<group>"; };
+		ED345991216EB16700011929 /* Image-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image-Extensions.swift"; sourceTree = "<group>"; };
+		ED345993216EB76300011929 /* GoogleCloudModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleCloudModel.swift; sourceTree = "<group>"; };
 		ED52DC912134FEA3001198E7 /* SettingsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		ED52DC952134FED6001198E7 /* DismissTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissTransitionController.swift; sourceTree = "<group>"; };
 		ED52DC962134FED6001198E7 /* PresentTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentTransitionController.swift; sourceTree = "<group>"; };
@@ -221,6 +227,7 @@
 				ED7636B121325EEF000592F4 /* SectionHeaderView.swift */,
 				ED52DC9C21365FE2001198E7 /* SectionHeaderView.xib */,
 				ED52DC932134FED6001198E7 /* Transitions */,
+				ED345991216EB16700011929 /* Image-Extensions.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -233,6 +240,7 @@
 				EDD89F6B21421C190031EA10 /* CoinMarketModel.swift */,
 				EDD89F6C21421C190031EA10 /* CryptoCompareModel.swift */,
 				EDD89F6D21421C190031EA10 /* HuobiModel.swift */,
+				ED345993216EB76300011929 /* GoogleCloudModel.swift */,
 				EDD4B47C2148C2BF00D8E297 /* PersistentModel.swift */,
 			);
 			path = Models;
@@ -320,6 +328,7 @@
 				EDD89F5921421BE80031EA10 /* CoinMarketEndPoint.swift */,
 				EDD89F5A21421BE80031EA10 /* CryptoCompareEndPoint.swift */,
 				EDD89F5B21421BE80031EA10 /* HuobiEndPoint.swift */,
+				ED34598F216DA7FB00011929 /* GoogleCloudEndPoint.swift */,
 			);
 			path = Endpoint;
 			sourceTree = "<group>";
@@ -492,6 +501,7 @@
 				ED7636AC21320160000592F4 /* CurrencyCell.swift in Sources */,
 				EDD89F6E21421C190031EA10 /* CoinMarketModel.swift in Sources */,
 				ED52DC992134FED6001198E7 /* DismissTransitionController.swift in Sources */,
+				ED345990216DA7FB00011929 /* GoogleCloudEndPoint.swift in Sources */,
 				EDD89F6121421BE80031EA10 /* ParameterEncoder.swift in Sources */,
 				ED34598E216DA68000011929 /* Logger.swift in Sources */,
 				ED52DC922134FEA3001198E7 /* SettingsNavigationController.swift in Sources */,
@@ -513,7 +523,9 @@
 				EDD89F6221421BE80031EA10 /* Signature.swift in Sources */,
 				ED7636792131F63D000592F4 /* CryptoCurrencyListViewController.swift in Sources */,
 				EDD89F6F21421C190031EA10 /* CryptoCompareModel.swift in Sources */,
+				ED345994216EB76300011929 /* GoogleCloudModel.swift in Sources */,
 				EDD89F6921421BE80031EA10 /* NetworkLogger.swift in Sources */,
+				ED345992216EB16700011929 /* Image-Extensions.swift in Sources */,
 				ED7636B4213300B2000592F4 /* DetailViewController.swift in Sources */,
 				EDD89F6721421BE80031EA10 /* NetworkRouter.swift in Sources */,
 			);

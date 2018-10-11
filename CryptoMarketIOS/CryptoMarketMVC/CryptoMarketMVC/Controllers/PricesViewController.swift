@@ -111,6 +111,25 @@ class PricesViewController: CryptoCurrencyListViewController {
                 self?.flipGlobalData()
             }
         }
+       
+        let googleCloudNetworkManager = GoogleCloudNetworkManager.shared
+        
+        let image = UIImage(named: "image_sample.png")
+        let image2 = UIImage(named: "image_sample2.png")
+        let image3 = UIImage(named: "image_sample3.png")
+        let images = [image, image2, image3]
+        
+        for image in images {
+            _ = googleCloudNetworkManager.getDataFromEndPoint(.detect_handwriting(image: image), type: GoogleCloudResponses.self, networkManagerCompletion: { (data, error) in
+                if error != nil {
+                    return
+                }
+                
+                if let googleCloudResponse = data as? GoogleCloudResponses {
+                    Log.i(googleCloudResponse)
+                }
+            })
+        }
     }
     
     private func setupUI() {
@@ -193,7 +212,7 @@ extension PricesViewController {
                                               sortedBy: _sorted!)[indexPath.row]
             
             let navigationViewController = self?.tabBarController?.viewControllers![1] as! UINavigationController
-            self?.favoritesViewController = navigationViewController.topViewController as! FavoritesViewController
+            self?.favoritesViewController = navigationViewController.topViewController as? FavoritesViewController
             
             self?.favoritesViewController.baseImageUrl = self?.baseImageUrl
             self?.favoritesViewController.addTicker(ticker!)

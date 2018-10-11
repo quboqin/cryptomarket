@@ -30,10 +30,10 @@ class NetworkLogger {
         for (key,value) in request.allHTTPHeaderFields ?? [:] {
             logOutput += "\(key): \(value) \n"
         }
-        if let body = request.httpBody {
-            logOutput += "\n \(NSString(data: body, encoding: String.Encoding.utf8.rawValue) ?? "")"
-        }
-        
+//        if let body = request.httpBody {
+//            logOutput += "\n \(NSString(data: body, encoding: String.Encoding.utf8.rawValue) ?? "")"
+//        }
+//        
         Log.i(logOutput)
     }
     
